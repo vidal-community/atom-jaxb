@@ -11,9 +11,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static fr.vidal.oss.jaxb.atom.core.LinkRel.*;
+import static java.util.TimeZone.getTimeZone;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MarshallingTest {
@@ -22,6 +24,7 @@ public class MarshallingTest {
 
     @Before
     public void prepare() throws JAXBException {
+        TimeZone.setDefault(getTimeZone("Europe/Paris"));
         marshaller = JAXBContext.newInstance(Feed.class).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
