@@ -8,28 +8,32 @@ public class Attribute {
     private String value;
     private Namespace namespace;
 
-    public String getName() {
-        return name;
+    Attribute() {}
+
+    private Attribute(String name, String value, Namespace namespace) {
+        this.name = name;
+        this.value = value;
+        this.namespace = namespace;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static Attribute attribute(String name, String value) {
+        return attribute(name, value, null);
+    }
+
+    public static Attribute attribute(String name, String value, Namespace namespace) {
+        return new Attribute(name, value, namespace);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public Namespace getNamespace() {
         return namespace;
-    }
-
-    public void setNamespace(Namespace namespace) {
-        this.namespace = namespace;
     }
 
     @Override

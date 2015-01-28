@@ -4,12 +4,16 @@ import java.util.Objects;
 
 public class Namespace {
 
-    private String uri;
-    private String prefix;
+    private final String uri;
+    private final String prefix;
 
-    public Namespace(String uri, String prefix) {
+    private Namespace(String uri, String prefix) {
         this.uri = uri;
         this.prefix = prefix;
+    }
+
+    public static Namespace namespace(String uri, String prefix) {
+        return new Namespace(uri, prefix);
     }
 
     public String uri() {

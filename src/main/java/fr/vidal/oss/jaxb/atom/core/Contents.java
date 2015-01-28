@@ -8,24 +8,33 @@ public class Contents {
     public final static Contents EMPTY = new Contents();
 
     private ContentType type;
-    private String contents = "";
+    private String contents;
+
+    Contents() {}
+
+    private Contents(ContentType type, String contents) {
+        this.type = type;
+        this.contents = contents;
+    }
+
+    public static Contents contents(ContentType type, String contents) {
+        return new Contents(type, contents);
+    }
+
+    public static Contents contents(String contents) {
+        return new Contents(null, contents);
+    }
 
     @XmlAttribute(name = "type")
     public ContentType getType() {
         return type;
     }
 
-    public void setType(ContentType type) {
-        this.type = type;
-    }
 
     @XmlValue
     public String getContents() {
         return contents;
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
 
 }

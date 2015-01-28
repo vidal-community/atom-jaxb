@@ -6,12 +6,15 @@ public class ContentType {
 
     private String type;
 
+    ContentType() {}
+
+    public ContentType(String type) {
+        this.type = type;
+    }
+
     @XmlValue
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 }

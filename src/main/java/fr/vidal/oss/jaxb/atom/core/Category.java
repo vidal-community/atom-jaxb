@@ -16,7 +16,4 @@ public class Category {
         return term;
     }
 
-    void setTerm(String term) {
-        this.term = term;
-    }
 }

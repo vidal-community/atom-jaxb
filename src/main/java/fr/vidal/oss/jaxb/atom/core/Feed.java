@@ -4,8 +4,10 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 
 import static java.util.Collections.unmodifiableCollection;
 
@@ -13,72 +15,62 @@ import static java.util.Collections.unmodifiableCollection;
 @XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "updateDate", "additionalElements", "entries"})
 public class Feed {
 
-    private Collection<Link> links = new ArrayList<>();
+    private Collection<Link> links;
     private String title;
     private String subtitle;
     private String id;
     private Date updateDate;
     private Author author;
-    private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
-    private Collection<Entry> entries = new LinkedHashSet<>();
+    private Collection<SimpleElement> additionalElements;
+    private Collection<Entry> entries;
+
+    Feed() {}
+
+    Feed(Builder builder) {
+        links = builder.links;
+        title = builder.title;
+        subtitle = builder.subtitle;
+        id = builder.id;
+        updateDate = builder.updateDate;
+        author = builder.author;
+        additionalElements = builder.additionalElements;
+        entries = builder.entries;
+    }
+
 
     @XmlElement(name = "title", required = true)
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     @XmlElement(name = "subtitle")
     public String getSubtitle() {
         return subtitle;
     }
 
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
 
     @XmlElement(name = "id", required = true)
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     @XmlElement(name = "updated", required = true)
     public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
 
     @XmlElement(name = "author")
     public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
 
     @XmlElement(name = "link", required = true)
     public Collection<Link> getLinks() {
         return unmodifiableCollection(links);
-    }
-
-    public Feed addLink(Link link) {
-        links.add(link);
-        return this;
-    }
-
-    public void setLinks(Collection<Link> links) {
-        this.links = links;
     }
 
     @XmlElement(name = "entry")
@@ -86,27 +78,9 @@ public class Feed {
         return unmodifiableCollection(entries);
     }
 
-    public Feed addEntry(Entry entry) {
-        entries.add(entry);
-        return this;
-    }
-
-    public void setEntries(Collection<Entry> entries) {
-        this.entries = entries;
-    }
-
     @XmlAnyElement
     public Collection<SimpleElement> getAdditionalElements() {
         return unmodifiableCollection(additionalElements);
-    }
-
-    public Feed addAdditionalElement(SimpleElement element) {
-        additionalElements.add(element);
-        return this;
-    }
-
-    public void setAdditionalElements(Collection<SimpleElement> additionalElements) {
-        this.additionalElements = additionalElements;
     }
 
     @Override
@@ -124,5 +98,69 @@ public class Feed {
         }
         final Feed other = (Feed) obj;
         return Objects.equals(this.id, other.id);
+    }
+
+    public static class Builder {
+
+        private String title;
+        private String subtitle;
+        private String id;
+        private Date updateDate;
+        private Author author;
+        private Collection<Link> links = new LinkedHashSet<>();
+        private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
+        private Collection<Entry> entries = new LinkedHashSet<>();
+
+        public Builder() {
+            title = null;
+            subtitle = null;
+            id = null;
+            updateDate = null;
+            author = null;
+        }
+
+        public Builder withTitle(String title){
+            this.title = title;
+            return this;
+        }
+
+        public Builder withId(String id){
+            this.id = id;
+            return this;
+        }
+
+        public Builder withSubtitle(String subtitle){
+            this.subtitle = subtitle;
+            return this;
+        }
+
+        public Builder withAuthor(Author author){
+            this.author = author;
+            return this;
+        }
+
+        public Builder withUpdateDate(Date updateDate){
+            this.updateDate = updateDate;
+            return this;
+        }
+
+        public Builder addLink(Link link){
+            this.links.add(link);
+            return this;
+        }
+
+        public Builder addSimpleElement(SimpleElement simpleElement){
+            this.additionalElements.add(simpleElement);
+            return this;
+        }
+
+        public Builder addEntry(Entry entry){
+            this.entries.add(entry);
+            return this;
+        }
+
+        public Feed build(){
+            return new Feed(this);
+        }
     }
 }

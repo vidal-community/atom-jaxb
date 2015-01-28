@@ -20,16 +20,10 @@ public class Summary {
         return value;
     }
 
-    void setValue(String value) {
-        this.value = value;
-    }
 
     @XmlAttribute(name = "type")
     public String getType() {
         return type;
     }
 
-    void setType(String type) {
-        this.type = type;
-    }
 }

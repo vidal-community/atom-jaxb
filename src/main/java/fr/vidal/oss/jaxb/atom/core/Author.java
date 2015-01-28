@@ -9,9 +9,17 @@ public class Author {
 
     Author() {}
 
-    public Author(String name, String email) {
+    private Author(String name, String email) {
         this.name = name;
         this.email = email;
+    }
+
+    public static Author author(String name) {
+        return new Author(name, null);
+    }
+
+    public static Author author(String name, String email) {
+        return new Author(name, email);
     }
 
     @XmlElement(required = true)
@@ -19,16 +27,9 @@ public class Author {
         return name;
     }
 
-    void setName(String name) {
-        this.name = name;
-    }
-
     @XmlElement
     public String getEmail() {
         return email;
     }
 
-    void setEmail(String email) {
-        this.email = email;
-    }
 }
