@@ -90,4 +90,14 @@ public class SimpleElement {
             return this;
         }
     }
+
+    @Override
+    public String toString() {
+        return "SimpleElement{" +
+            "namespace=" + namespace +
+            ", tagName='" + tagName + '\'' +
+            ", value='" + value + '\'' +
+            ", attributes=" + attributes +
+            '}';
+    }
 }

@@ -91,4 +91,14 @@ public class Link {
             return new Link(rel, type, href, title);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Link{" +
+            "rel=" + rel +
+            ", type='" + type + '\'' +
+            ", href='" + href + '\'' +
+            ", title='" + title + '\'' +
+            '}';
+    }
 }
