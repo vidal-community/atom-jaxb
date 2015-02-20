@@ -2,6 +2,8 @@ package fr.vidal.oss.jaxb.atom.core;
 
 import java.util.Objects;
 
+import static java.lang.String.format;
+
 public class Namespace {
 
     private final String uri;
@@ -39,5 +41,10 @@ public class Namespace {
         }
         final Namespace other = (Namespace) obj;
         return Objects.equals(this.uri, other.uri) && Objects.equals(this.prefix, other.prefix);
+    }
+
+    @Override
+    public String toString() {
+        return format("%s (%s)", prefix, uri);
     }
 }
