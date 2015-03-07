@@ -151,6 +151,25 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-assertions</id>
+                        <goals>
+                            <goal>generate-assertions</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packages>
+                        <param>fr.vidal.oss.jaxb.atom.core</param>
+                    </packages>
+                    <entryPointClassPackage>fr.vidal.oss.jaxb.atom</entryPointClassPackage>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
