@@ -2,6 +2,8 @@ package fr.vidal.oss.jaxb.atom.core;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -10,6 +12,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import static fr.vidal.oss.jaxb.atom.core.Attribute.attribute;
 import static java.lang.String.format;
 
 public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
@@ -93,6 +96,25 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
 
     @Override
     public SimpleElement unmarshal(Element element) throws Exception {
-        return null;
+        if (element == null) {
+            return null;
+        }
+
+        SimpleElement.Builder result = new SimpleElement.Builder()
+            .withTagName(element.getLocalName())
+            .withNamespace(namespace(element))
+            .withValue(element.getTextContent());
+
+        NamedNodeMap attributes = element.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node item = attributes.item(i);
+            result.addAttribute(attribute(item.getLocalName(), item.getTextContent(), namespace(item)));
+        }
+
+        return result.build();
+    }
+
+    private static Namespace namespace(Node item) {
+        return Namespace.namespace(item.getNamespaceURI(), item.getPrefix());
     }
 }

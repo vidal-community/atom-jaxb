@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static fr.vidal.oss.jaxb.atom.core.Attribute.attribute;
 import static fr.vidal.oss.jaxb.atom.core.Author.author;
 import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static fr.vidal.oss.jaxb.atom.core.Feed.Builder;
@@ -88,6 +89,7 @@ public class MarshallingTest {
                     .withNamespace(namespace("http://purl.org/dc/elements/1.1/", "dc"))
                     .withTagName("date")
                     .withValue(DATE_FORMAT.format(new Date(1329350400000L)))
+                    .addAttribute(attribute("format", "yyyy-MM-dd'T'HH:mm:ss'Z'", namespace("http://date-formats.com", "df")))
                     .build()
             )
             .addSimpleElement(new SimpleElement.Builder()
@@ -158,7 +160,8 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <updated>2012-02-16T01:00:00Z</updated>\n" +
-                    "    <dc:date xmlns:dc=\"http://purl.org/dc/elements/1.1/\">2012-02-16T01:00:00Z</dc:date>\n" +
+                    "    <dc:date df:format=\"yyyy-MM-dd'T'HH:mm:ss'Z'\"\n" +
+                    "             xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:df=\"http://date-formats.com\">2012-02-16T01:00:00Z</dc:date>\n" +
                     "    <opensearch:itemsPerPage xmlns:opensearch=\"http://a9.com/-/spec/opensearch/1.1/\">25</opensearch:itemsPerPage>\n" +
                     "    <opensearch:totalResults xmlns:opensearch=\"http://a9.com/-/spec/opensearch/1.1/\">2</opensearch:totalResults>\n" +
                     "    <opensearch:startIndex xmlns:opensearch=\"http://a9.com/-/spec/opensearch/1.1/\">1</opensearch:startIndex>\n" +

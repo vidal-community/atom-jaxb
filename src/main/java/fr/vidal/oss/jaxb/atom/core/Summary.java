@@ -2,28 +2,56 @@ package fr.vidal.oss.jaxb.atom.core;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
+import java.util.Objects;
 
 public class Summary {
 
-    private String value;
-    private String type;
+    @XmlValue
+    private final String value;
+    @XmlAttribute(name = "type")
+    private final String type;
 
-    Summary() {}
+    @SuppressWarnings("unused")
+    private Summary() {
+        this(null, null);
+    }
 
     public Summary(String value, String type) {
         this.value = value;
         this.type = type;
     }
 
-    @XmlValue
     public String getValue() {
         return value;
     }
 
-
-    @XmlAttribute(name = "type")
     public String getType() {
         return type;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Summary other = (Summary) obj;
+        return Objects.equals(this.value, other.value)
+            && Objects.equals(this.type, other.type);
+    }
+
+    @Override
+    public String toString() {
+        return "Summary{" +
+            "value='" + value + '\'' +
+            ", type='" + type + '\'' +
+            '}';
+    }
 }

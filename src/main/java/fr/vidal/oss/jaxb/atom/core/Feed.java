@@ -15,18 +15,29 @@ import static java.util.Collections.unmodifiableCollection;
 @XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "updateDate", "additionalElements", "entries"})
 public class Feed {
 
-    private Collection<Link> links;
-    private String title;
-    private String subtitle;
-    private String id;
-    private Date updateDate;
-    private Author author;
-    private Collection<SimpleElement> additionalElements;
-    private Collection<Entry> entries;
+    @XmlElement(name = "link", required = true)
+    private final Collection<Link> links;
+    @XmlElement(name = "title", required = true)
+    private final String title;
+    @XmlElement(name = "subtitle")
+    private final String subtitle;
+    @XmlElement(name = "id", required = true)
+    private final String id;
+    @XmlElement(name = "updated", required = true)
+    private final Date updateDate;
+    @XmlElement(name = "author")
+    private final Author author;
+    @XmlAnyElement
+    private final Collection<SimpleElement> additionalElements;
+    @XmlElement(name = "entry")
+    private final Collection<Entry> entries;
 
-    Feed() {}
+    @SuppressWarnings("unused")
+    private Feed() {
+        this(new Builder());
+    }
 
-    Feed(Builder builder) {
+    private Feed(Builder builder) {
         links = builder.links;
         title = builder.title;
         subtitle = builder.subtitle;
@@ -37,48 +48,34 @@ public class Feed {
         entries = builder.entries;
     }
 
-
-    @XmlElement(name = "title", required = true)
     public String getTitle() {
         return title;
     }
 
-
-    @XmlElement(name = "subtitle")
     public String getSubtitle() {
         return subtitle;
     }
 
-
-    @XmlElement(name = "id", required = true)
     public String getId() {
         return id;
     }
 
-
-    @XmlElement(name = "updated", required = true)
     public Date getUpdateDate() {
         return updateDate;
     }
 
-
-    @XmlElement(name = "author")
     public Author getAuthor() {
         return author;
     }
 
-
-    @XmlElement(name = "link", required = true)
     public Collection<Link> getLinks() {
         return unmodifiableCollection(links);
     }
 
-    @XmlElement(name = "entry")
     public Collection<Entry> getEntries() {
         return unmodifiableCollection(entries);
     }
 
-    @XmlAnyElement
     public Collection<SimpleElement> getAdditionalElements() {
         return unmodifiableCollection(additionalElements);
     }
@@ -100,6 +97,20 @@ public class Feed {
         return Objects.equals(this.id, other.id);
     }
 
+    @Override
+    public String toString() {
+        return "Feed{" +
+            "links=" + links +
+            ", title='" + title + '\'' +
+            ", subtitle='" + subtitle + '\'' +
+            ", id='" + id + '\'' +
+            ", updateDate=" + updateDate +
+            ", author=" + author +
+            ", additionalElements=" + additionalElements +
+            ", entries=" + entries +
+            '}';
+    }
+
     public static class Builder {
 
         private String title;
@@ -110,14 +121,6 @@ public class Feed {
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
-
-        public Builder() {
-            title = null;
-            subtitle = null;
-            id = null;
-            updateDate = null;
-            author = null;
-        }
 
         public Builder withTitle(String title){
             this.title = title;

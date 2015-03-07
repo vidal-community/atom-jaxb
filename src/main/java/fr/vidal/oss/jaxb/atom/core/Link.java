@@ -5,12 +5,19 @@ import java.util.Objects;
 
 public class Link {
 
-    private LinkRel rel;
-    private String type;
-    private String href;
-    private String title;
+    @XmlAttribute(name = "rel")
+    private final LinkRel rel;
+    @XmlAttribute(name = "type")
+    private final String type;
+    @XmlAttribute(name = "href", required = true)
+    private final String href;
+    @XmlAttribute(name = "title")
+    private final String title;
 
-    Link() {}
+    @SuppressWarnings("unused")
+    private Link() {
+        this(null, null, null, null);
+    }
 
     private Link(LinkRel rel, String type, String href, String title) {
         this.rel = rel;
@@ -19,29 +26,21 @@ public class Link {
         this.title = title;
     }
 
-    @XmlAttribute(name = "rel")
     public LinkRel getRel() {
         return rel;
     }
 
-
-    @XmlAttribute(name = "type")
     public String getType() {
         return type;
     }
 
-
-    @XmlAttribute(name = "href", required = true)
     public String getHref() {
         return href;
     }
 
-
-    @XmlAttribute(name = "title")
     public String getTitle() {
         return title;
     }
-
 
     @Override
     public int hashCode() {

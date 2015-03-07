@@ -3,6 +3,7 @@ package fr.vidal.oss.jaxb.atom.core;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -15,19 +16,31 @@ import static java.util.Collections.unmodifiableCollection;
 })
 public class Entry {
 
-    private String title;
-    private Summary summary;
-    private Category category;
-    private String id;
-    private Date updateDate;
-    private Author author;
-    private Contents contents;
-    private Collection<Link> links;
-    private Collection<SimpleElement> additionalElements;
+    @XmlElement(name = "title", required = true)
+    private final String title;
+    @XmlElement(name = "summary")
+    private final Summary summary;
+    @XmlElement(name = "category")
+    private final Category category;
+    @XmlElement(name = "id", required = true)
+    private final String id;
+    @XmlElement(name = "updated", required = true)
+    private final Date updateDate;
+    @XmlElement(name = "author")
+    private final Author author;
+    @XmlElement(name = "content")
+    private final Contents contents;
+    @XmlElement(name = "link", required = true)
+    private final Collection<Link> links;
+    @XmlAnyElement
+    private final Collection<SimpleElement> additionalElements;
 
-    Entry() {}
+    @SuppressWarnings("unused")
+    private Entry() {
+        this(new Builder());
+    }
 
-    Entry(Builder builder) {
+    private Entry(Builder builder) {
         additionalElements = builder.additionalElements;
         author = builder.author;
         category = builder.category;
@@ -40,54 +53,38 @@ public class Entry {
 
     }
 
-    @XmlElement(name = "title", required = true)
     public String getTitle() {
         return title;
     }
 
-
-    @XmlElement(name = "summary")
     public Summary getSummary() {
         return summary;
     }
 
-
-    @XmlElement(name = "category")
     public Category getCategory() {
         return category;
     }
 
-
-    @XmlElement(name = "id", required = true)
     public String getId() {
         return id;
     }
 
-
-    @XmlElement(name = "updated", required = true)
     public Date getUpdateDate() {
         return updateDate;
     }
 
-
-    @XmlElement(name = "author")
     public Author getAuthor() {
         return author;
     }
 
-
-    @XmlElement(name = "content")
     public Contents getContents() {
         return contents;
     }
 
-
-    @XmlElement(name = "link", required = true)
     public Collection<Link> getLinks() {
         return unmodifiableCollection(links);
     }
 
-    @XmlAnyElement
     public Collection<SimpleElement> getAdditionalElements() {
         return unmodifiableCollection(additionalElements);
     }
@@ -107,6 +104,21 @@ public class Entry {
         }
         final Entry other = (Entry) obj;
         return Objects.equals(this.id, other.id);
+    }
+
+    @Override
+    public String toString() {
+        return "Entry{" +
+            "title='" + title + '\'' +
+            ", summary=" + summary +
+            ", category=" + category +
+            ", id='" + id + '\'' +
+            ", updateDate=" + updateDate +
+            ", author=" + author +
+            ", contents=" + contents +
+            ", links=" + links +
+            ", additionalElements=" + additionalElements +
+            '}';
     }
 
     public static class Builder {

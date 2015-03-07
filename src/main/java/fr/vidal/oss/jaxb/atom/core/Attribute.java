@@ -4,11 +4,9 @@ import java.util.Objects;
 
 public class Attribute {
 
-    private String name;
-    private String value;
-    private Namespace namespace;
-
-    Attribute() {}
+    private final String name;
+    private final String value;
+    private final Namespace namespace;
 
     private Attribute(String name, String value, Namespace namespace) {
         this.name = name;
@@ -51,5 +49,14 @@ public class Attribute {
         }
         final Attribute other = (Attribute) obj;
         return Objects.equals(this.name, other.name) && Objects.equals(this.value, other.value) && Objects.equals(this.namespace, other.namespace);
+    }
+
+    @Override
+    public String toString() {
+        return "Attribute{" +
+            "name='" + name + '\'' +
+            ", value='" + value + '\'' +
+            ", namespace=" + namespace +
+            '}';
     }
 }
