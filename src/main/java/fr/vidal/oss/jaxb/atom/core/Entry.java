@@ -3,12 +3,12 @@ package fr.vidal.oss.jaxb.atom.core;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlType(propOrder = {
@@ -39,7 +39,7 @@ public class Entry {
 
     @SuppressWarnings("unused")
     private Entry() {
-        this(new Builder());
+        this(builder());
     }
 
     private Entry(Builder builder) {
@@ -53,6 +53,10 @@ public class Entry {
         title = builder.title;
         publishedDate = builder.publishedDate;
         updateDate = builder.updateDate;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public String getTitle() {
@@ -74,7 +78,7 @@ public class Entry {
     public Date getPublishedDate() {
         return publishedDate;
     }
-    
+
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -141,22 +145,25 @@ public class Entry {
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
 
-        public Builder withTitle(String title){
+        private Builder() {
+        }
+
+        public Builder withTitle(String title) {
             this.title = title;
             return this;
         }
 
-        public Builder withSummary(Summary summary){
+        public Builder withSummary(Summary summary) {
             this.summary = summary;
             return this;
         }
 
-        public Builder withCategory(Category category){
+        public Builder withCategory(Category category) {
             this.category = category;
             return this;
         }
 
-        public Builder withId(String id){
+        public Builder withId(String id) {
             this.id = id;
             return this;
         }
@@ -171,28 +178,32 @@ public class Entry {
             return this;
         }
 
-        public Builder withAuthor(Author author){
+        public Builder withAuthor(Author author) {
             this.author = author;
             return this;
         }
 
-        public Builder withContents(Contents contents){
+        public Builder withContents(Contents contents) {
             this.contents = contents;
             return this;
         }
 
-        public Builder addLink(Link link){
+        public Builder addLink(Link link) {
             this.links.add(link);
             return this;
         }
 
-        public Builder addSimpleElement(SimpleElement simpleElement){
+        public Builder addSimpleElement(SimpleElement simpleElement) {
             this.additionalElements.add(simpleElement);
             return this;
         }
 
-        public Entry build(){
-           return new Entry(this);
+        public Entry build() {
+            checkState(title != null, "title is mandatory");
+            checkState(id != null, "id is mandatory");
+            checkState(updateDate != null, "updateDate is mandatory");
+            checkState(!links.isEmpty(), "links cannot be empty");
+            return new Entry(this);
         }
     }
 }

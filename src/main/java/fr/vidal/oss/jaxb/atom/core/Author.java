@@ -3,6 +3,8 @@ package fr.vidal.oss.jaxb.atom.core;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Objects;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+
 public class Author {
 
     @XmlElement(required = true)
@@ -10,7 +12,7 @@ public class Author {
     @XmlElement
     private final String email;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") //jaxb
     private Author() {
         this(null, null);
     }
@@ -20,12 +22,8 @@ public class Author {
         this.email = email;
     }
 
-    public static Author author(String name) {
-        return new Author(name, null);
-    }
-
-    public static Author author(String name, String email) {
-        return new Author(name, email);
+    public static Builder builder(String name) {
+        return new Builder(name);
     }
 
     public String getName() {
@@ -60,5 +58,26 @@ public class Author {
             "name='" + name + '\'' +
             ", email='" + email + '\'' +
             '}';
+    }
+
+
+    public static class Builder {
+
+        private final String name;
+        private String email;
+
+        private Builder(String name) {
+            this.name = name;
+        }
+
+        public Builder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Author build() {
+            checkState(name != null, "name is mandatory");
+            return new Author(name, email);
+        }
     }
 }

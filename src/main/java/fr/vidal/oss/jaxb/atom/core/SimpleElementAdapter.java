@@ -12,7 +12,6 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import static fr.vidal.oss.jaxb.atom.core.Attribute.attribute;
 import static java.lang.String.format;
 
 public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
@@ -100,21 +99,20 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
             return null;
         }
 
-        SimpleElement.Builder result = new SimpleElement.Builder()
-            .withTagName(element.getLocalName())
-            .withNamespace(namespace(element))
-            .withValue(element.getTextContent());
+        SimpleElement.Builder result =
+            SimpleElement.builder(element.getLocalName(), element.getTextContent())
+            .withNamespace(namespace(element));
 
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Node item = attributes.item(i);
-            result.addAttribute(attribute(item.getLocalName(), item.getTextContent(), namespace(item)));
+            result.addAttribute(Attribute.builder(item.getLocalName(), item.getTextContent()).withNamespace(namespace(item)).build());
         }
 
         return result.build();
     }
 
     private static Namespace namespace(Node item) {
-        return Namespace.namespace(item.getNamespaceURI(), item.getPrefix());
+        return Namespace.builder(item.getNamespaceURI()).withPrefix(item.getPrefix()).build();
     }
 }

@@ -1,5 +1,6 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class Feed {
 
     @SuppressWarnings("unused")
     private Feed() {
-        this(new Builder());
+        this(builder());
     }
 
     private Feed(Builder builder) {
@@ -46,6 +47,10 @@ public class Feed {
         author = builder.author;
         additionalElements = builder.additionalElements;
         entries = builder.entries;
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public String getTitle() {
@@ -122,47 +127,54 @@ public class Feed {
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
 
-        public Builder withTitle(String title){
+        private Builder() {
+        }
+
+        public Builder withTitle(String title) {
             this.title = title;
             return this;
         }
 
-        public Builder withId(String id){
+        public Builder withId(String id) {
             this.id = id;
             return this;
         }
 
-        public Builder withSubtitle(String subtitle){
+        public Builder withSubtitle(String subtitle) {
             this.subtitle = subtitle;
             return this;
         }
 
-        public Builder withAuthor(Author author){
+        public Builder withAuthor(Author author) {
             this.author = author;
             return this;
         }
 
-        public Builder withUpdateDate(Date updateDate){
+        public Builder withUpdateDate(Date updateDate) {
             this.updateDate = updateDate;
             return this;
         }
 
-        public Builder addLink(Link link){
+        public Builder addLink(Link link) {
             this.links.add(link);
             return this;
         }
 
-        public Builder addSimpleElement(SimpleElement simpleElement){
+        public Builder addSimpleElement(SimpleElement simpleElement) {
             this.additionalElements.add(simpleElement);
             return this;
         }
 
-        public Builder addEntry(Entry entry){
+        public Builder addEntry(Entry entry) {
             this.entries.add(entry);
             return this;
         }
 
-        public Feed build(){
+        public Feed build() {
+            checkState(title != null, "title is mandatory");
+            checkState(id != null, "id is mandatory");
+            checkState(updateDate != null, "updateDate is mandatory");
+            checkState(!links.isEmpty(), "links cannot be empty");
             return new Feed(this);
         }
     }

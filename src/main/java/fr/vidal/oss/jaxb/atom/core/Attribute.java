@@ -2,6 +2,8 @@ package fr.vidal.oss.jaxb.atom.core;
 
 import java.util.Objects;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+
 public class Attribute {
 
     private final String name;
@@ -14,12 +16,8 @@ public class Attribute {
         this.namespace = namespace;
     }
 
-    public static Attribute attribute(String name, String value) {
-        return attribute(name, value, null);
-    }
-
-    public static Attribute attribute(String name, String value, Namespace namespace) {
-        return new Attribute(name, value, namespace);
+    public static Builder builder(String name, String value) {
+        return new Attribute.Builder(name, value);
     }
 
     public String getName() {
@@ -58,5 +56,29 @@ public class Attribute {
             ", value='" + value + '\'' +
             ", namespace=" + namespace +
             '}';
+    }
+
+
+    public static class Builder {
+
+        private final String name;
+        private final String value;
+        private Namespace namespace;
+
+        private Builder(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public Builder withNamespace(Namespace namespace) {
+            this.namespace = namespace;
+            return this;
+        }
+
+        public Attribute build() {
+            checkState(name != null, "name is mandatory");
+            checkState(value != null, "value is mandatory");
+            return new Attribute(name, value, namespace);
+        }
     }
 }

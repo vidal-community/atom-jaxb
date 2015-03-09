@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
 /**
@@ -17,13 +18,18 @@ public class SimpleElement {
     private String value;
     private Collection<Attribute> attributes;
 
-    SimpleElement() {}
+    @SuppressWarnings("unused") // jaxb
+    private SimpleElement() {}
 
-    SimpleElement(Builder builder) {
+    private SimpleElement(Builder builder) {
         this.namespace = builder.namespace;
         this.tagName = builder.tagName;
         this.value = builder.value;
         this.attributes = builder.attributes;
+    }
+
+    public static Builder builder(String tagName, String value) {
+        return new Builder(tagName, value);
     }
 
     public Namespace namespace() {
@@ -59,38 +65,6 @@ public class SimpleElement {
         return Objects.equals(this.namespace, other.namespace) && Objects.equals(this.tagName, other.tagName) && Objects.equals(this.value, other.value) && Objects.equals(this.attributes, other.attributes);
     }
 
-    public static class Builder {
-
-        private Namespace namespace;
-        private String tagName;
-        private String value;
-        private Collection<Attribute> attributes = new LinkedHashSet<>();
-
-        public SimpleElement build(){
-            return new SimpleElement(this);
-        }
-
-        public Builder withNamespace(Namespace namespace){
-            this.namespace = namespace;
-            return this;
-        }
-
-        public Builder withTagName(String tagName){
-            this.tagName = tagName;
-            return this;
-        }
-
-        public Builder withValue(String value){
-            this.value = value;
-            return this;
-        }
-
-        public Builder addAttribute(Attribute attribute){
-            this.attributes.add(attribute);
-            return this;
-        }
-    }
-
     @Override
     public String toString() {
         return "SimpleElement{" +
@@ -99,5 +73,34 @@ public class SimpleElement {
             ", value='" + value + '\'' +
             ", attributes=" + attributes +
             '}';
+    }
+
+    public static class Builder {
+
+        private final String tagName;
+        private final String value;
+        private Namespace namespace;
+        private Collection<Attribute> attributes = new LinkedHashSet<>();
+
+        private Builder(String tagName, String value) {
+            this.tagName = tagName;
+            this.value = value;
+        }
+
+        public Builder withNamespace(Namespace namespace) {
+            this.namespace = namespace;
+            return this;
+        }
+
+        public Builder addAttribute(Attribute attribute) {
+            this.attributes.add(attribute);
+            return this;
+        }
+
+        public SimpleElement build() {
+            checkState(tagName != null, "tagName is mandatory");
+            checkState(value != null, "value is mandatory");
+            return new SimpleElement(this);
+        }
     }
 }

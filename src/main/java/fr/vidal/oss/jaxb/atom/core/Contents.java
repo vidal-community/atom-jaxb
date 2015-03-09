@@ -6,13 +6,14 @@ import java.util.Objects;
 
 public class Contents {
 
-    public final static Contents EMPTY = new Contents();
+    public final static Contents EMPTY = builder().build();
 
     @XmlAttribute(name = "type")
     private final ContentType type;
     @XmlValue
     private final String contents;
 
+    //jaxb
     private Contents() {
         this(null, null);
     }
@@ -22,12 +23,8 @@ public class Contents {
         this.contents = contents;
     }
 
-    public static Contents contents(ContentType type, String contents) {
-        return new Contents(type, contents);
-    }
-
-    public static Contents contents(String contents) {
-        return new Contents(null, contents);
+    public static Builder builder() {
+        return new Builder();
     }
 
     public ContentType getType() {
@@ -62,5 +59,28 @@ public class Contents {
             "type=" + type +
             ", contents='" + contents + '\'' +
             '}';
+    }
+
+    public static class Builder {
+
+        private ContentType type;
+        private String contents;
+
+        private Builder() {
+        }
+
+        public Builder withType(ContentType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder withContents(String contents) {
+            this.contents = contents;
+            return this;
+        }
+
+        public Contents build() {
+            return new Contents(type, contents);
+        }
     }
 }

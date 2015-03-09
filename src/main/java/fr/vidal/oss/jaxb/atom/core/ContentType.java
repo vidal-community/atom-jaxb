@@ -3,18 +3,24 @@ package fr.vidal.oss.jaxb.atom.core;
 import javax.xml.bind.annotation.XmlValue;
 import java.util.Objects;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+
 public class ContentType {
 
     @XmlValue
     private String type;
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") //jaxb
     private ContentType() {
         this(null);
     }
 
-    public ContentType(String type) {
+    private ContentType(String type) {
         this.type = type;
+    }
+
+    public static Builder builder(String type) {
+        return new Builder(type);
     }
 
     public String getType() {
@@ -43,5 +49,19 @@ public class ContentType {
         return "ContentType{" +
             "type='" + type + '\'' +
             '}';
+    }
+
+    public static class Builder {
+
+        private final String type;
+
+        private Builder(String type) {
+            this.type = type;
+        }
+
+        public ContentType build() {
+            checkState(type != null, "type is mandatory");
+            return new ContentType(type);
+        }
     }
 }
