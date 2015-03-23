@@ -1,15 +1,15 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import static java.util.Collections.unmodifiableCollection;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-
-import static java.util.Collections.unmodifiableCollection;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "feed")
 @XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "updateDate", "additionalElements", "entries"})

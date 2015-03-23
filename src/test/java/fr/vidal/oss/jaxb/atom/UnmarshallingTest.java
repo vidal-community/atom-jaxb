@@ -7,17 +7,6 @@ import fr.vidal.oss.jaxb.atom.core.Link;
 import fr.vidal.oss.jaxb.atom.core.LinkRel;
 import fr.vidal.oss.jaxb.atom.core.SimpleElement;
 import fr.vidal.oss.jaxb.atom.core.Summary;
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.InputSource;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Date;
-import java.util.TimeZone;
 
 import static fr.vidal.oss.jaxb.atom.Assertions.assertThat;
 import static fr.vidal.oss.jaxb.atom.core.Attribute.attribute;
@@ -26,6 +15,17 @@ import static fr.vidal.oss.jaxb.atom.core.Contents.contents;
 import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static fr.vidal.oss.jaxb.atom.core.Namespace.namespace;
 import static java.util.TimeZone.getTimeZone;
+
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Date;
+import java.util.TimeZone;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.InputSource;
 
 public class UnmarshallingTest {
 
@@ -54,6 +54,7 @@ public class UnmarshallingTest {
             "        <title>Atom is not what you think</title>\n" +
             "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
             "        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>\n" +
+            "        <published>1977-02-05T01:00:00Z</published>\n" +
             "        <updated>1986-04-01T02:00:00Z</updated>\n" +
             "        <summary>April's fool!</summary>\n" +
             "        <content>Entry content</content>\n" +
@@ -81,6 +82,7 @@ public class UnmarshallingTest {
                 new Link.Builder()
                     .withHref("http://example.org/2003/12/13/atom03")
                     .build())
+            .hasPublishedDate(DateBuilder.isoDate("1977-02-05T01:00:00"))
             .hasUpdateDate(new Date(512697600000L))
             .hasSummary(new Summary("April's fool!", null))
             .hasContents(contents("Entry content"));
@@ -197,4 +199,5 @@ public class UnmarshallingTest {
     private static Entry entry(String id) {
         return new Entry.Builder().withId(id).build();
     }
+
 }

@@ -1,25 +1,32 @@
 package fr.vidal.oss.jaxb.atom;
 
-import fr.vidal.oss.jaxb.atom.core.*;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Date;
-import java.util.TimeZone;
+import fr.vidal.oss.jaxb.atom.core.Category;
+import fr.vidal.oss.jaxb.atom.core.Entry;
+import fr.vidal.oss.jaxb.atom.core.Feed;
+import fr.vidal.oss.jaxb.atom.core.Link;
+import fr.vidal.oss.jaxb.atom.core.SimpleElement;
+import fr.vidal.oss.jaxb.atom.core.Summary;
 
 import static fr.vidal.oss.jaxb.atom.core.Attribute.attribute;
 import static fr.vidal.oss.jaxb.atom.core.Author.author;
 import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static fr.vidal.oss.jaxb.atom.core.Feed.Builder;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.*;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.related;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
 import static fr.vidal.oss.jaxb.atom.core.Namespace.namespace;
 import static java.util.TimeZone.getTimeZone;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Date;
+import java.util.TimeZone;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import org.junit.Before;
+import org.junit.Test;
 
 public class MarshallingTest {
 
@@ -34,7 +41,7 @@ public class MarshallingTest {
     }
 
     @Test
-    public void marshalls_standard_atom_feed() throws JAXBException, IOException {
+    public void marshalls_standard_atom_feed() throws Exception {
         Builder feedBuilder = new Builder();
         feedBuilder.withId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6");
         feedBuilder.withTitle("My standard Atom 1.0 feed");
@@ -47,6 +54,7 @@ public class MarshallingTest {
         builder.addLink(new Link.Builder().withHref("http://example.org/2003/12/13/atom03").build());
         builder.withTitle("Atom is not what you think");
         builder.withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a");
+        builder.withPublishedDate(DateBuilder.isoDate("1977-02-05T01:00:00"));
         builder.withUpdateDate(new Date(512697600000L));
         builder.withSummary(new Summary("April's fool!", null));
 
@@ -70,6 +78,7 @@ public class MarshallingTest {
                         "        <title>Atom is not what you think</title>\n" +
                         "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
                         "        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>\n" +
+                        "        <published>1977-02-05T01:00:00Z</published>\n" +
                         "        <updated>1986-04-01T02:00:00Z</updated>\n" +
                         "        <summary>April's fool!</summary>\n" +
                         "        <content/>\n" +
@@ -131,23 +140,23 @@ public class MarshallingTest {
                     )
                     .build()
             ).addEntry(
-                new Entry.Builder()
-                    .withTitle("SNAKE OIL 1 mg")
-                    .addLink(new Link.Builder().withRel(alternate).withType("application/atom+xml").withHref("/rest/api/product/42").build())
-                    .addLink(new Link.Builder().withRel(related).withType("application/atom+xml").withHref("/rest/api/product/42/packages").withTitle("PACKAGES").build())
-                    .addLink(new Link.Builder().withRel(related).withType("application/atom+xml").withHref("/rest/api/product/42/documents").withTitle("DOCUMENTS").build())
-                    .addLink(new Link.Builder().withRel(related).withType("application/atom+xml").withHref("/rest/api/product/42/documents/opt").withTitle("OPT_DOCUMENT").build())
-                    .withCategory(new Category("PRODUCT"))
-                    .withAuthor(author("VIDAL"))
-                    .withId("vidal://product/42")
-                    .withUpdateDate(new Date(1329350400000L))
-                    .withSummary(new Summary("SNAKE OIL 1 mg", "text"))
-                    .addSimpleElement(new SimpleElement.Builder()
-                            .withNamespace(namespace("http://api.vidal.net/-/spec/vidal-api/1.0/", "vidal"))
-                            .withTagName("id")
-                            .withValue(String.valueOf(42))
-                            .build()
-                    ).build()
+            new Entry.Builder()
+                .withTitle("SNAKE OIL 1 mg")
+                .addLink(new Link.Builder().withRel(alternate).withType("application/atom+xml").withHref("/rest/api/product/42").build())
+                .addLink(new Link.Builder().withRel(related).withType("application/atom+xml").withHref("/rest/api/product/42/packages").withTitle("PACKAGES").build())
+                .addLink(new Link.Builder().withRel(related).withType("application/atom+xml").withHref("/rest/api/product/42/documents").withTitle("DOCUMENTS").build())
+                .addLink(new Link.Builder().withRel(related).withType("application/atom+xml").withHref("/rest/api/product/42/documents/opt").withTitle("OPT_DOCUMENT").build())
+                .withCategory(new Category("PRODUCT"))
+                .withAuthor(author("VIDAL"))
+                .withId("vidal://product/42")
+                .withUpdateDate(new Date(1329350400000L))
+                .withSummary(new Summary("SNAKE OIL 1 mg", "text"))
+                .addSimpleElement(new SimpleElement.Builder()
+                        .withNamespace(namespace("http://api.vidal.net/-/spec/vidal-api/1.0/", "vidal"))
+                        .withTagName("id")
+                        .withValue(String.valueOf(42))
+                        .build()
+                ).build()
         );
 
         try (StringWriter writer = new StringWriter()) {
@@ -206,4 +215,6 @@ public class MarshallingTest {
                     "</feed>");
         }
     }
+
+
 }

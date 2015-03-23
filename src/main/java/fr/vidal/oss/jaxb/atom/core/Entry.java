@@ -12,7 +12,7 @@ import java.util.Objects;
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlType(propOrder = {
-    "title", "links", "category", "author", "id", "updateDate", "summary", "contents", "additionalElements"
+    "title", "links", "category", "author", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
 })
 public class Entry {
 
@@ -24,6 +24,8 @@ public class Entry {
     private final Category category;
     @XmlElement(name = "id", required = true)
     private final String id;
+    @XmlElement(name = "published")
+    private final Date publishedDate;
     @XmlElement(name = "updated", required = true)
     private final Date updateDate;
     @XmlElement(name = "author")
@@ -49,8 +51,8 @@ public class Entry {
         links = builder.links;
         summary = builder.summary;
         title = builder.title;
+        publishedDate = builder.publishedDate;
         updateDate = builder.updateDate;
-
     }
 
     public String getTitle() {
@@ -69,6 +71,10 @@ public class Entry {
         return id;
     }
 
+    public Date getPublishedDate() {
+        return publishedDate;
+    }
+    
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -113,6 +119,7 @@ public class Entry {
             ", summary=" + summary +
             ", category=" + category +
             ", id='" + id + '\'' +
+            ", publishedDate=" + publishedDate +
             ", updateDate=" + updateDate +
             ", author=" + author +
             ", contents=" + contents +
@@ -127,6 +134,7 @@ public class Entry {
         private Summary summary;
         private Category category;
         private String id;
+        private Date publishedDate;
         private Date updateDate;
         private Author author;
         private Contents contents = Contents.EMPTY;
@@ -150,6 +158,11 @@ public class Entry {
 
         public Builder withId(String id){
             this.id = id;
+            return this;
+        }
+
+        public Builder withPublishedDate(final Date publishedDate){
+            this.publishedDate = publishedDate;
             return this;
         }
 
