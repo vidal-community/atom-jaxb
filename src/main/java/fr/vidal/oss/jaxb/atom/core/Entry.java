@@ -100,20 +100,20 @@ public class Entry {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Entry)) return false;
+
+        Entry entry = (Entry) o;
+
+        if (id != null ? !id.equals(entry.id) : entry.id != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Entry other = (Entry) obj;
-        return Objects.equals(this.id, other.id);
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
@@ -142,8 +142,8 @@ public class Entry {
         private Date updateDate;
         private Author author;
         private Contents contents = Contents.EMPTY;
-        private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
+        private Collection<Link> links = new LinkedHashSet<Link>();
+        private Collection<SimpleElement> additionalElements = new LinkedHashSet<SimpleElement>();
 
         private Builder() {
         }

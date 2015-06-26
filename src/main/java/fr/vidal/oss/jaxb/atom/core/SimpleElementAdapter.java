@@ -55,7 +55,7 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
     }
 
     private JAXBElement<String> jaxbElement(SimpleElement simpleElement) {
-        return new JAXBElement<>(
+        return new JAXBElement<String>(
             qualifiedName(simpleElement),
             String.class,
             simpleElement.value()

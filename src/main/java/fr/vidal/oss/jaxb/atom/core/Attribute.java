@@ -32,21 +32,27 @@ public class Attribute {
         return namespace;
     }
 
+
     @Override
-    public int hashCode() {
-        return Objects.hash(name, value, namespace);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Attribute)) return false;
+
+        Attribute attribute = (Attribute) o;
+
+        if (name != null ? !name.equals(attribute.name) : attribute.name != null) return false;
+        if (namespace != null ? !namespace.equals(attribute.namespace) : attribute.namespace != null) return false;
+        if (value != null ? !value.equals(attribute.value) : attribute.value != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Attribute other = (Attribute) obj;
-        return Objects.equals(this.name, other.name) && Objects.equals(this.value, other.value) && Objects.equals(this.namespace, other.namespace);
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (namespace != null ? namespace.hashCode() : 0);
+        return result;
     }
 
     @Override

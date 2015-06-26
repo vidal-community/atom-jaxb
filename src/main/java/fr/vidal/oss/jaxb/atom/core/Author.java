@@ -34,22 +34,25 @@ public class Author {
         return email;
     }
 
+
     @Override
-    public int hashCode() {
-        return Objects.hash(name, email);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Author)) return false;
+
+        Author author = (Author) o;
+
+        if (email != null ? !email.equals(author.email) : author.email != null) return false;
+        if (name != null ? !name.equals(author.name) : author.name != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Author other = (Author) obj;
-        return Objects.equals(this.name, other.name)
-            && Objects.equals(this.email, other.email);
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
     }
 
     @Override
