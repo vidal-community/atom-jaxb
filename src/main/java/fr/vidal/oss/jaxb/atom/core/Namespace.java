@@ -27,20 +27,23 @@ public class Namespace {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(uri, prefix);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Namespace)) return false;
+
+        Namespace namespace = (Namespace) o;
+
+        if (prefix != null ? !prefix.equals(namespace.prefix) : namespace.prefix != null) return false;
+        if (uri != null ? !uri.equals(namespace.uri) : namespace.uri != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Namespace other = (Namespace) obj;
-        return Objects.equals(this.uri, other.uri) && Objects.equals(this.prefix, other.prefix);
+    public int hashCode() {
+        int result = uri != null ? uri.hashCode() : 0;
+        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
+        return result;
     }
 
     @Override

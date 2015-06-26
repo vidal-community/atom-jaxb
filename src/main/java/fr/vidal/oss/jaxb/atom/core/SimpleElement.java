@@ -43,20 +43,27 @@ public class SimpleElement {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(namespace, tagName, value, attributes);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleElement)) return false;
+
+        SimpleElement that = (SimpleElement) o;
+
+        if (attributes != null ? !attributes.equals(that.attributes) : that.attributes != null) return false;
+        if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) return false;
+        if (tagName != null ? !tagName.equals(that.tagName) : that.tagName != null) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final SimpleElement other = (SimpleElement) obj;
-        return Objects.equals(this.namespace, other.namespace) && Objects.equals(this.tagName, other.tagName) && Objects.equals(this.value, other.value) && Objects.equals(this.attributes, other.attributes);
+    public int hashCode() {
+        int result = namespace != null ? namespace.hashCode() : 0;
+        result = 31 * result + (tagName != null ? tagName.hashCode() : 0);
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        return result;
     }
 
     public static class Builder {
@@ -64,7 +71,7 @@ public class SimpleElement {
         private Namespace namespace;
         private String tagName;
         private String value;
-        private Collection<Attribute> attributes = new LinkedHashSet<>();
+        private Collection<Attribute> attributes = new LinkedHashSet<Attribute>();
 
         public SimpleElement build(){
             return new SimpleElement(this);

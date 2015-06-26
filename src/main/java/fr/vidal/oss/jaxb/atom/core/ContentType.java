@@ -22,20 +22,20 @@ public class ContentType {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(type);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContentType)) return false;
+
+        ContentType that = (ContentType) o;
+
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final ContentType other = (ContentType) obj;
-        return Objects.equals(this.type, other.type);
+    public int hashCode() {
+        return type != null ? type.hashCode() : 0;
     }
 
     @Override

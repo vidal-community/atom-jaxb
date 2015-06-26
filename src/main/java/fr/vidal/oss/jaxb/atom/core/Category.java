@@ -22,20 +22,20 @@ public class Category {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(term);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Category)) return false;
+
+        Category category = (Category) o;
+
+        if (term != null ? !term.equals(category.term) : category.term != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Category other = (Category) obj;
-        return Objects.equals(this.term, other.term);
+    public int hashCode() {
+        return term != null ? term.hashCode() : 0;
     }
 
     @Override

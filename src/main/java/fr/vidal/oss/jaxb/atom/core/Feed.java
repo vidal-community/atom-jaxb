@@ -81,20 +81,20 @@ public class Feed {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Feed)) return false;
+
+        Feed feed = (Feed) o;
+
+        if (id != null ? !id.equals(feed.id) : feed.id != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Feed other = (Feed) obj;
-        return Objects.equals(this.id, other.id);
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
@@ -118,9 +118,9 @@ public class Feed {
         private String id;
         private Date updateDate;
         private Author author;
-        private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
-        private Collection<Entry> entries = new LinkedHashSet<>();
+        private Collection<Link> links = new LinkedHashSet<Link>();
+        private Collection<SimpleElement> additionalElements = new LinkedHashSet<SimpleElement>();
+        private Collection<Entry> entries = new LinkedHashSet<Entry>();
 
         public Builder withTitle(String title){
             this.title = title;
