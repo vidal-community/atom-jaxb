@@ -1,5 +1,6 @@
 package fr.vidal.oss.jaxb.atom;
 
+import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
 import fr.vidal.oss.jaxb.atom.core.Category;
 import fr.vidal.oss.jaxb.atom.core.Entry;
 import fr.vidal.oss.jaxb.atom.core.Feed;
@@ -11,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
@@ -34,7 +34,7 @@ public class UnmarshallingTest {
     @Before
     public void prepare() throws JAXBException {
         TimeZone.setDefault(getTimeZone("Europe/Paris"));
-        unmarshaller = JAXBContext.newInstance(Feed.class).createUnmarshaller();
+        unmarshaller = AtomJaxb.newContext().createUnmarshaller();
     }
 
     @Test

@@ -4,7 +4,6 @@ import fr.vidal.oss.jaxb.atom.core.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class MarshallingTest {
     @Before
     public void prepare() throws JAXBException {
         TimeZone.setDefault(getTimeZone("Europe/Paris"));
-        marshaller = JAXBContext.newInstance(Feed.class).createMarshaller();
+        marshaller = AtomJaxb.newContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
     }
