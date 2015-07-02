@@ -9,7 +9,7 @@
 
     <groupId>fr.vidal.oss</groupId>
     <artifactId>atom-jaxb</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2-JDK6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>atom-jaxb</name>
