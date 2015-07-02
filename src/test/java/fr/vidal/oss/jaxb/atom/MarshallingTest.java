@@ -1,5 +1,6 @@
 package fr.vidal.oss.jaxb.atom;
 
+import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
 import fr.vidal.oss.jaxb.atom.core.Attribute;
 import fr.vidal.oss.jaxb.atom.core.Author;
 import fr.vidal.oss.jaxb.atom.core.Category;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.TimeZone;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class MarshallingTest {
     @Before
     public void prepare() throws JAXBException {
         TimeZone.setDefault(getTimeZone("Europe/Paris"));
-        marshaller = JAXBContext.newInstance(Feed.class).createMarshaller();
+        marshaller = AtomJaxb.newContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
     }
