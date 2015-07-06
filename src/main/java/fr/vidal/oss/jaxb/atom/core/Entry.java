@@ -217,7 +217,6 @@ public class Entry {
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
             checkState(!links.isEmpty(), "links cannot be empty");
-            checkState(!categories.isEmpty(), "categories cannot be empty");
             return new Entry(this);
         }
     }
