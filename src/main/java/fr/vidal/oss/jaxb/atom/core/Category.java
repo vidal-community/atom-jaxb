@@ -10,13 +10,17 @@ public class Category {
     @XmlAttribute(name = "term")
     private final String term;
 
+    @XmlAttribute(name = "scheme")
+    private final String scheme;
+
     @SuppressWarnings("unused") //jaxb
     private Category() {
-        this(null);
+        this(builder(""));
     }
 
-    private Category(String term) {
-        this.term = term;
+    private Category(Builder builder) {
+        this.term = builder.term;
+        this.scheme = builder.scheme;
     }
 
     public static Builder builder(String term) {
@@ -27,9 +31,13 @@ public class Category {
         return term;
     }
 
+    public String getScheme() {
+        return scheme;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(term);
+        return Objects.hash(term, scheme);
     }
 
     @Override
@@ -41,26 +49,34 @@ public class Category {
             return false;
         }
         final Category other = (Category) obj;
-        return Objects.equals(this.term, other.term);
+        return Objects.equals(this.term, other.term)
+            && Objects.equals(this.scheme, other.scheme);
     }
 
     @Override
     public String toString() {
         return "Category{" +
-            "term='" + term + '\'' +
+            "term='" + term + "'," +
+            "scheme='" + scheme + '\'' +
             '}';
     }
 
     public static class Builder {
         private final String term;
+        private String scheme;
 
         private Builder(String term) {
             this.term = term;
         }
 
+        public Builder withScheme(String scheme) {
+            this.scheme = scheme;
+            return this;
+        }
+
         public Category build() {
             checkState(term != null, "term is mandatory");
-            return new Category(term);
+            return new Category(this);
         }
     }
 }
