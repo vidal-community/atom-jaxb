@@ -12,7 +12,7 @@ import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlType(propOrder = {
-    "title", "links", "category", "author", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
+    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
 })
 public class Entry {
 
@@ -21,7 +21,7 @@ public class Entry {
     @XmlElement(name = "summary")
     private final Summary summary;
     @XmlElement(name = "category")
-    private final Category category;
+    private final Collection<Category> categories;
     @XmlElement(name = "id", required = true)
     private final String id;
     @XmlElement(name = "published")
@@ -30,6 +30,8 @@ public class Entry {
     private final Date updateDate;
     @XmlElement(name = "author")
     private final Author author;
+    @XmlElement(name = "contributor")
+    private final Collection<Contributor> contributors;
     @XmlElement(name = "content")
     private final Contents contents;
     @XmlElement(name = "link", required = true)
@@ -45,7 +47,8 @@ public class Entry {
     private Entry(Builder builder) {
         additionalElements = builder.additionalElements;
         author = builder.author;
-        category = builder.category;
+        contributors = builder.contributors;
+        categories = builder.categories;
         contents = builder.contents;
         id = builder.id;
         links = builder.links;
@@ -67,8 +70,8 @@ public class Entry {
         return summary;
     }
 
-    public Category getCategory() {
-        return category;
+    public Collection<Category> getCategories() {
+        return unmodifiableCollection(categories);
     }
 
     public String getId() {
@@ -85,6 +88,10 @@ public class Entry {
 
     public Author getAuthor() {
         return author;
+    }
+
+    public Collection<Contributor> getContributors() {
+        return unmodifiableCollection(contributors);
     }
 
     public Contents getContents() {
@@ -121,11 +128,12 @@ public class Entry {
         return "Entry{" +
             "title='" + title + '\'' +
             ", summary=" + summary +
-            ", category=" + category +
+            ", category=" + categories +
             ", id='" + id + '\'' +
             ", publishedDate=" + publishedDate +
             ", updateDate=" + updateDate +
             ", author=" + author +
+            ", contributors=" + contributors +
             ", contents=" + contents +
             ", links=" + links +
             ", additionalElements=" + additionalElements +
@@ -136,11 +144,12 @@ public class Entry {
 
         private String title;
         private Summary summary;
-        private Category category;
+        private Collection<Category> categories = new LinkedHashSet<Category>();
         private String id;
         private Date publishedDate;
         private Date updateDate;
         private Author author;
+        private Collection<Contributor> contributors = new LinkedHashSet<Contributor>();
         private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<Link>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<SimpleElement>();
@@ -158,8 +167,8 @@ public class Entry {
             return this;
         }
 
-        public Builder withCategory(Category category) {
-            this.category = category;
+        public Builder addCategory(Category category) {
+            this.categories.add(category);
             return this;
         }
 
@@ -180,6 +189,11 @@ public class Entry {
 
         public Builder withAuthor(Author author) {
             this.author = author;
+            return this;
+        }
+
+        public Builder addContributor(Contributor contributor) {
+            this.contributors.add(contributor);
             return this;
         }
 

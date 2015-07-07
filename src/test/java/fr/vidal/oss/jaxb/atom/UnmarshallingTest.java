@@ -167,7 +167,7 @@ public class UnmarshallingTest {
                     .withTitle("OPT_DOCUMENT")
                     .withType("application/atom+xml")
                     .build())
-            .hasCategory(Category.builder("PRODUCT").build())
+            .hasCategories(Category.builder("PRODUCT").build())
             .hasAuthor(Author.builder("VIDAL").build())
             .hasSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
             .hasAdditionalElements(

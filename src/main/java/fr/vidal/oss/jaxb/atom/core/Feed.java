@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "updateDate", "additionalElements", "entries"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -28,6 +28,8 @@ public class Feed {
     private final Date updateDate;
     @XmlElement(name = "author")
     private final Author author;
+    @XmlElement(name = "contributor")
+    private final Collection<Contributor> contributors;
     @XmlAnyElement
     private final Collection<SimpleElement> additionalElements;
     @XmlElement(name = "entry")
@@ -45,6 +47,7 @@ public class Feed {
         id = builder.id;
         updateDate = builder.updateDate;
         author = builder.author;
+        contributors = builder.contributors;
         additionalElements = builder.additionalElements;
         entries = builder.entries;
     }
@@ -71,6 +74,10 @@ public class Feed {
 
     public Author getAuthor() {
         return author;
+    }
+
+    public Collection<Contributor> getContributors() {
+        return unmodifiableCollection(contributors);
     }
 
     public Collection<Link> getLinks() {
@@ -111,6 +118,7 @@ public class Feed {
             ", id='" + id + '\'' +
             ", updateDate=" + updateDate +
             ", author=" + author +
+            ", contributors=" + contributors +
             ", additionalElements=" + additionalElements +
             ", entries=" + entries +
             '}';
@@ -123,6 +131,7 @@ public class Feed {
         private String id;
         private Date updateDate;
         private Author author;
+        private Collection<Contributor> contributors = new LinkedHashSet<Contributor>();
         private Collection<Link> links = new LinkedHashSet<Link>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<SimpleElement>();
         private Collection<Entry> entries = new LinkedHashSet<Entry>();
@@ -152,6 +161,11 @@ public class Feed {
 
         public Builder withUpdateDate(Date updateDate) {
             this.updateDate = updateDate;
+            return this;
+        }
+
+        public Builder addContributor(Contributor contributor) {
+            this.contributors.add(contributor);
             return this;
         }
 

@@ -10,13 +10,17 @@ public class Category {
     @XmlAttribute(name = "term")
     private final String term;
 
+    @XmlAttribute(name = "scheme")
+    private final String scheme;
+
     @SuppressWarnings("unused") //jaxb
     private Category() {
-        this(null);
+        this(builder(""));
     }
 
-    private Category(String term) {
-        this.term = term;
+    private Category(Builder builder) {
+        this.term = builder.term;
+        this.scheme = builder.scheme;
     }
 
     public static Builder builder(String term) {
@@ -27,6 +31,10 @@ public class Category {
         return term;
     }
 
+    public String getScheme() {
+        return scheme;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,6 +42,7 @@ public class Category {
 
         Category category = (Category) o;
 
+        if (scheme != null ? !scheme.equals(category.scheme) : category.scheme != null) return false;
         if (term != null ? !term.equals(category.term) : category.term != null) return false;
 
         return true;
@@ -41,26 +50,35 @@ public class Category {
 
     @Override
     public int hashCode() {
-        return term != null ? term.hashCode() : 0;
+        int result = term != null ? term.hashCode() : 0;
+        result = 31 * result + (scheme != null ? scheme.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Category{" +
-            "term='" + term + '\'' +
+            "term='" + term + "'," +
+            "scheme='" + scheme + '\'' +
             '}';
     }
 
     public static class Builder {
         private final String term;
+        private String scheme;
 
         private Builder(String term) {
             this.term = term;
         }
 
+        public Builder withScheme(String scheme) {
+            this.scheme = scheme;
+            return this;
+        }
+
         public Category build() {
             checkState(term != null, "term is mandatory");
-            return new Category(term);
+            return new Category(this);
         }
     }
 }
