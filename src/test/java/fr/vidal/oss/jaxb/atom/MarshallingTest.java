@@ -207,4 +207,64 @@ public class MarshallingTest {
     }
 
 
+    @Test
+    public void marshalls_custom_entry_attributes() throws IOException, JAXBException {
+        Feed feed = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+            .addEntry(
+                Entry.builder()
+                    .withTitle("SINTROM 4 mg cp quadriséc")
+                    .addLink(Link.builder("/rest/api/product/15070").withRel(alternate).withType("application/atom+xml").build())
+                    .addCategory(Category.builder("PRODUCT").build())
+                    .addCategory(Category.builder("PACK").build())
+                    .withAuthor(Author.builder("VIDAL").build())
+                    .withId("vidal://product/15070")
+                    .withUpdateDate(new Date(1329350400000L))
+                    .addAttribute(Attribute.builder("type", "PRODUCT,PACK")
+                            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
+                                .withPrefix("vidal")
+                                .build())
+                            .build()
+                    )
+                    .withSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
+                    .addSimpleElement(
+                        SimpleElement.builder("id", String.valueOf(15070))
+                            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                            .build()
+                    )
+                    .build()
+            )
+            .build();
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(feed, writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <entry vidal:type=\"PRODUCT,PACK\" xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+                    "        <title>SINTROM 4 mg cp quadriséc</title>\n" +
+                    "        <link href=\"/rest/api/product/15070\" rel=\"alternate\" type=\"application/atom+xml\"/>\n" +
+                    "        <category term=\"PRODUCT\"/>\n" +
+                    "        <category term=\"PACK\"/>\n" +
+                    "        <author>\n" +
+                    "            <name>VIDAL</name>\n" +
+                    "        </author>\n" +
+                    "        <id>vidal://product/15070</id>\n" +
+                    "        <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
+                    "        <content/>\n" +
+                    "        <vidal:id>15070</vidal:id>\n" +
+                    "    </entry>\n" +
+                    "</feed>");
+        }
+    }
 }

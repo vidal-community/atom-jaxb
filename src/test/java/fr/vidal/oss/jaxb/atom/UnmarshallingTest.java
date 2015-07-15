@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
@@ -176,6 +177,45 @@ public class UnmarshallingTest {
                     .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
                     .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
                     .build()
+            );
+    }
+
+    @Test
+    public void unmarshalls_custom_entry_attributes() throws JAXBException {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+            "    <title>Search Products - Query :sintrom</title>\n" +
+            "    <link\n" +
+            "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+            "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+            "    <id>Heidi</id>\n" +
+            "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+            "    <entry vidal:type=\"PRODUCT,PACK\" xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+            "        <title>SINTROM 4 mg cp quadriséc</title>\n" +
+            "        <link href=\"/rest/api/product/15070\" rel=\"alternate\" type=\"application/atom+xml\"/>\n" +
+            "        <category term=\"PRODUCT\"/>\n" +
+            "        <category term=\"PACK\"/>\n" +
+            "        <author>\n" +
+            "            <name>VIDAL</name>\n" +
+            "        </author>\n" +
+            "        <id>vidal://product/15070</id>\n" +
+            "        <updated>2012-02-16T01:00:00Z</updated>\n" +
+            "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
+            "        <content/>\n" +
+            "        <vidal:id>15070</vidal:id>\n" +
+            "    </entry>\n" +
+            "</feed>";
+
+        Feed result = (Feed) unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
+
+        org.assertj.core.api.Assertions.assertThat(result.getEntries()).hasSize(1);
+        Entry entry = result.getEntries().iterator().next();
+
+        org.assertj.core.api.Assertions.assertThat(entry.getAdditionalAttributes())
+            .hasSize(1)
+            .containsEntry(
+                new QName("http://api.vidal.net/-/spec/vidal-api/1.0/", "type", "vidal"),
+                "PRODUCT,PACK"
             );
     }
 

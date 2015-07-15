@@ -19,6 +19,45 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
     private DocumentBuilder builder;
     private JAXBContext context;
 
+    @Override
+    public Element marshal(SimpleElement simpleElement) throws Exception {
+        if (simpleElement == null) {
+            return null;
+        }
+
+        Element element = createElement(simpleElement);
+        addAttributes(element, simpleElement);
+        return element;
+    }
+
+    @Override
+    public SimpleElement unmarshal(Element element) throws Exception {
+        if (element == null) {
+            return null;
+        }
+
+        SimpleElement.Builder result =
+            SimpleElement.builder(element.getLocalName(), element.getTextContent())
+                .withNamespace(namespace(element));
+
+        NamedNodeMap attributes = element.getAttributes();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            Node item = attributes.item(i);
+            result.addAttribute(Attribute.builder(item.getLocalName(), item.getTextContent()).withNamespace(namespace(item)).build());
+        }
+
+        return result.build();
+    }
+
+    private Element createElement(SimpleElement simpleElement) throws Exception {
+        Document document = builder().newDocument();
+        context(simpleElement.getClass())
+            .createMarshaller()
+            .marshal(jaxbElement(simpleElement), document);
+
+        return document.getDocumentElement();
+    }
+
     private DocumentBuilder builder() throws Exception {
         if (builder == null) {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -32,26 +71,6 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
             context = JAXBContext.newInstance(type);
         }
         return context;
-    }
-
-    @Override
-    public Element marshal(SimpleElement simpleElement) throws Exception {
-        if (simpleElement == null) {
-            return null;
-        }
-
-        Element element = createElement(simpleElement);
-        addAttributes(element, simpleElement);
-        return element;
-    }
-
-    private Element createElement(SimpleElement simpleElement) throws Exception {
-        Document document = builder().newDocument();
-        context(simpleElement.getClass())
-            .createMarshaller()
-            .marshal(jaxbElement(simpleElement), document);
-
-        return document.getDocumentElement();
     }
 
     private JAXBElement<String> jaxbElement(SimpleElement simpleElement) {
@@ -91,25 +110,6 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
             return new QName(namespace.uri(), simpleElement.tagName(), namespace.prefix());
         }
         return new QName(simpleElement.tagName());
-    }
-
-    @Override
-    public SimpleElement unmarshal(Element element) throws Exception {
-        if (element == null) {
-            return null;
-        }
-
-        SimpleElement.Builder result =
-            SimpleElement.builder(element.getLocalName(), element.getTextContent())
-            .withNamespace(namespace(element));
-
-        NamedNodeMap attributes = element.getAttributes();
-        for (int i = 0; i < attributes.getLength(); i++) {
-            Node item = attributes.item(i);
-            result.addAttribute(Attribute.builder(item.getLocalName(), item.getTextContent()).withNamespace(namespace(item)).build());
-        }
-
-        return result.build();
     }
 
     private static Namespace namespace(Node item) {
