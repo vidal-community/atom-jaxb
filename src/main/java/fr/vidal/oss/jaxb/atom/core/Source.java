@@ -1,74 +1,61 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Objects;
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+import java.util.*;
+
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static java.util.Collections.unmodifiableCollection;
 
 @XmlType(propOrder = {
-    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "rights", "source", "additionalElements"
+    "title", "subtitle", "id", "updateDate", "contributors", "generator", "icon", "logo", "rights", "authors", "categories", "links"
 })
-public class Entry {
+public class Source {
 
-    @XmlElement(name = "title", required = true)
-    private final String title;
-    @XmlElement(name = "summary")
-    private final Summary summary;
+    @XmlElement(name = "author")
+    private final Collection<Author> authors;
     @XmlElement(name = "category")
     private final Collection<Category> categories;
-    @XmlElement(name = "id", required = true)
+    @XmlElement(name = "link")
+    private final Collection<Link> links;
+    @XmlElement(name = "title")
+    private final String title;
+    @XmlElement(name = "subtitle")
+    private final String subtitle;
+    @XmlElement(name = "id")
     private final String id;
-    @XmlElement(name = "published")
-    private final Date publishedDate;
-    @XmlElement(name = "updated", required = true)
+    @XmlElement(name = "updated")
     private final Date updateDate;
-    @XmlElement(name = "author")
-    private final Author author;
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
-    @XmlElement(name = "content")
-    private final Contents contents;
-    @XmlElement(name = "source")
-    private final Source source;
+    @XmlElement(name = "generator")
+    private final Generator generator;
+    @XmlElement(name = "icon")
+    private final Icon icon;
+    @XmlElement(name = "logo")
+    private final Logo logo;
     @XmlElement(name = "rights")
     private final String rights;
-    @XmlElement(name = "link", required = true)
-    private final Collection<Link> links;
-    @XmlAnyElement
-    private final Collection<SimpleElement> additionalElements;
-    @XmlAnyAttribute
-    private final Map<QName, String> additionalAttributes;
 
     @SuppressWarnings("unused")
-    private Entry() {
+    private Source() {
         this(builder());
     }
 
-    private Entry(Builder builder) {
-        additionalElements = builder.additionalElements;
-        author = builder.author;
+    private Source(Builder builder) {
+        authors = builder.authors;
         contributors = builder.contributors;
         categories = builder.categories;
-        contents = builder.contents;
         rights = builder.rights;
         id = builder.id;
         links = builder.links;
-        summary = builder.summary;
         title = builder.title;
-        publishedDate = builder.publishedDate;
+        subtitle = builder.subtitle;
         updateDate = builder.updateDate;
-        additionalAttributes = index(builder.additionalAttributes);
-        source = builder.source;
+        generator = builder.generator;
+        icon = builder.icon;
+        logo = builder.logo;
     }
 
     public static Builder builder() {
@@ -79,10 +66,6 @@ public class Entry {
         return title;
     }
 
-    public Summary getSummary() {
-        return summary;
-    }
-
     public Collection<Category> getCategories() {
         return unmodifiableCollection(categories);
     }
@@ -91,44 +74,40 @@ public class Entry {
         return id;
     }
 
-    public Date getPublishedDate() {
-        return publishedDate;
-    }
-
     public Date getUpdateDate() {
         return updateDate;
-    }
-
-    public Author getAuthor() {
-        return author;
     }
 
     public Collection<Contributor> getContributors() {
         return unmodifiableCollection(contributors);
     }
 
-    public Contents getContents() {
-        return contents;
-    }
-
     public String getRights() {
         return rights;
-    }
-
-    public Source getSource() {
-        return source;
     }
 
     public Collection<Link> getLinks() {
         return unmodifiableCollection(links);
     }
 
-    public Collection<SimpleElement> getAdditionalElements() {
-        return unmodifiableCollection(additionalElements);
+    public Collection<Author> getAuthors() {
+        return authors;
     }
 
-    public Map<QName, String> getAdditionalAttributes() {
-        return additionalAttributes;
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public Generator getGenerator() {
+        return generator;
+    }
+
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public Logo getLogo() {
+        return logo;
     }
 
     @Override
@@ -144,26 +123,25 @@ public class Entry {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final Entry other = (Entry) obj;
+        final Source other = (Source) obj;
         return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return "Entry{" +
-            "title='" + title + '\'' +
-            ", summary=" + summary +
-            ", category=" + categories +
-            ", id='" + id + '\'' +
-            ", publishedDate=" + publishedDate +
-            ", updateDate=" + updateDate +
-            ", author=" + author +
-            ", contributors=" + contributors +
-            ", contents=" + contents +
-            ", rights=" + rights +
+        return "Source{" +
+            "authors=" + authors +
+            ", categories=" + categories +
             ", links=" + links +
-            ", additionalElements=" + additionalElements +
-            ", source=" + source +
+            ", title='" + title + '\'' +
+            ", subtitle='" + subtitle + '\'' +
+            ", id='" + id + '\'' +
+            ", updateDate=" + updateDate +
+            ", contributors=" + contributors +
+            ", generator=" + generator +
+            ", icon=" + icon +
+            ", logo=" + logo +
+            ", rights='" + rights + '\'' +
             '}';
     }
 
@@ -180,21 +158,24 @@ public class Entry {
     public static class Builder {
 
         private String title;
-        private Summary summary;
         private Collection<Category> categories = new LinkedHashSet<>();
         private String id;
-        private Date publishedDate;
         private Date updateDate;
-        private Author author;
         private Collection<Contributor> contributors = new LinkedHashSet<>();
-        private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
-        private Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
         private String rights;
-        private Source source;
+        private Collection<Author> authors = new LinkedHashSet<>();
+        private String subtitle;
+        private Generator generator;
+        private Icon icon;
+        private Logo logo;
 
         private Builder() {
+        }
+
+        public Builder addAuthor(Author author) {
+            this.authors.add(author);
+            return this;
         }
 
         public Builder withTitle(String title) {
@@ -202,8 +183,8 @@ public class Entry {
             return this;
         }
 
-        public Builder withSummary(Summary summary) {
-            this.summary = summary;
+        public Builder withSubtitle(String subtitle) {
+            this.subtitle = subtitle;
             return this;
         }
 
@@ -217,28 +198,13 @@ public class Entry {
             return this;
         }
 
-        public Builder withPublishedDate(final Date publishedDate){
-            this.publishedDate = publishedDate;
-            return this;
-        }
-
         public Builder withUpdateDate(Date updateDate){
             this.updateDate = updateDate;
             return this;
         }
 
-        public Builder withAuthor(Author author) {
-            this.author = author;
-            return this;
-        }
-
         public Builder addContributor(Contributor contributor) {
             this.contributors.add(contributor);
-            return this;
-        }
-
-        public Builder withContents(Contents contents) {
-            this.contents = contents;
             return this;
         }
 
@@ -252,27 +218,27 @@ public class Entry {
             return this;
         }
 
-        public Builder addSimpleElement(SimpleElement simpleElement) {
-            this.additionalElements.add(simpleElement);
+        public Builder withGenerator(Generator generator) {
+            this.generator = generator;
             return this;
         }
 
-        public Builder addAttribute(Attribute attribute) {
-            this.additionalAttributes.add(attribute);
+        public Builder withIcon(Icon icon) {
+            this.icon = icon;
             return this;
         }
 
-        public Builder withSource(Source source) {
-            this.source = source;
+        public Builder withLogo(Logo logo) {
+            this.logo = logo;
             return this;
         }
 
-        public Entry build() {
+        public Source build() {
             checkState(title != null, "title is mandatory");
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
             checkState(!links.isEmpty(), "links cannot be empty");
-            return new Entry(this);
+            return new Source(this);
         }
     }
 }
