@@ -1,16 +1,17 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.allEntriesContainAuthor;
+import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
 @XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries"})
@@ -185,6 +186,7 @@ public class Feed {
         }
 
         public Feed build() {
+            checkState(author != null || allEntriesContainAuthor(entries), "author is mandatory");
             checkState(title != null, "title is mandatory");
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
