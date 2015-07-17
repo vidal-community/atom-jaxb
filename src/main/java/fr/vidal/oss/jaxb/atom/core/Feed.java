@@ -14,7 +14,7 @@ import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.allEntriesCo
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries", "generator"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries", "generator", "icon"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -37,6 +37,8 @@ public class Feed {
     private final Collection<Entry> entries;
     @XmlElement(name = "generator")
     private final Generator generator;
+    @XmlElement(name = "icon")
+    private final Icon icon;
 
     @SuppressWarnings("unused")
     private Feed() {
@@ -54,6 +56,7 @@ public class Feed {
         additionalElements = builder.additionalElements;
         entries = builder.entries;
         generator = builder.generator;
+        icon = builder.icon;
     }
 
     public static Builder builder() {
@@ -99,6 +102,9 @@ public class Feed {
     public Generator getGenerator() {
         return generator;
     }
+    public Icon getIcon() {
+        return icon;
+    }
 
     @Override
     public int hashCode() {
@@ -130,6 +136,7 @@ public class Feed {
             ", additionalElements=" + additionalElements +
             ", entries=" + entries +
             ", generator=" + generator +
+            ", icon=" + icon +
             '}';
     }
 
@@ -145,6 +152,7 @@ public class Feed {
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
         private Generator generator;
+        private Icon icon;
 
         private Builder() {
         }
@@ -196,6 +204,11 @@ public class Feed {
 
         public Builder withGenerator(Generator generator) {
             this.generator = generator;
+            return this;
+        }
+
+        public Builder withIcon(Icon icon) {
+            this.icon = icon;
             return this;
         }
 
