@@ -14,7 +14,7 @@ import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.allEntriesCo
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries", "generator", "icon", "logo"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "generator", "icon", "logo", "rights", "entries"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -41,6 +41,8 @@ public class Feed {
     private final Icon icon;
     @XmlElement(name = "logo")
     private final Logo logo;
+    @XmlElement(name = "rights")
+    private final String rights;
 
     @SuppressWarnings("unused")
     private Feed() {
@@ -60,6 +62,7 @@ public class Feed {
         generator = builder.generator;
         icon = builder.icon;
         logo = builder.logo;
+        rights = builder.rights;
     }
 
     public static Builder builder() {
@@ -113,6 +116,10 @@ public class Feed {
         return logo;
     }
 
+    public String getRights() {
+        return rights;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -145,6 +152,7 @@ public class Feed {
             ", generator=" + generator +
             ", icon=" + icon +
             ", logo=" + logo +
+            ", rights=" + rights +
             '}';
     }
 
@@ -162,6 +170,7 @@ public class Feed {
         private Generator generator;
         private Icon icon;
         private Logo logo;
+        public String rights;
 
         private Builder() {
         }
@@ -223,6 +232,11 @@ public class Feed {
 
         public Builder withLogo(Logo logo) {
             this.logo = logo;
+            return this;
+        }
+
+        public Builder withRights(String rights) {
+            this.rights = rights;
             return this;
         }
 

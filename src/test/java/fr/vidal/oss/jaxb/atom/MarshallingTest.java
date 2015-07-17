@@ -48,6 +48,7 @@ public class MarshallingTest {
             .withSubtitle("Or is it?")
             .withUpdateDate(new Date(510278400000L))
             .withAuthor(Author.builder("VIDAL").build())
+            .withRights("Copyright & copyleft")
             .addLink(Link.builder("http://example.org/").withRel(self).build());
 
         Entry.Builder builder = Entry.builder()
@@ -74,6 +75,7 @@ public class MarshallingTest {
                         "        <name>VIDAL</name>\n" +
                         "    </author>\n" +
                         "    <updated>1986-03-04T01:00:00Z</updated>\n" +
+                        "    <rights>Copyright &amp; copyleft</rights>\n" +
                         "    <entry>\n" +
                         "        <title>Atom is not what you think</title>\n" +
                         "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
