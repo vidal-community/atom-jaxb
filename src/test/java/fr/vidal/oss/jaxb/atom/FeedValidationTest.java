@@ -54,6 +54,7 @@ public class FeedValidationTest {
             .withTitle("My standard Atom 1.0 feed")
             .withSubtitle("Or is it?")
             .withUpdateDate(new Date(510278400000L))
+            .withGenerator(Generator.builder("http://example.org/generator").build())
             .addLink(Link.builder("http://example.org/").withRel(self).build());
 
         Entry.Builder builder = Entry.builder()
@@ -78,5 +79,4 @@ public class FeedValidationTest {
 
         feedBuilder.build();
     }
-
 }

@@ -14,7 +14,7 @@ import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.allEntriesCo
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries", "generator"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -35,6 +35,8 @@ public class Feed {
     private final Collection<SimpleElement> additionalElements;
     @XmlElement(name = "entry")
     private final Collection<Entry> entries;
+    @XmlElement(name = "generator")
+    private final Generator generator;
 
     @SuppressWarnings("unused")
     private Feed() {
@@ -51,6 +53,7 @@ public class Feed {
         contributors = builder.contributors;
         additionalElements = builder.additionalElements;
         entries = builder.entries;
+        generator = builder.generator;
     }
 
     public static Builder builder() {
@@ -93,6 +96,10 @@ public class Feed {
         return unmodifiableCollection(additionalElements);
     }
 
+    public Generator getGenerator() {
+        return generator;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -122,6 +129,7 @@ public class Feed {
             ", contributors=" + contributors +
             ", additionalElements=" + additionalElements +
             ", entries=" + entries +
+            ", generator=" + generator +
             '}';
     }
 
@@ -136,6 +144,7 @@ public class Feed {
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
+        private Generator generator;
 
         private Builder() {
         }
@@ -182,6 +191,11 @@ public class Feed {
 
         public Builder addEntry(Entry entry) {
             this.entries.add(entry);
+            return this;
+        }
+
+        public Builder withGenerator(Generator generator) {
+            this.generator = generator;
             return this;
         }
 
