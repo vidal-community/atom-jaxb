@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 @XmlType(propOrder = {
-    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
+    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "rights", "additionalElements"
 })
 public class Entry {
 
@@ -38,6 +38,8 @@ public class Entry {
     private final Collection<Contributor> contributors;
     @XmlElement(name = "content")
     private final Contents contents;
+    @XmlElement(name = "rights")
+    private final String rights;
     @XmlElement(name = "link", required = true)
     private final Collection<Link> links;
     @XmlAnyElement
@@ -56,6 +58,7 @@ public class Entry {
         contributors = builder.contributors;
         categories = builder.categories;
         contents = builder.contents;
+        rights = builder.rights;
         id = builder.id;
         links = builder.links;
         summary = builder.summary;
@@ -105,6 +108,10 @@ public class Entry {
         return contents;
     }
 
+    public String getRights() {
+        return rights;
+    }
+
     public Collection<Link> getLinks() {
         return unmodifiableCollection(links);
     }
@@ -146,6 +153,7 @@ public class Entry {
             ", author=" + author +
             ", contributors=" + contributors +
             ", contents=" + contents +
+            ", rights=" + rights +
             ", links=" + links +
             ", additionalElements=" + additionalElements +
             '}';
@@ -174,7 +182,8 @@ public class Entry {
         private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
-        public Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
+        private Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
+        private String rights;
 
         private Builder() {
         }
@@ -221,6 +230,11 @@ public class Entry {
 
         public Builder withContents(Contents contents) {
             this.contents = contents;
+            return this;
+        }
+
+        public Builder withRights(String rights) {
+            this.rights = rights;
             return this;
         }
 
