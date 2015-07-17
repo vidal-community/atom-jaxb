@@ -15,6 +15,21 @@ public class FeedValidationTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
+    public void feed_must_contain_exactly_one_id() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("id is mandatory");
+
+        Feed.Builder feedBuilder = Feed.builder()
+            .withTitle("My standard Atom 1.0 feed")
+            .withSubtitle("Or is it?")
+            .withUpdateDate(new Date(510278400000L))
+            .withAuthor(Author.builder("VIDAL").build())
+            .addLink(Link.builder("http://example.org/").withRel(self).build());
+
+        feedBuilder.build();
+    }
+
+    @Test
     public void feed_must_contain_at_least_one_author_if_no_entries_with_author() {
         thrown.expect(IllegalStateException.class);
         thrown.expectMessage("author is mandatory");
