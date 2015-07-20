@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 
 import java.util.Date;
 
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
 import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
 
 public class FeedValidationTest {
@@ -79,4 +80,24 @@ public class FeedValidationTest {
 
         feedBuilder.build();
     }
+
+    @Test
+    public void feed_must_not_contain_more_than_one_link_with_the_same_rel_alternate_and_same_hreflang() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("links must not contain more than one link with the same rel `alternate` and same hreflang");
+
+        Feed.Builder feedBuilder = Feed.builder()
+            .withId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
+            .withTitle("My standard Atom 1.0 feed")
+            .withSubtitle("Or is it?")
+            .withUpdateDate(new Date(510278400000L))
+            .withAuthor(Author.builder("VIDAL").build())
+            .addLink(Link.builder("http://example.org/").withRel(alternate).withHreflang("fr").build())
+            .addLink(Link.builder("http://example2.org/").withRel(alternate).withHreflang("es").build())
+            .addLink(Link.builder("http://example3.org/").withRel(alternate).withHreflang("fr").build());
+
+        feedBuilder.build();
+    }
+
+
 }

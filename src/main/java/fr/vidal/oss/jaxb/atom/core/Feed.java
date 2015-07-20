@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.allEntriesContainAuthor;
+import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.noDuplicatedLinks;
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
@@ -246,6 +247,7 @@ public class Feed {
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
             checkState(!links.isEmpty(), "links cannot be empty");
+            checkState(noDuplicatedLinks(links), "links must not contain more than one link with the same rel `alternate` and same hreflang");
             return new Feed(this);
         }
     }
