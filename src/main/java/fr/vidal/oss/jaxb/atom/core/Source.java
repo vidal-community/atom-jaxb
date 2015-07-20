@@ -1,12 +1,16 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
-import java.util.*;
-
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
 
 @XmlType(propOrder = {
     "title", "subtitle", "id", "updateDate", "contributors", "generator", "icon", "logo", "rights", "authors", "categories", "links"
@@ -234,10 +238,6 @@ public class Source {
         }
 
         public Source build() {
-            checkState(title != null, "title is mandatory");
-            checkState(id != null, "id is mandatory");
-            checkState(updateDate != null, "updateDate is mandatory");
-            checkState(!links.isEmpty(), "links cannot be empty");
             return new Source(this);
         }
     }

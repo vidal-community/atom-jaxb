@@ -25,7 +25,6 @@ import java.util.TimeZone;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 public class MarshallingTest {

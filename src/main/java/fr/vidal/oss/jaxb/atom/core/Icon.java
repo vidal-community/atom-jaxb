@@ -1,7 +1,6 @@
 package fr.vidal.oss.jaxb.atom.core;
 
 import javax.xml.bind.annotation.XmlElement;
-import java.util.Objects;
 
 public class Icon {
 
