@@ -10,17 +10,20 @@ public class Contents {
 
     @XmlAttribute(name = "type")
     private final ContentType type;
+    @XmlAttribute(name = "src")
+    private final String src;
     @XmlValue
     private final String contents;
 
     //jaxb
     private Contents() {
-        this(null, null);
+        this(null, null, null);
     }
 
-    private Contents(ContentType type, String contents) {
+    private Contents(ContentType type, String contents, String src) {
         this.type = type;
         this.contents = contents;
+        this.src = src;
     }
 
     public static Builder builder() {
@@ -35,9 +38,13 @@ public class Contents {
         return contents;
     }
 
+    public String getSrc() {
+        return src;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(type, contents);
+        return Objects.hash(type, contents, src);
     }
 
     @Override
@@ -50,13 +57,15 @@ public class Contents {
         }
         final Contents other = (Contents) obj;
         return Objects.equals(this.type, other.type)
-            && Objects.equals(this.contents, other.contents);
+            && Objects.equals(this.contents, other.contents)
+            && Objects.equals(this.src, other.src);
     }
 
     @Override
     public String toString() {
         return "Contents{" +
             "type=" + type +
+            ",src=" + src +
             ", contents='" + contents + '\'' +
             '}';
     }
@@ -64,6 +73,7 @@ public class Contents {
     public static class Builder {
 
         private ContentType type;
+        private String src;
         private String contents;
 
         private Builder() {
@@ -74,13 +84,18 @@ public class Contents {
             return this;
         }
 
+        public Builder withSrc(String src) {
+            this.src = src;
+            return this;
+        }
+
         public Builder withContents(String contents) {
             this.contents = contents;
             return this;
         }
 
         public Contents build() {
-            return new Contents(type, contents);
+            return new Contents(type, contents, src);
         }
     }
 }

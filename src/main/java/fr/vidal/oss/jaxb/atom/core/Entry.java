@@ -1,5 +1,7 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import fr.vidal.oss.jaxb.atom.core.validation.EntryValidation;
+
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -272,6 +274,7 @@ public class Entry {
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
             checkState(!links.isEmpty(), "links cannot be empty");
+            checkState(EntryValidation.summaryIsMandatory(contents, summary), "Summary is mandatory");
             return new Entry(this);
         }
     }

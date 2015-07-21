@@ -137,5 +137,60 @@ public class FeedValidationTest {
         feedBuilder.build();
     }
 
+    @Test
+    public void summary_is_mandatory_if_contents_has_src() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Summary is mandatory");
 
+        Feed.Builder feedBuilder = Feed.builder()
+            .withId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
+            .withTitle("My standard Atom 1.0 feed")
+            .withSubtitle("Or is it?")
+            .withUpdateDate(new Date(510278400000L))
+            .addAuthor(Author.builder("VIDAL").build())
+            .withGenerator(Generator.builder("http://example.org/generator").build())
+            .addLink(Link.builder("http://example.org/").withRel(self).build());
+
+        Entry.Builder builder = Entry.builder()
+            .addLink(Link.builder("http://example.org/2003/12/13/atom03").build())
+            .withTitle("Atom is not what you think")
+            .withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
+            .withPublishedDate(new Date(223948800000L))
+            .withUpdateDate(new Date(512697600000L))
+            .withSource(Source.builder().addAuthor(Author.builder("Vidal CHTI").build()).build())
+            .withContents(Contents.builder().withSrc("www").build());
+
+        feedBuilder.addEntry(builder.build());
+
+        feedBuilder.build();
+    }
+
+
+    @Test
+    public void summary_is_mandatory_if_content_type_is_encoded() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("Summary is mandatory");
+
+        Feed.Builder feedBuilder = Feed.builder()
+            .withId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
+            .withTitle("My standard Atom 1.0 feed")
+            .withSubtitle("Or is it?")
+            .withUpdateDate(new Date(510278400000L))
+            .addAuthor(Author.builder("VIDAL").build())
+            .withGenerator(Generator.builder("http://example.org/generator").build())
+            .addLink(Link.builder("http://example.org/").withRel(self).build());
+
+        Entry.Builder builder = Entry.builder()
+            .addLink(Link.builder("http://example.org/2003/12/13/atom03").build())
+            .withTitle("Atom is not what you think")
+            .withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
+            .withPublishedDate(new Date(223948800000L))
+            .withUpdateDate(new Date(512697600000L))
+            .withSource(Source.builder().addAuthor(Author.builder("Vidal CHTI").build()).build())
+            .withContents(Contents.builder().withType(ContentType.builder("MIMEREG").build()).build());
+
+        feedBuilder.addEntry(builder.build());
+
+        feedBuilder.build();
+    }
 }
