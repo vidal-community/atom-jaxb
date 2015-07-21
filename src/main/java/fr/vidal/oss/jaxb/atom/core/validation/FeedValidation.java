@@ -14,7 +14,7 @@ public class FeedValidation {
             return false;
         }
         for (Entry entry : entries) {
-            if (entry.getAuthor() == null) {
+            if(!EntryValidation.entryOrSourceContainsAtLeastAnAuthor(entry)) {
                 return false;
             }
         }

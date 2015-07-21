@@ -81,6 +81,44 @@ public class FeedValidationTest {
         feedBuilder.build();
     }
 
+
+    @Test
+    public void all_entries_or_source_entries_must_contain_at_least_one_author_if_no_author_in_feed() {
+        thrown.expect(IllegalStateException.class);
+        thrown.expectMessage("author is mandatory");
+
+        Feed.Builder feedBuilder = Feed.builder()
+            .withId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
+            .withTitle("My standard Atom 1.0 feed")
+            .withSubtitle("Or is it?")
+            .withUpdateDate(new Date(510278400000L))
+            .withGenerator(Generator.builder("http://example.org/generator").build())
+            .addLink(Link.builder("http://example.org/").withRel(self).build());
+
+        Entry.Builder builder = Entry.builder()
+            .addLink(Link.builder("http://example.org/2003/12/13/atom03").build())
+            .withTitle("Atom is not what you think")
+            .withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
+            .withPublishedDate(new Date(223948800000L))
+            .withUpdateDate(new Date(512697600000L))
+            .withSource(Source.builder().addAuthor(Author.builder("Vidal CHTI").build()).build())
+            .withSummary(Summary.builder().withValue("April's fool!").build());
+
+        feedBuilder.addEntry(builder.build());
+
+        builder = Entry.builder()
+            .addLink(Link.builder("http://example.org/2004/12/13/atom03").build())
+            .withTitle("And what should I think?")
+            .withId("urn:uuid:99999999-9999-9999-8999-999999999999")
+            .withPublishedDate(new Date(223948800000L))
+            .withUpdateDate(new Date(512697600001L))
+            .withSummary(Summary.builder().withValue("No jokes please!").build());
+
+        feedBuilder.addEntry(builder.build());
+
+        feedBuilder.build();
+    }
+
     @Test
     public void feed_must_not_contain_more_than_one_link_with_the_same_rel_alternate_and_same_hreflang() {
         thrown.expect(IllegalStateException.class);

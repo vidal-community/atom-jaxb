@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 @XmlType(propOrder = {
-    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "rights", "source", "additionalElements"
+    "title", "links", "categories", "authors", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "rights", "source", "additionalElements"
 })
 public class Entry {
 
@@ -33,7 +33,7 @@ public class Entry {
     @XmlElement(name = "updated", required = true)
     private final Date updateDate;
     @XmlElement(name = "author")
-    private final Author author;
+    private final Collection<Author> authors;
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlElement(name = "content")
@@ -56,7 +56,7 @@ public class Entry {
 
     private Entry(Builder builder) {
         additionalElements = builder.additionalElements;
-        author = builder.author;
+        authors = builder.authors;
         contributors = builder.contributors;
         categories = builder.categories;
         contents = builder.contents;
@@ -99,8 +99,8 @@ public class Entry {
         return updateDate;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Collection<Author> getAuthors() {
+        return authors;
     }
 
     public Collection<Contributor> getContributors() {
@@ -157,7 +157,7 @@ public class Entry {
             ", id='" + id + '\'' +
             ", publishedDate=" + publishedDate +
             ", updateDate=" + updateDate +
-            ", author=" + author +
+            ", authors=" + authors +
             ", contributors=" + contributors +
             ", contents=" + contents +
             ", rights=" + rights +
@@ -185,7 +185,7 @@ public class Entry {
         private String id;
         private Date publishedDate;
         private Date updateDate;
-        private Author author;
+        private Collection<Author> authors = new LinkedHashSet<>();
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<>();
@@ -227,8 +227,8 @@ public class Entry {
             return this;
         }
 
-        public Builder withAuthor(Author author) {
-            this.author = author;
+        public Builder addAuthor(Author author) {
+            this.authors.add(author);
             return this;
         }
 

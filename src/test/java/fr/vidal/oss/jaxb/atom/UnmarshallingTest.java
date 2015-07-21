@@ -176,7 +176,7 @@ public class UnmarshallingTest {
                     .withType("application/atom+xml")
                     .build())
             .hasCategories(Category.builder("PRODUCT").build())
-            .hasAuthor(Author.builder("VIDAL").build())
+            .hasAuthors(Author.builder("VIDAL").build())
             .hasSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
             .hasAdditionalElements(
                 SimpleElement.builder("id", "15070")
