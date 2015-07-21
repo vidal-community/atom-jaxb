@@ -15,7 +15,7 @@ import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.noDuplicated
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "generator", "icon", "logo", "rights", "entries"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "authors", "contributors", "updateDate", "additionalElements", "generator", "icon", "logo", "rights", "entries"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -29,7 +29,7 @@ public class Feed {
     @XmlElement(name = "updated", required = true)
     private final Date updateDate;
     @XmlElement(name = "author")
-    private final Author author;
+    private final Collection<Author> authors;
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlAnyElement
@@ -56,7 +56,7 @@ public class Feed {
         subtitle = builder.subtitle;
         id = builder.id;
         updateDate = builder.updateDate;
-        author = builder.author;
+        authors = builder.authors;
         contributors = builder.contributors;
         additionalElements = builder.additionalElements;
         entries = builder.entries;
@@ -86,8 +86,8 @@ public class Feed {
         return updateDate;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Collection<Author> getAuthors() {
+        return authors;
     }
 
     public Collection<Contributor> getContributors() {
@@ -146,7 +146,7 @@ public class Feed {
             ", subtitle='" + subtitle + '\'' +
             ", id='" + id + '\'' +
             ", updateDate=" + updateDate +
-            ", author=" + author +
+            ", authors=" + authors +
             ", contributors=" + contributors +
             ", additionalElements=" + additionalElements +
             ", entries=" + entries +
@@ -163,7 +163,7 @@ public class Feed {
         private String subtitle;
         private String id;
         private Date updateDate;
-        private Author author;
+        private Collection<Author> authors = new LinkedHashSet<>();
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
@@ -191,8 +191,8 @@ public class Feed {
             return this;
         }
 
-        public Builder withAuthor(Author author) {
-            this.author = author;
+        public Builder addAuthor(Author author) {
+            this.authors.add(author);
             return this;
         }
 
@@ -242,7 +242,7 @@ public class Feed {
         }
 
         public Feed build() {
-            checkState(author != null || allEntriesContainAuthor(entries), "author is mandatory");
+            checkState(!authors.isEmpty() || allEntriesContainAuthor(entries), "author is mandatory");
             checkState(title != null, "title is mandatory");
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");

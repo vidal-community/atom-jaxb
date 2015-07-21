@@ -72,7 +72,7 @@ public class UnmarshallingTest {
                     .withRel(LinkRel.self)
                     .build())
             .hasId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
-            .hasAuthor(Author.builder("VIDAL").build())
+            .hasAuthors(Author.builder("VIDAL").build())
             .hasUpdateDate(new Date(510278400000L))
             .hasEntries(entry("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a"));
 
@@ -92,6 +92,12 @@ public class UnmarshallingTest {
 
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+            "        <author>\n" +
+            "            <name>VIDAL TOULOUNAIN</name>\n" +
+            "        </author>\n" +
+            "        <author>\n" +
+            "            <name>VIDAL CHTI</name>\n" +
+            "        </author>\n" +
             "    <link\n" +
             "        href=\"/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25\"\n" +
             "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
@@ -123,6 +129,7 @@ public class UnmarshallingTest {
         Feed result = (Feed) unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
 
         assertThat(result)
+            .hasAuthors(Author.builder("VIDAL TOULOUNAIN").build(), Author.builder("VIDAL CHTI").build())
             .hasLinks(
                 Link.builder("/rest/api/products?q=sintrom&start-page=1&page-size=25")
                     .withRel(LinkRel.self)

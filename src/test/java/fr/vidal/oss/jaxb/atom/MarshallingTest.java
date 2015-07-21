@@ -46,7 +46,7 @@ public class MarshallingTest {
             .withTitle("My standard Atom 1.0 feed")
             .withSubtitle("Or is it?")
             .withUpdateDate(new Date(510278400000L))
-            .withAuthor(Author.builder("VIDAL").build())
+            .addAuthor(Author.builder("VIDAL").build())
             .withRights("Copyright & copyleft")
             .addLink(Link.builder("http://example.org/").withRel(self).build());
 

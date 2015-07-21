@@ -24,7 +24,7 @@ public class FeedValidationTest {
             .withTitle("My standard Atom 1.0 feed")
             .withSubtitle("Or is it?")
             .withUpdateDate(new Date(510278400000L))
-            .withAuthor(Author.builder("VIDAL").build())
+            .addAuthor(Author.builder("VIDAL").build())
             .addLink(Link.builder("http://example.org/").withRel(self).build());
 
         feedBuilder.build();
@@ -91,7 +91,7 @@ public class FeedValidationTest {
             .withTitle("My standard Atom 1.0 feed")
             .withSubtitle("Or is it?")
             .withUpdateDate(new Date(510278400000L))
-            .withAuthor(Author.builder("VIDAL").build())
+            .addAuthor(Author.builder("VIDAL").build())
             .addLink(Link.builder("http://example.org/").withRel(alternate).withHreflang("fr").build())
             .addLink(Link.builder("http://example2.org/").withRel(alternate).withHreflang("es").build())
             .addLink(Link.builder("http://example3.org/").withRel(alternate).withHreflang("fr").build());
