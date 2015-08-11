@@ -120,7 +120,21 @@
             </plugin>
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>package-assertj-assertions</id>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <include>fr/vidal/oss/jaxb/atom/core/**</include>
+                                <include>fr/vidal/oss/jaxb/atom/*Assertions.class</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
