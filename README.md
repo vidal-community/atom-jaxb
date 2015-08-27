@@ -50,6 +50,6 @@ Atom JAXB is not designed with complex XML tree in mind.
 Instead, it emphasizes:
 
    - flat structures (favour links between entries over nested entry elements)
-   - simple text `<content>`
+   - simple textual `<content>` (plain text or HTML)
 
 
