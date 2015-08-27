@@ -5,8 +5,8 @@ feed marshalling/unmarshalling.
 
 ## Build status
 
-[![Build Status](https://travis-ci.org/softwarevidal/atom-jaxb.png)](https://travis-ci.org/softwarevidal/atom-jaxb)
-[![Coverage Status](https://coveralls.io/repos/softwarevidal/atom-jaxb/badge.svg?branch=master)](https://coveralls.io/r/softwarevidal/atom-jaxb?branch=master)
+[![Build Status](https://travis-ci.org/vidal-community/atom-jaxb.png)](https://travis-ci.org/vidal-community/atom-jaxb)
+[![Coverage Status](https://coveralls.io/repos/vidal-community/atom-jaxb/badge.svg?branch=master)](https://coveralls.io/r/vidal-community/atom-jaxb?branch=master)
 
 ## What it does
 
