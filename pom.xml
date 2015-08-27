@@ -9,7 +9,7 @@
 
     <groupId>fr.vidal.oss</groupId>
     <artifactId>atom-jaxb</artifactId>
-    <version>0.2-JDK6-SNAPSHOT</version>
+    <version>0.2-JDK6</version>
     <packaging>jar</packaging>
 
     <name>atom-jaxb</name>
@@ -209,7 +209,7 @@
         <url>https://github.com/softwarevidal/atom-jaxb</url>
         <connection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</connection>
         <developerConnection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v0.2-JDK6</tag>
     </scm>
 
     <distributionManagement>
