@@ -1,15 +1,19 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Objects;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
+import javax.xml.namespace.QName;
 
 @XmlType(propOrder = {
     "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
@@ -38,6 +42,8 @@ public class Entry {
     private final Collection<Link> links;
     @XmlAnyElement
     private final Collection<SimpleElement> additionalElements;
+    @XmlAnyAttribute
+    private final Map<QName, String> additionalAttributes;
 
     @SuppressWarnings("unused")
     private Entry() {
@@ -56,6 +62,7 @@ public class Entry {
         title = builder.title;
         publishedDate = builder.publishedDate;
         updateDate = builder.updateDate;
+        additionalAttributes = index(builder.additionalAttributes);
     }
 
     public static Builder builder() {
@@ -106,6 +113,10 @@ public class Entry {
         return unmodifiableCollection(additionalElements);
     }
 
+    public Map<QName, String> getAdditionalAttributes() {
+        return additionalAttributes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -140,6 +151,16 @@ public class Entry {
             '}';
     }
 
+    private static final Map<QName, String> index(Collection<Attribute> additionalAttributes) {
+        Map<QName, String> attributes = new HashMap<QName, String>(additionalAttributes.size());
+        for (Attribute attribute : additionalAttributes) {
+            Namespace namespace = attribute.getNamespace();
+            QName name = new QName(namespace.uri(), attribute.getName(), namespace.prefix());
+            attributes.put(name, attribute.getValue());
+        }
+        return attributes;
+    }
+
     public static class Builder {
 
         private String title;
@@ -153,6 +174,7 @@ public class Entry {
         private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<Link>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<SimpleElement>();
+        private Collection<Attribute> additionalAttributes = new LinkedHashSet<Attribute>();
 
         private Builder() {
         }
@@ -209,6 +231,11 @@ public class Entry {
 
         public Builder addSimpleElement(SimpleElement simpleElement) {
             this.additionalElements.add(simpleElement);
+            return this;
+        }
+
+        public Builder addAttribute(Attribute attribute) {
+            this.additionalAttributes.add(attribute);
             return this;
         }
 
