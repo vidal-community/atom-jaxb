@@ -43,7 +43,7 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
         NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             Node item = attributes.item(i);
-            result.addAttribute(Attribute.builder(item.getLocalName(), item.getTextContent()).withNamespace(namespace(item)).build());
+            result.addAttribute(Attribute.builder(item.getLocalName(), item.getTextContent()).withNamespace(namespace(item.getNamespaceURI() != null ? item : element)).build());
         }
 
         return result.build();
