@@ -1,5 +1,15 @@
 # Contributing to atom-jaxb
 
+## Branch & version
+
+Please make sure you include the branch name in the project
+version, as SNAPSHOTs are automatically deployed by Travis CI
+at every push.
+
+Let's say `master` is at `2.1-SNAPSHOT`.
+If you are working on a new branch `new-feature`, please change the
+project version  to `2.1-new-feature-SNAPSHOT`.
+
 ## Source formatting
 
 Please make sure [editorconfig](http://editorconfig.org/) is 
