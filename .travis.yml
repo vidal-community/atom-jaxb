@@ -12,4 +12,4 @@ install:
 script: "mvn verify -t etc/toolchains.xml"
 after_success:
 - mvn test jacoco:report coveralls:report -t etc/toolchains.xml
-- "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'java6-compliant' ] && mvn clean deploy -DskipTests --settings ./deploy-settings.xml -t etc/toolchains.xml"
+- "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'java6-compliant' ] && mvn clean deploy -DskipTests --settings ./etc/deploy-settings.xml -t etc/toolchains.xml"
