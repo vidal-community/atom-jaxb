@@ -1,13 +1,15 @@
 sudo: false
 language: java
-jdk:
-- openjdk7
-- oraclejdk7
-- oraclejdk8
+before_install:
+  - jdk_switcher use openjdk6
+  - sed -i "s|\[JDK6\]|$JAVA_HOME|g" etc/toolchains.xml
+  - jdk_switcher use oraclejdk8
 branches:
   except:
     - /.*wip.*/i
-script: "mvn -T4 clean package"
+install:
+  - mvn install -DskipTests=true -B -V -t etc/toolchains.xml
+script: "mvn verify -t etc/toolchains.xml"
 after_success:
-- mvn clean test jacoco:report coveralls:report 
-- "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'master' ] && mvn clean deploy -DskipTests --settings ./deploy-settings.xml"
+- mvn test jacoco:report coveralls:report -t etc/toolchains.xml
+- "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'java6-compliant' ] && mvn clean deploy -DskipTests --settings ./deploy-settings.xml -t etc/toolchains.xml"
