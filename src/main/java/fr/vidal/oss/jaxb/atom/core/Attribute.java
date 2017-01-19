@@ -1,7 +1,5 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import java.util.Objects;
-
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 
 public class Attribute {

@@ -1,11 +1,10 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 /**
  * Definition of a non-nested element.

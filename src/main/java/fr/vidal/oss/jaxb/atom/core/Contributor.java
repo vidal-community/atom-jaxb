@@ -2,7 +2,6 @@ package fr.vidal.oss.jaxb.atom.core;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 
 public class Contributor {
@@ -35,21 +34,21 @@ public class Contributor {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(name, email);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Contributor that = (Contributor) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        return email != null ? email.equals(that.email) : that.email == null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Contributor other = (Contributor) obj;
-        return Objects.equals(this.name, other.name)
-            && Objects.equals(this.email, other.email);
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
     }
 
     @Override
