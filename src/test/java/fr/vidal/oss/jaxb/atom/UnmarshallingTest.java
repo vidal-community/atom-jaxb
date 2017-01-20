@@ -114,6 +114,7 @@ public class UnmarshallingTest {
             "        <id>vidal://product/15070</id>\n" +
             "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
             "        <vidal:id xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">15070</vidal:id>\n" +
+			"        <vidal:textJustificationFlag xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\" name=\"ORANGE\">Codage à vérifier</vidal:textJustificationFlag>\n" +
             "    </entry>\n" +
             "    <entry>\n" +
             "        <id>vidal://product/42</id>\n" +
@@ -176,6 +177,12 @@ public class UnmarshallingTest {
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
                     .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
+                    .build(),
+                SimpleElement.builder("textJustificationFlag", "Codage à vérifier")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .addAttribute(Attribute.builder("name", "ORANGE").withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build()).build())
+                    .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
+                    .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
                     .build()
             );
     }
@@ -203,6 +210,7 @@ public class UnmarshallingTest {
             "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
             "        <content/>\n" +
             "        <vidal:id>15070</vidal:id>\n" +
+            "        <vidal:textJustificationFlag name=\"ORANGE\">Codage à vérifier</vidal:textJustificationFlag>\n" +
             "    </entry>\n" +
             "</feed>";
 
@@ -217,6 +225,19 @@ public class UnmarshallingTest {
                 new QName("http://api.vidal.net/-/spec/vidal-api/1.0/", "type", "vidal"),
                 "PRODUCT,PACK"
             );
+		assertThat(entry).hasAdditionalElements(
+            SimpleElement.builder("id", "15070")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
+                    .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
+                .build(),
+            SimpleElement.builder("textJustificationFlag", "Codage à vérifier")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .addAttribute(Attribute.builder("name", "ORANGE").withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build()).build())
+                    .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
+                    .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
+                .build()
+        );
     }
 
     private static Entry first(Collection<Entry> entries) {
