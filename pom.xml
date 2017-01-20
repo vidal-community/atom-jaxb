@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>atom-jaxb</name>
-    <url>https://github.com/softwarevidal/atom-jaxb</url>
+    <url>https://github.com/vidal-community/atom-jaxb</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -224,9 +224,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/softwarevidal/atom-jaxb</url>
-        <connection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</connection>
-        <developerConnection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</developerConnection>
+        <url>https://github.com/vidal-community/atom-jaxb</url>
+        <connection>scm:git:git@github.com:vidal-community/atom-jaxb.git</connection>
+        <developerConnection>scm:git:git@github.com:vidal-community/atom-jaxb.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
