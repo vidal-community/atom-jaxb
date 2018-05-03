@@ -1,31 +1,21 @@
 package fr.vidal.oss.jaxb.atom;
 
-import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
-import fr.vidal.oss.jaxb.atom.core.Attribute;
-import fr.vidal.oss.jaxb.atom.core.Author;
-import fr.vidal.oss.jaxb.atom.core.Category;
-import fr.vidal.oss.jaxb.atom.core.Entry;
-import fr.vidal.oss.jaxb.atom.core.Feed;
-import fr.vidal.oss.jaxb.atom.core.Link;
-import fr.vidal.oss.jaxb.atom.core.Namespace;
-import fr.vidal.oss.jaxb.atom.core.SimpleElement;
-import fr.vidal.oss.jaxb.atom.core.Summary;
+import fr.vidal.oss.jaxb.atom.core.*;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.related;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
-import static java.util.TimeZone.getTimeZone;
-import static org.assertj.core.api.Assertions.assertThat;
-
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.TimeZone;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import org.junit.Before;
-import org.junit.Test;
+
+import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.*;
+import static java.util.TimeZone.getTimeZone;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MarshallingTest {
 
@@ -101,16 +91,16 @@ public class MarshallingTest {
                     .build()
             )
             .addSimpleElement(SimpleElement.builder("itemsPerPage", String.valueOf(25))
-                    .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
-                    .build()
+                .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
+                .build()
             )
             .addSimpleElement(SimpleElement.builder("totalResults", String.valueOf(2))
-                    .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
-                    .build()
+                .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
+                .build()
             )
             .addSimpleElement(SimpleElement.builder("startIndex", String.valueOf(1))
-                    .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
-                    .build()
+                .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
+                .build()
             )
             .addEntry(
                 Entry.builder()
@@ -143,8 +133,8 @@ public class MarshallingTest {
                     .withUpdateDate(new Date(1329350400000L))
                     .withSummary(Summary.builder().withValue("SNAKE OIL 1 mg").withType("text").build())
                     .addSimpleElement(SimpleElement.builder("id", String.valueOf(42))
-                            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-                            .build()
+                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                        .build()
                     ).build()
             );
 
@@ -224,10 +214,10 @@ public class MarshallingTest {
                     .withId("vidal://product/15070")
                     .withUpdateDate(new Date(1329350400000L))
                     .addAttribute(Attribute.builder("type", "PRODUCT,PACK")
-                            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
-                                .withPrefix("vidal")
-                                .build())
-                            .build()
+                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
+                            .withPrefix("vidal")
+                            .build())
+                        .build()
                     )
                     .withSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
                     .addSimpleElement(
@@ -265,6 +255,75 @@ public class MarshallingTest {
                     "        <vidal:id>15070</vidal:id>\n" +
                     "    </entry>\n" +
                     "</feed>");
+        }
+    }
+
+    @Test
+    public void marshalls_custom_structured_element_with_attribute() throws IOException, JAXBException {
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addSimpleElement(
+                StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
+                        .withPrefix("vidal")
+                        .build())
+                    .build())
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:structured vidal:type=\"PRODUCT,PACK\" xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\"/>\n" +
+                    "</feed>\n");
+        }
+    }
+
+    @Test
+    public void marshalls_custom_structured_element_with_child() throws IOException, JAXBException {
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addSimpleElement(
+                StructuredElement.builder("structured",
+                    SimpleElement.builder("child", "Child content")
+                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                        .build())
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+                    "            <vidal:child>Child content</vidal:child>\n" +
+                    "    </vidal:structured>\n" +
+                    "</feed>\n");
         }
     }
 }

@@ -11,7 +11,7 @@ import static java.util.Collections.unmodifiableCollection;
  * Definition of a non-nested element.
  * This allows only text nodes as values in the marshalled output.
  */
-public class SimpleElement {
+public class SimpleElement implements AdditionalElement {
 
     private Namespace namespace;
     private String tagName;
@@ -19,7 +19,8 @@ public class SimpleElement {
     private Collection<Attribute> attributes;
 
     @SuppressWarnings("unused") // jaxb
-    private SimpleElement() {}
+    private SimpleElement() {
+    }
 
     private SimpleElement(Builder builder) {
         this.namespace = builder.namespace;

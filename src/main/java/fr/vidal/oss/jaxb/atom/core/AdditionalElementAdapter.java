@@ -14,19 +14,20 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import static java.lang.String.format;
 
-public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
+
+public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElement> {
 
     private DocumentBuilder builder;
     private JAXBContext context;
 
     @Override
-    public Element marshal(SimpleElement simpleElement) throws Exception {
-        if (simpleElement == null) {
+    public Element marshal(AdditionalElement additionalElement) throws Exception {
+        if (additionalElement == null) {
             return null;
         }
 
-        Element element = createElement(simpleElement);
-        addAttributes(element, simpleElement);
+        Element element = createElement(additionalElement);
+        addAttributes(element, additionalElement);
         return element;
     }
 
@@ -49,11 +50,11 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
         return result.build();
     }
 
-    private Element createElement(SimpleElement simpleElement) throws Exception {
+    private Element createElement(AdditionalElement additionalElement) throws Exception {
         Document document = builder().newDocument();
-        context(simpleElement.getClass())
+        context(additionalElement.getClass())
             .createMarshaller()
-            .marshal(jaxbElement(simpleElement), document);
+            .marshal(jaxbElement(additionalElement), document);
 
         return document.getDocumentElement();
     }
@@ -73,7 +74,7 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
         return context;
     }
 
-    private JAXBElement<String> jaxbElement(SimpleElement simpleElement) {
+    private JAXBElement<String> jaxbElement(AdditionalElement simpleElement) {
         return new JAXBElement<>(
             qualifiedName(simpleElement),
             String.class,
@@ -81,8 +82,8 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
         );
     }
 
-    private void addAttributes(Element element, SimpleElement simpleElement) {
-        for (Attribute attribute : simpleElement.attributes()) {
+    private void addAttributes(Element element, AdditionalElement additionalElement) {
+        for (Attribute attribute : additionalElement.attributes()) {
             addAttribute(element, attribute);
         }
     }
@@ -104,7 +105,7 @@ public class SimpleElementAdapter extends XmlAdapter<Element, SimpleElement> {
         );
     }
 
-    private QName qualifiedName(SimpleElement simpleElement) {
+    private QName qualifiedName(AdditionalElement simpleElement) {
         Namespace namespace = simpleElement.namespace();
         if (namespace != null) {
             return new QName(namespace.uri(), simpleElement.tagName(), namespace.prefix());

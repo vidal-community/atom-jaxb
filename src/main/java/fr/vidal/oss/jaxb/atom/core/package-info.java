@@ -2,7 +2,7 @@
 @XmlAccessorType(XmlAccessType.NONE) // explicit FTW ;)
 @XmlJavaTypeAdapters({
         @XmlJavaTypeAdapter(value = DateAdapter.class, type = Date.class),
-        @XmlJavaTypeAdapter(value = SimpleElementAdapter.class, type = SimpleElement.class)
+        @XmlJavaTypeAdapter(value = AdditionalElementAdapter.class, type = AdditionalElement.class)
 })
 package fr.vidal.oss.jaxb.atom.core;
 
