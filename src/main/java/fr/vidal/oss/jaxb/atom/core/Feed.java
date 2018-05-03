@@ -1,19 +1,21 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.allEntriesContainAuthor;
+import static fr.vidal.oss.jaxb.atom.core.validation.FeedValidation.noDuplicatedLinks;
+import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "authors", "contributors", "updateDate", "additionalElements", "generator", "icon", "logo", "rights", "entries"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -27,13 +29,21 @@ public class Feed {
     @XmlElement(name = "updated", required = true)
     private final Date updateDate;
     @XmlElement(name = "author")
-    private final Author author;
+    private final Collection<Author> authors;
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlAnyElement
     private final Collection<SimpleElement> additionalElements;
     @XmlElement(name = "entry")
     private final Collection<Entry> entries;
+    @XmlElement(name = "generator")
+    private final Generator generator;
+    @XmlElement(name = "icon")
+    private final Icon icon;
+    @XmlElement(name = "logo")
+    private final Logo logo;
+    @XmlElement(name = "rights")
+    private final String rights;
 
     @SuppressWarnings("unused")
     private Feed() {
@@ -46,10 +56,14 @@ public class Feed {
         subtitle = builder.subtitle;
         id = builder.id;
         updateDate = builder.updateDate;
-        author = builder.author;
+        authors = builder.authors;
         contributors = builder.contributors;
         additionalElements = builder.additionalElements;
         entries = builder.entries;
+        generator = builder.generator;
+        icon = builder.icon;
+        logo = builder.logo;
+        rights = builder.rights;
     }
 
     public static Builder builder() {
@@ -72,8 +86,8 @@ public class Feed {
         return updateDate;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Collection<Author> getAuthors() {
+        return authors;
     }
 
     public Collection<Contributor> getContributors() {
@@ -90,6 +104,21 @@ public class Feed {
 
     public Collection<SimpleElement> getAdditionalElements() {
         return unmodifiableCollection(additionalElements);
+    }
+
+    public Generator getGenerator() {
+        return generator;
+    }
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public Logo getLogo() {
+        return logo;
+    }
+
+    public String getRights() {
+        return rights;
     }
 
     @Override
@@ -117,10 +146,14 @@ public class Feed {
             ", subtitle='" + subtitle + '\'' +
             ", id='" + id + '\'' +
             ", updateDate=" + updateDate +
-            ", author=" + author +
+            ", authors=" + authors +
             ", contributors=" + contributors +
             ", additionalElements=" + additionalElements +
             ", entries=" + entries +
+            ", generator=" + generator +
+            ", icon=" + icon +
+            ", logo=" + logo +
+            ", rights=" + rights +
             '}';
     }
 
@@ -130,11 +163,15 @@ public class Feed {
         private String subtitle;
         private String id;
         private Date updateDate;
-        private Author author;
+        private Collection<Author> authors = new LinkedHashSet<>();
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
+        private Generator generator;
+        private Icon icon;
+        private Logo logo;
+        public String rights;
 
         private Builder() {
         }
@@ -154,8 +191,8 @@ public class Feed {
             return this;
         }
 
-        public Builder withAuthor(Author author) {
-            this.author = author;
+        public Builder addAuthor(Author author) {
+            this.authors.add(author);
             return this;
         }
 
@@ -184,11 +221,33 @@ public class Feed {
             return this;
         }
 
+        public Builder withGenerator(Generator generator) {
+            this.generator = generator;
+            return this;
+        }
+
+        public Builder withIcon(Icon icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        public Builder withLogo(Logo logo) {
+            this.logo = logo;
+            return this;
+        }
+
+        public Builder withRights(String rights) {
+            this.rights = rights;
+            return this;
+        }
+
         public Feed build() {
+            checkState(!authors.isEmpty() || allEntriesContainAuthor(entries), "author is mandatory");
             checkState(title != null, "title is mandatory");
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
             checkState(!links.isEmpty(), "links cannot be empty");
+            checkState(noDuplicatedLinks(links), "links must not contain more than one link with the same rel `alternate` and same hreflang");
             return new Feed(this);
         }
     }

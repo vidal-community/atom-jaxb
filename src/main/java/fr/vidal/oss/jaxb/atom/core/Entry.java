@@ -1,5 +1,7 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import fr.vidal.oss.jaxb.atom.core.validation.EntryValidation;
+
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -16,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 @XmlType(propOrder = {
-    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
+    "title", "links", "categories", "authors", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "rights", "source", "additionalElements"
 })
 public class Entry {
 
@@ -33,11 +35,15 @@ public class Entry {
     @XmlElement(name = "updated", required = true)
     private final Date updateDate;
     @XmlElement(name = "author")
-    private final Author author;
+    private final Collection<Author> authors;
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlElement(name = "content")
     private final Contents contents;
+    @XmlElement(name = "source")
+    private final Source source;
+    @XmlElement(name = "rights")
+    private final String rights;
     @XmlElement(name = "link", required = true)
     private final Collection<Link> links;
     @XmlAnyElement
@@ -52,10 +58,11 @@ public class Entry {
 
     private Entry(Builder builder) {
         additionalElements = builder.additionalElements;
-        author = builder.author;
+        authors = builder.authors;
         contributors = builder.contributors;
         categories = builder.categories;
         contents = builder.contents;
+        rights = builder.rights;
         id = builder.id;
         links = builder.links;
         summary = builder.summary;
@@ -63,6 +70,7 @@ public class Entry {
         publishedDate = builder.publishedDate;
         updateDate = builder.updateDate;
         additionalAttributes = index(builder.additionalAttributes);
+        source = builder.source;
     }
 
     public static Builder builder() {
@@ -93,8 +101,8 @@ public class Entry {
         return updateDate;
     }
 
-    public Author getAuthor() {
-        return author;
+    public Collection<Author> getAuthors() {
+        return authors;
     }
 
     public Collection<Contributor> getContributors() {
@@ -103,6 +111,14 @@ public class Entry {
 
     public Contents getContents() {
         return contents;
+    }
+
+    public String getRights() {
+        return rights;
+    }
+
+    public Source getSource() {
+        return source;
     }
 
     public Collection<Link> getLinks() {
@@ -143,11 +159,13 @@ public class Entry {
             ", id='" + id + '\'' +
             ", publishedDate=" + publishedDate +
             ", updateDate=" + updateDate +
-            ", author=" + author +
+            ", authors=" + authors +
             ", contributors=" + contributors +
             ", contents=" + contents +
+            ", rights=" + rights +
             ", links=" + links +
             ", additionalElements=" + additionalElements +
+            ", source=" + source +
             '}';
     }
 
@@ -169,12 +187,14 @@ public class Entry {
         private String id;
         private Date publishedDate;
         private Date updateDate;
-        private Author author;
+        private Collection<Author> authors = new LinkedHashSet<>();
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<>();
         private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
-        public Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
+        private Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
+        private String rights;
+        private Source source;
 
         private Builder() {
         }
@@ -209,8 +229,8 @@ public class Entry {
             return this;
         }
 
-        public Builder withAuthor(Author author) {
-            this.author = author;
+        public Builder addAuthor(Author author) {
+            this.authors.add(author);
             return this;
         }
 
@@ -221,6 +241,11 @@ public class Entry {
 
         public Builder withContents(Contents contents) {
             this.contents = contents;
+            return this;
+        }
+
+        public Builder withRights(String rights) {
+            this.rights = rights;
             return this;
         }
 
@@ -239,11 +264,17 @@ public class Entry {
             return this;
         }
 
+        public Builder withSource(Source source) {
+            this.source = source;
+            return this;
+        }
+
         public Entry build() {
             checkState(title != null, "title is mandatory");
             checkState(id != null, "id is mandatory");
             checkState(updateDate != null, "updateDate is mandatory");
             checkState(!links.isEmpty(), "links cannot be empty");
+            checkState(EntryValidation.summaryIsMandatory(contents, summary), "Summary is mandatory");
             return new Entry(this);
         }
     }

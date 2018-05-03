@@ -15,17 +15,23 @@ public class Link {
     private final String href;
     @XmlAttribute(name = "title")
     private final String title;
+    @XmlAttribute(name = "hreflang")
+    private final String hreflang;
+    @XmlAttribute(name = "length")
+    private final Long length;
 
     @SuppressWarnings("unused") // jaxb
     private Link() {
-        this(null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
-    private Link(LinkRel rel, String type, String href, String title) {
+    private Link(LinkRel rel, String type, String href, String title, String hreflang, Long length) {
         this.rel = rel;
         this.type = type;
         this.href = href;
         this.title = title;
+        this.hreflang = hreflang;
+        this.length = length;
     }
 
     public static Builder builder(String href) {
@@ -48,9 +54,17 @@ public class Link {
         return title;
     }
 
+    public String getHreflang() {
+        return hreflang;
+    }
+
+    public Long getLength() {
+        return length;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(rel, type, href, title);
+        return Objects.hash(rel, type, href, title, hreflang);
     }
 
     @Override
@@ -62,7 +76,7 @@ public class Link {
             return false;
         }
         final Link other = (Link) obj;
-        return Objects.equals(this.rel, other.rel) && Objects.equals(this.type, other.type) && Objects.equals(this.href, other.href) && Objects.equals(this.title, other.title);
+        return Objects.equals(this.rel, other.rel) && Objects.equals(this.type, other.type) && Objects.equals(this.href, other.href) && Objects.equals(this.title, other.title) && Objects.equals(this.hreflang, other.hreflang);
     }
 
     @Override
@@ -81,6 +95,8 @@ public class Link {
         private LinkRel rel;
         private String type;
         private String title;
+        private String hreflang;
+        private Long length;
 
         private Builder(String href) {
             this.href = href;
@@ -101,9 +117,19 @@ public class Link {
             return this;
         }
 
+        public Builder withHreflang(String hreflang) {
+            this.hreflang = hreflang;
+            return this;
+        }
+
+        public Builder withLength(String hreflang) {
+            this.length = length;
+            return this;
+        }
+
         public Link build() {
             checkState(href != null, "href is mandatory");
-            return new Link(rel, type, href, title);
+            return new Link(rel, type, href, title, hreflang, length);
         }
     }
 }

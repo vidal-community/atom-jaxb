@@ -46,7 +46,8 @@ public class MarshallingTest {
             .withTitle("My standard Atom 1.0 feed")
             .withSubtitle("Or is it?")
             .withUpdateDate(new Date(510278400000L))
-            .withAuthor(Author.builder("VIDAL").build())
+            .addAuthor(Author.builder("VIDAL").build())
+            .withRights("Copyright & copyleft")
             .addLink(Link.builder("http://example.org/").withRel(self).build());
 
         Entry.Builder builder = Entry.builder()
@@ -73,6 +74,7 @@ public class MarshallingTest {
                         "        <name>VIDAL</name>\n" +
                         "    </author>\n" +
                         "    <updated>1986-03-04T01:00:00Z</updated>\n" +
+                        "    <rights>Copyright &amp; copyleft</rights>\n" +
                         "    <entry>\n" +
                         "        <title>Atom is not what you think</title>\n" +
                         "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
@@ -120,7 +122,7 @@ public class MarshallingTest {
                     .addLink(Link.builder("/rest/api/product/15070/documents").withRel(related).withType("application/atom+xml").withTitle("DOCUMENTS").build())
                     .addLink(Link.builder("/rest/api/product/15070/documents/opt").withRel(related).withType("application/atom+xml").withTitle("OPT_DOCUMENT").build())
                     .addCategory(Category.builder("PRODUCT").build())
-                    .withAuthor(Author.builder("VIDAL").build())
+                    .addAuthor(Author.builder("VIDAL").build())
                     .withId("vidal://product/15070")
                     .withUpdateDate(new Date(1329350400000L))
                     .withSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
@@ -138,7 +140,7 @@ public class MarshallingTest {
                     .addLink(Link.builder("/rest/api/product/42/documents").withRel(related).withType("application/atom+xml").withTitle("DOCUMENTS").build())
                     .addLink(Link.builder("/rest/api/product/42/documents/opt").withRel(related).withType("application/atom+xml").withTitle("OPT_DOCUMENT").build())
                     .addCategory(Category.builder("PRODUCT").build())
-                    .withAuthor(Author.builder("VIDAL").build())
+                    .addAuthor(Author.builder("VIDAL").build())
                     .withId("vidal://product/42")
                     .withUpdateDate(new Date(1329350400000L))
                     .withSummary(Summary.builder().withValue("SNAKE OIL 1 mg").withType("text").build())
@@ -220,7 +222,7 @@ public class MarshallingTest {
                     .addLink(Link.builder("/rest/api/product/15070").withRel(alternate).withType("application/atom+xml").build())
                     .addCategory(Category.builder("PRODUCT").build())
                     .addCategory(Category.builder("PACK").build())
-                    .withAuthor(Author.builder("VIDAL").build())
+                    .addAuthor(Author.builder("VIDAL").build())
                     .withId("vidal://product/15070")
                     .withUpdateDate(new Date(1329350400000L))
                     .addAttribute(Attribute.builder("type", "PRODUCT,PACK")
