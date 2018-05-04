@@ -1,8 +1,8 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import javax.xml.bind.annotation.XmlAnyElement;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
@@ -15,7 +15,6 @@ public class StructuredElement implements AdditionalElement {
     private Namespace namespace;
     private String tagName;
     private Collection<Attribute> attributes;
-    @XmlAnyElement
     private Collection<AdditionalElement> additionalElements;
 
     @SuppressWarnings("unused") //jaxb
@@ -53,7 +52,7 @@ public class StructuredElement implements AdditionalElement {
         return unmodifiableCollection(additionalElements);
     }
 
-    public static Builder builder(String tagName, AdditionalElement additionalElement) {
+    public static Builder builder(String tagName, AdditionalElement additionalElement, AdditionalElement ... more) {
         return new Builder(tagName, additionalElement);
     }
 
@@ -79,7 +78,7 @@ public class StructuredElement implements AdditionalElement {
         public Builder(String tagName, Collection<Attribute> attributes, Collection<AdditionalElement> additionalElements) {
             this.tagName = tagName;
             this.attributes = attributes;
-            this.additionalElements = additionalElements;
+            this.additionalElements = new LinkedHashSet<>(additionalElements);
         }
 
         public Builder withNamespace(Namespace namespace) {
@@ -89,6 +88,11 @@ public class StructuredElement implements AdditionalElement {
 
         public StructuredElement build() {
             return new StructuredElement(this);
+        }
+
+        public Builder addChildElement(AdditionalElement childElement) {
+            this.additionalElements.add(childElement);
+            return this;
         }
     }
 }

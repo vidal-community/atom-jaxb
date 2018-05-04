@@ -2,7 +2,6 @@ package fr.vidal.oss.jaxb.atom;
 
 import fr.vidal.oss.jaxb.atom.core.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
@@ -322,6 +321,100 @@ public class MarshallingTest {
                     "    <updated>2012-02-16T01:00:00Z</updated>\n" +
                     "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
                     "            <vidal:child>Child content</vidal:child>\n" +
+                    "    </vidal:structured>\n" +
+                    "</feed>\n");
+        }
+    }
+
+    @Test
+    public void marshalls_custom_structured_element_with_children() throws IOException, JAXBException {
+        SimpleElement child1 = SimpleElement.builder("child1", "Child content1")
+            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .build();
+        SimpleElement child2 = SimpleElement.builder("child2", "Child content2")
+            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .build();
+        SimpleElement child3 = SimpleElement.builder("child3", "Child content3")
+            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .build();
+
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addSimpleElement(
+                StructuredElement.builder("structured",
+                    child1)
+                    .addChildElement(child2)
+                    .addChildElement(child3)
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+                    "        <vidal:child1>Child content1</vidal:child1>\n" +
+                    "        <vidal:child2>Child content2</vidal:child2>\n" +
+                    "        <vidal:child3>Child content3</vidal:child3>\n" +
+                    "    </vidal:structured>\n" +
+                    "</feed>\n");
+        }
+    }
+
+    @Test
+    public void marshalls_custom_structured_element_with_children() throws IOException, JAXBException {
+//        SimpleElement child1 = SimpleElement.builder("child1", "Child content1")
+//            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+//            .build();
+//        SimpleElement child2 = SimpleElement.builder("child2", "Child content2")
+//            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+//            .build();
+//        SimpleElement child3 = SimpleElement.builder("child3", "Child content3")
+//            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+//            .build();
+
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addSimpleElement(
+                StructuredElement.builder("structured", "Text one")
+                    .addText("Text two")
+                    .addText("Text three")
+                    .addChildElement()
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+                    "        Text one\n" +
+                    "        Text two\n" +
+                    "        Text three\n" +
                     "    </vidal:structured>\n" +
                     "</feed>\n");
         }

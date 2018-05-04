@@ -27,12 +27,34 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
 
         Element element = createElement(additionalElement);
         addAttributes(element, additionalElement);
-        addChildren(element, additionalElement);
+
+        if (additionalElement instanceof StructuredElement) {
+            addChildren(element, (StructuredElement) additionalElement);
+        }
         return element;
     }
 
     @Override
-    public SimpleElement unmarshal(Element element) {
+    public AdditionalElement unmarshal(Element element) {
+        if (isStructuredElement(element)) {
+            return unmarshalStructured(element);
+        }
+        if (isSimpleElement(element)) {
+            return unmarshalSimple(element);
+        }
+        return null;
+    }
+
+    private boolean isStructuredElement(Element element) {
+        return false;
+    }
+
+    private boolean isSimpleElement(Element element) {
+        return true;
+    }
+
+
+    public SimpleElement unmarshalSimple(Element element) {
         if (element == null) {
             return null;
         }
@@ -46,8 +68,11 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
             Node item = attributes.item(i);
             result.addAttribute(Attribute.builder(item.getLocalName(), item.getTextContent()).withNamespace(namespace(item)).build());
         }
-
         return result.build();
+    }
+
+    public SimpleElement unmarshalStructured(Element element) {
+        return null;
     }
 
     private Element createElement(AdditionalElement additionalElement) throws Exception {
@@ -91,12 +116,9 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         }
     }
 
-    private void addChildren(Element element, AdditionalElement additionalElement) throws Exception {
-        if (additionalElement instanceof StructuredElement) {
-            StructuredElement structuredElement = (StructuredElement) additionalElement;
-            for (AdditionalElement additionalChild : structuredElement.getAdditionalElements()) {
-                marshallAsChild(additionalChild, element);
-            }
+    private void addChildren(Element element, StructuredElement structuredElement) throws Exception {
+        for (AdditionalElement additionalChild : structuredElement.getAdditionalElements()) {
+            marshallAsChild(additionalChild, element);
         }
     }
 
