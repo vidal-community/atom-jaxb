@@ -8,7 +8,8 @@ import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
 
 /**
- * Definition of an element with children.
+ * Definition of a structured extension element.
+ * ADD LINKS TO THE DOC
  */
 public class StructuredElement implements AdditionalElement {
 
@@ -21,7 +22,7 @@ public class StructuredElement implements AdditionalElement {
     private StructuredElement() {
     }
 
-    public StructuredElement(Builder builder) {
+    private StructuredElement(Builder builder) {
         this.namespace = builder.namespace;
         this.tagName = builder.tagName;
         this.attributes = builder.attributes;
@@ -86,13 +87,14 @@ public class StructuredElement implements AdditionalElement {
             return this;
         }
 
-        public StructuredElement build() {
-            return new StructuredElement(this);
-        }
-
         public Builder addChildElement(AdditionalElement childElement) {
             this.additionalElements.add(childElement);
             return this;
+        }
+
+        public StructuredElement build() {
+            // TODO: Check the nullity of the mandatory fields
+            return new StructuredElement(this);
         }
     }
 }
