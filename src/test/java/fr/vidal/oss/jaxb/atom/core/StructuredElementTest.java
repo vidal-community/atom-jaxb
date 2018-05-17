@@ -8,18 +8,42 @@ import static org.assertj.core.api.Assertions.fail;
 public class StructuredElementTest {
 
     @Test
-    public void should_raise_exception_when_attribute_and_element_are_absent() {
+    public void raise_exception_when_tagName_is_missing() {
+        Attribute attribute = null;
         try {
-            StructuredElement.builder("rootElement", null).build();
-            fail("Should not construct the structured element");
+            StructuredElement.builder(null, attribute).build();
+            fail("Missing tagName");
         } catch (Exception e) {
-            assertThat(e.getMessage()).isEqualTo("Mandatory");
+            assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
         }
     }
+
+    @Test
+    public void raise_exception_when_attribute_is_null() {
+        Attribute attribute = null;
+        try {
+            StructuredElement.builder("rootElement", attribute).build();
+            fail("Missing attribute");
+        } catch (Exception e) {
+            assertThat(e.getMessage()).isEqualTo("A structured element should contain at least an attribute.");
+        }
+    }
+
+    @Test
+    public void construct_a_structured_element_when_other_attributes_are_missing() {
+        Attribute attribute = Attribute.builder("type", "text").build();
+
+        StructuredElement rootElement = StructuredElement.builder("rootElement", attribute).build();
+
+        assertThat(rootElement.attributes()).contains(attribute);
+    }
+
+    @Test
+    public void construct_a_structured_element_when_other_attributes_are_null() {
+        Attribute attribute = Attribute.builder("type", "text").build();
+
+        StructuredElement rootElement = StructuredElement.builder("rootElement", attribute, null, null, null).build();
+
+        assertThat(rootElement.attributes()).contains(attribute);
+    }
 }
-
-
-//    @Test(expected = NullPointerException.class)
-//    public void should_use_default_limit_if_not_provided() {
-//        LimitedDataHint<Object> paging = new LimitedDataHint<>(null, null, (Integer) null);
-//    }

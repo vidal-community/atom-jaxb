@@ -1,9 +1,9 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.*;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.*;
+import static java.util.Arrays.*;
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -53,12 +53,25 @@ public class StructuredElement implements AdditionalElement {
         return unmodifiableCollection(additionalElements);
     }
 
-    public static Builder builder(String tagName, AdditionalElement additionalElement, AdditionalElement ... more) {
+    public static Builder builder(String tagName, AdditionalElement additionalElement, AdditionalElement ... additionalElements) {
         return new Builder(tagName, additionalElement);
     }
 
-    public static Builder builder(String tagName, Attribute attribute) {
-        return new Builder(tagName, attribute);
+    public static Builder builder(String tagName, Attribute attribute, Attribute... attributes) {
+        checkState(tagName != null, "TagName is mandatory.");
+
+        Collection<Attribute> combinedAttributes = concatAttributes(attribute, attributes);
+        checkState(!combinedAttributes.isEmpty() && combinedAttributes.iterator().next() != null ,
+            "A structured element should contain at least an attribute.");
+
+        return new Builder(tagName, combinedAttributes);
+    }
+
+    private static Collection<Attribute> concatAttributes(Attribute attribute, Attribute[] attributes) {
+        Collection<Attribute> attributesCombined = new ArrayList<>();
+        attributesCombined.add(attribute);
+        attributesCombined.addAll(asList(attributes));
+        return attributesCombined;
     }
 
     public static class Builder {
@@ -72,8 +85,8 @@ public class StructuredElement implements AdditionalElement {
             this(tagName, Collections.<Attribute>emptyList(), singleton(additionalElement));
         }
 
-        public Builder(String tagName, Attribute attribute) {
-            this(tagName, singleton(attribute), Collections.<AdditionalElement>emptyList());
+        public Builder(String tagName, Collection<Attribute> attributes) {
+            this(tagName, attributes, Collections.<AdditionalElement>emptyList());
         }
 
         public Builder(String tagName, Collection<Attribute> attributes, Collection<AdditionalElement> additionalElements) {
@@ -93,7 +106,6 @@ public class StructuredElement implements AdditionalElement {
         }
 
         public StructuredElement build() {
-            // TODO: Check the nullity of the mandatory fields
             return new StructuredElement(this);
         }
     }
