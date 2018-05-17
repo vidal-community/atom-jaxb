@@ -34,6 +34,28 @@ public class StructuredElementTest {
     }
 
     @Test
+    public void raise_exception_when_tagName_is_missing_element_case() {
+        AdditionalElement childElement = null;
+        try {
+            builder(null, childElement).build();
+            fail("Missing tagName");
+        } catch (Exception e) {
+            assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
+        }
+    }
+
+    @Test
+    public void raise_exception_when_child_element_is_null() {
+        AdditionalElement childElement = null;
+        try {
+            builder("rootElement", childElement).build();
+            fail("Missing child element");
+        } catch (Exception e) {
+            assertThat(e.getMessage()).isEqualTo("A structured element should contain at least a child element.");
+        }
+    }
+
+    @Test
     public void construct_a_structured_element_with_many_attributes_and_elements() {
         Attribute attribute = anAttribute("type", "text");
         SimpleElement childElement = aChildElement("vidal", "id");
