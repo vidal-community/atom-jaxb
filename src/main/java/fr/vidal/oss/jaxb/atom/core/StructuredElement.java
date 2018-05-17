@@ -67,7 +67,7 @@ public class StructuredElement implements AdditionalElement {
         checkState(attribute != null ,
             "A structured element should contain at least an attribute.");
 
-        return new Builder(tagName, singleton(attribute));
+        return new Builder(tagName, attribute);
     }
 
     public static class Builder {
@@ -81,8 +81,8 @@ public class StructuredElement implements AdditionalElement {
             this(tagName, Collections.<Attribute>emptyList(), singleton(additionalElement));
         }
 
-        private Builder(String tagName, Collection<Attribute> attributes) {
-            this(tagName, attributes, Collections.<AdditionalElement>emptyList());
+        private Builder(String tagName, Attribute attribute) {
+            this(tagName, singleton(attribute), Collections.<AdditionalElement>emptyList());
         }
 
         private Builder(String tagName, Collection<Attribute> attributes, Collection<AdditionalElement> additionalElements) {
