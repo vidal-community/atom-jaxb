@@ -2,6 +2,10 @@ package fr.vidal.oss.jaxb.atom.core;
 
 import org.junit.Test;
 
+import java.util.List;
+
+import static fr.vidal.oss.jaxb.atom.core.StructuredElement.builder;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -11,7 +15,7 @@ public class StructuredElementTest {
     public void raise_exception_when_tagName_is_missing() {
         Attribute attribute = null;
         try {
-            StructuredElement.builder(null, attribute).build();
+            builder(null, attribute).build();
             fail("Missing tagName");
         } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
@@ -22,7 +26,7 @@ public class StructuredElementTest {
     public void raise_exception_when_attribute_is_null() {
         Attribute attribute = null;
         try {
-            StructuredElement.builder("rootElement", attribute).build();
+            builder("rootElement", attribute).build();
             fail("Missing attribute");
         } catch (Exception e) {
             assertThat(e.getMessage()).isEqualTo("A structured element should contain at least an attribute.");
@@ -30,20 +34,41 @@ public class StructuredElementTest {
     }
 
     @Test
-    public void construct_a_structured_element_when_other_attributes_are_missing() {
-        Attribute attribute = Attribute.builder("type", "text").build();
+    public void construct_a_structured_element_with_many_attributes_and_elements() {
+        Attribute attribute = anAttribute("type", "text");
+        SimpleElement childElement = aChildElement("vidal", "id");
 
-        StructuredElement rootElement = StructuredElement.builder("rootElement", attribute).build();
+        StructuredElement rootElement = builder("rootElement", attribute)
+            .addAttributes(attributes(
+                anAttribute("attr", "value"),
+                anAttribute("attr2", "value2"),
+                anAttribute("attr3", "value3")))
+            .addChildElements(childElements(
+                childElement))
+            .build();
 
-        assertThat(rootElement.attributes()).contains(attribute);
+        assertThat(rootElement.attributes()).containsExactly(
+            attribute,
+            anAttribute("attr", "value"),
+            anAttribute("attr2", "value2"),
+            anAttribute("attr3", "value3"));
+
+        assertThat(rootElement.getAdditionalElements()).containsExactly(childElement);
     }
 
-    @Test
-    public void construct_a_structured_element_when_other_attributes_are_null() {
-        Attribute attribute = Attribute.builder("type", "text").build();
+    private List<AdditionalElement> childElements(AdditionalElement... childElements) {
+        return asList(childElements);
+    }
 
-        StructuredElement rootElement = StructuredElement.builder("rootElement", attribute, null, null, null).build();
+    private SimpleElement aChildElement(String tagName, String value) {
+        return SimpleElement.builder(tagName, value).build();
+    }
 
-        assertThat(rootElement.attributes()).contains(attribute);
+    private List<Attribute> attributes(Attribute... attributes) {
+        return asList(attributes);
+    }
+
+    private Attribute anAttribute(String name, String value) {
+        return Attribute.builder(name, value).build();
     }
 }

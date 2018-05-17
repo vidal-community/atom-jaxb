@@ -1,9 +1,10 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.*;
-import static java.util.Arrays.*;
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -53,25 +54,20 @@ public class StructuredElement implements AdditionalElement {
         return unmodifiableCollection(additionalElements);
     }
 
-    public static Builder builder(String tagName, AdditionalElement additionalElement, AdditionalElement ... additionalElements) {
+    public static Builder builder(String tagName, AdditionalElement additionalElement) {
+        checkState(tagName != null, "TagName is mandatory.");
+        checkState(additionalElement != null ,
+            "A structured element should contain at least a child element.");
+
         return new Builder(tagName, additionalElement);
     }
 
-    public static Builder builder(String tagName, Attribute attribute, Attribute... attributes) {
+    public static Builder builder(String tagName, Attribute attribute) {
         checkState(tagName != null, "TagName is mandatory.");
-
-        Collection<Attribute> combinedAttributes = concatAttributes(attribute, attributes);
-        checkState(!combinedAttributes.isEmpty() && combinedAttributes.iterator().next() != null ,
+        checkState(attribute != null ,
             "A structured element should contain at least an attribute.");
 
-        return new Builder(tagName, combinedAttributes);
-    }
-
-    private static Collection<Attribute> concatAttributes(Attribute attribute, Attribute[] attributes) {
-        Collection<Attribute> attributesCombined = new ArrayList<>();
-        attributesCombined.add(attribute);
-        attributesCombined.addAll(asList(attributes));
-        return attributesCombined;
+        return new Builder(tagName, singleton(attribute));
     }
 
     public static class Builder {
@@ -81,17 +77,17 @@ public class StructuredElement implements AdditionalElement {
         private Collection<Attribute> attributes;
         private Collection<AdditionalElement> additionalElements;
 
-        public Builder(String tagName, AdditionalElement additionalElement) {
+        private Builder(String tagName, AdditionalElement additionalElement) {
             this(tagName, Collections.<Attribute>emptyList(), singleton(additionalElement));
         }
 
-        public Builder(String tagName, Collection<Attribute> attributes) {
+        private Builder(String tagName, Collection<Attribute> attributes) {
             this(tagName, attributes, Collections.<AdditionalElement>emptyList());
         }
 
-        public Builder(String tagName, Collection<Attribute> attributes, Collection<AdditionalElement> additionalElements) {
+        private Builder(String tagName, Collection<Attribute> attributes, Collection<AdditionalElement> additionalElements) {
             this.tagName = tagName;
-            this.attributes = attributes;
+            this.attributes = new LinkedHashSet<>(attributes);
             this.additionalElements = new LinkedHashSet<>(additionalElements);
         }
 
@@ -102,6 +98,21 @@ public class StructuredElement implements AdditionalElement {
 
         public Builder addChildElement(AdditionalElement childElement) {
             this.additionalElements.add(childElement);
+            return this;
+        }
+
+        public Builder addChildElements(Collection<AdditionalElement> childElements) {
+            this.additionalElements.addAll(childElements);
+            return this;
+        }
+
+        public Builder addAttribute(Attribute attribute) {
+            this.attributes.add(attribute);
+            return this;
+        }
+
+        public Builder addAttributes(Collection<Attribute> attributes) {
+            this.attributes.addAll(attributes);
             return this;
         }
 
