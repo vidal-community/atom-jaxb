@@ -58,7 +58,7 @@ public class StructuredElementTest {
     @Test
     public void construct_a_structured_element_with_many_attributes_and_elements() {
         Attribute attribute = anAttribute("type", "text");
-        SimpleElement childElement = aChildElement("vidal", "id");
+        AnyElement childElement = aChildElement("dosages");
 
         StructuredElement rootElement = builder("rootElement", attribute)
             .addAttributes(attributes(
@@ -82,8 +82,10 @@ public class StructuredElementTest {
         return asList(childElements);
     }
 
-    private SimpleElement aChildElement(String tagName, String value) {
-        return SimpleElement.builder(tagName, value).build();
+    private AnyElement aChildElement(String tagName) {
+        return AnyElement.builder(tagName)
+            .addAnyElement(AnyElement.builder("dose").build())
+            .build();
     }
 
     private List<Attribute> attributes(Attribute... attributes) {

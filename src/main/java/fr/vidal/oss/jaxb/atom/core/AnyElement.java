@@ -7,7 +7,7 @@ import java.util.Objects;
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
-public class AnyElement {
+public class AnyElement implements AdditionalElement {
     private Namespace namespace;
     private String tagName;
     private String value;
