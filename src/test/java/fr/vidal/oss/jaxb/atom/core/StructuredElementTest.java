@@ -56,7 +56,7 @@ public class StructuredElementTest {
     }
 
     @Test
-    public void construct_a_structured_element_with_many_attributes_and_elements() {
+    public void construct_a_structured_element_with_multiple_attributes_and_elements() {
         Attribute attribute = anAttribute("type", "text");
         AnyElement childElement = aChildElement("dosages");
 

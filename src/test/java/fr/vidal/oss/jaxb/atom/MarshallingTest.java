@@ -82,22 +82,22 @@ public class MarshallingTest {
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
             .withUpdateDate(new Date(1329350400000L))
-            .addSimpleElement(
+            .addExtensionElement(
                 SimpleElement.builder("date", DATE_FORMAT.format(new Date(1329350400000L)))
                     .withNamespace(Namespace.builder("http://purl.org/dc/elements/1.1/").withPrefix("dc").build())
                     .addAttribute(Attribute.builder("format", "yyyy-MM-dd'T'HH:mm:ss'Z'")
                         .withNamespace(Namespace.builder("http://date-formats.com").withPrefix("df").build()).build())
                     .build()
             )
-            .addSimpleElement(SimpleElement.builder("itemsPerPage", String.valueOf(25))
+            .addExtensionElement(SimpleElement.builder("itemsPerPage", String.valueOf(25))
                 .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
                 .build()
             )
-            .addSimpleElement(SimpleElement.builder("totalResults", String.valueOf(2))
+            .addExtensionElement(SimpleElement.builder("totalResults", String.valueOf(2))
                 .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
                 .build()
             )
-            .addSimpleElement(SimpleElement.builder("startIndex", String.valueOf(1))
+            .addExtensionElement(SimpleElement.builder("startIndex", String.valueOf(1))
                 .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
                 .build()
             )
@@ -265,7 +265,7 @@ public class MarshallingTest {
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
             .withUpdateDate(new Date(1329350400000L))
 
-            .addSimpleElement(
+            .addExtensionElement(
                 StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
                         .withPrefix("vidal")
@@ -299,7 +299,7 @@ public class MarshallingTest {
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
             .withUpdateDate(new Date(1329350400000L))
 
-            .addSimpleElement(
+            .addExtensionElement(
                 StructuredElement.builder("structured",
                     SimpleElement.builder("child", "Child content")
                         .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
@@ -344,7 +344,7 @@ public class MarshallingTest {
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
             .withUpdateDate(new Date(1329350400000L))
 
-            .addSimpleElement(
+            .addExtensionElement(
                 StructuredElement.builder("structured",
                     child1)
                     .addChildElement(child2)
@@ -391,7 +391,7 @@ public class MarshallingTest {
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
             .withUpdateDate(new Date(1329350400000L));
 
-//            .addSimpleElement(
+//            .addExtensionElement(
 //                StructuredElement.builder("structured", "Text one")
 //                    .addText("Text two")
 //                    .addText("Text three")

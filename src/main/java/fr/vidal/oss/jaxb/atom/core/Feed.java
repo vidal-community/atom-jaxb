@@ -174,7 +174,7 @@ public class Feed {
             return this;
         }
 
-        public Builder addSimpleElement(AdditionalElement simpleElement) {
+        public Builder addExtensionElement(AdditionalElement simpleElement) {
             this.additionalElements.add(simpleElement);
             return this;
         }
