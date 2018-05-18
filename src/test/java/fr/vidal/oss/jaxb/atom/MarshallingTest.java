@@ -2,6 +2,7 @@ package fr.vidal.oss.jaxb.atom;
 
 import fr.vidal.oss.jaxb.atom.core.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
@@ -451,49 +452,24 @@ public class MarshallingTest {
     }
 
     @Test
-    public void marshals_structured_extension_element_with_children_duplicate() throws IOException, JAXBException {
-        AnyElement child1 = AnyElement.builder("child1")
-            .withValue("Child content1")
-            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-            .build();
-        AnyElement child2 = AnyElement.builder("child2")
-            .withValue("Child content2")
-            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-            .build();
-        AnyElement child3 = AnyElement.builder("child3")
-            .withValue("Child content3")
-            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-            .build();
-
-        Feed.Builder builder = Feed.builder()
-            .withId("Heidi")
-            .withTitle("Search Products - Query :sintrom")
-            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
-            .addExtensionElement(
-                StructuredElement.builder("structured", child1)
-                    .withValue("Text two")
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-                    .build()
-            );
-
-        try (StringWriter writer = new StringWriter()) {
-            marshaller.marshal(builder.build(), writer);
-            assertThat(writer.toString())
-                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
-                    "    <title>Search Products - Query :sintrom</title>\n" +
-                    "    <link\n" +
-                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
-                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
-                    "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
-                    "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
-                    "        Text one\n" +
-                    "        Text two\n" +
-                    "        Text three\n" +
-                    "    </vidal:structured>\n" +
-                    "</feed>\n");
-        }
+    @Ignore
+    public void marshals_structured_extension_element_with_optional_text_children_and_followed_by_text() throws IOException, JAXBException {
+        //TODO: Needed result (see the structured extension element specification)
+        String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+            "    <title>Search Products - Query :sintrom</title>\n" +
+            "    <link\n" +
+            "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+            "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+            "    <id>Heidi</id>\n" +
+            "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+            "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+            "        Optional text value\n" +
+            "        <vidal:child1>Child content1</vidal:child1>\n" +
+            "        <vidal:child2>Child content2</vidal:child2>\n" +
+            "        <vidal:child3>Child content3</vidal:child3>\n" +
+            "        followed by text\n" +
+            "    </vidal:structured>\n" +
+            "</feed>\n";
     }
 }
