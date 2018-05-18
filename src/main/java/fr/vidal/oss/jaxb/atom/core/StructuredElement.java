@@ -1,5 +1,7 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -13,16 +15,18 @@ import static java.util.Collections.unmodifiableCollection;
  * Definition of a structured extension element.
  * ADD LINKS TO THE DOC
  */
+@XmlType
 public class StructuredElement implements AdditionalElement {
 
     private Namespace namespace;
     private String tagName;
     private String value;
     private Collection<Attribute> attributes;
+    @XmlAnyElement
     private Collection<AdditionalElement> additionalElements;
 
     @SuppressWarnings("unused") //jaxb
-    private StructuredElement() {
+    public StructuredElement() {
     }
 
     private StructuredElement(Builder builder) {

@@ -1,5 +1,7 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -7,12 +9,14 @@ import java.util.Objects;
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
+@XmlType
 public class AnyElement implements AdditionalElement {
     private Namespace namespace;
     private String tagName;
     private String value;
     private Collection<Attribute> attributes;
-    private Collection<AnyElement> anyElements;
+    @XmlAnyElement
+    private Collection<AdditionalElement> anyElements;
 
     @SuppressWarnings("used by jaxb")
     public AnyElement() {
@@ -42,7 +46,7 @@ public class AnyElement implements AdditionalElement {
         return unmodifiableCollection(attributes);
     }
 
-    public Collection<AnyElement> anyElements() {
+    public Collection<AdditionalElement> anyElements() {
         return unmodifiableCollection(anyElements);
     }
 
@@ -83,7 +87,7 @@ public class AnyElement implements AdditionalElement {
         private String tagName;
         private String value;
         private Collection<Attribute> attributes = new LinkedHashSet<>();
-        private Collection<AnyElement> anyElements = new LinkedHashSet<>();
+        private Collection<AdditionalElement> anyElements = new LinkedHashSet<>();
 
         public Builder(String tagName) {
             this.tagName = tagName;
@@ -113,7 +117,7 @@ public class AnyElement implements AdditionalElement {
             return this;
         }
 
-        public Builder addAnyElement(AnyElement anyElement) {
+        public Builder addAnyElement(AdditionalElement anyElement) {
             this.anyElements.add(anyElement);
             return this;
         }

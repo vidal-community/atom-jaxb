@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MarshallingTest {
 
+    private static final Namespace VIDAL_NAMESPACE = Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build();
     private Marshaller marshaller;
 
     @Before
@@ -215,9 +216,7 @@ public class MarshallingTest {
                     .withId("vidal://product/15070")
                     .withUpdateDate(new Date(1329350400000L))
                     .addAttribute(Attribute.builder("type", "PRODUCT,PACK")
-                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
-                            .withPrefix("vidal")
-                            .build())
+                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                         .build()
                     )
                     .withSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
@@ -269,9 +268,7 @@ public class MarshallingTest {
 
             .addExtensionElement(
                 StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
-                        .withPrefix("vidal")
-                        .build())
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .build())
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .build()
@@ -303,9 +300,7 @@ public class MarshallingTest {
 
             .addExtensionElement(
                 StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
-                        .withPrefix("vidal")
-                        .build())
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .build())
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .withValue("Text content of the structured element")
@@ -447,6 +442,83 @@ public class MarshallingTest {
                     "        <vidal:child2>Child content2</vidal:child2>\n" +
                     "        <vidal:child3>Child content3</vidal:child3>\n" +
                     "    </vidal:structured>\n" +
+                    "</feed>\n");
+        }
+    }
+
+
+    @Test
+    public void marshals_structured_extension_element_with_nested_children() throws IOException, JAXBException {
+        AnyElement dosage = AnyElement.builder("dosage")
+            .withNamespace(VIDAL_NAMESPACE)
+            .addAnyElement(
+                SimpleElement.builder("dose", "1000")
+                    .withNamespace(VIDAL_NAMESPACE)
+                    .build())
+            .build();
+
+        AnyElement secondDosage = AnyElement.builder("dosage")
+            .withNamespace(VIDAL_NAMESPACE)
+            .addAnyElement(
+                SimpleElement.builder("dose", "10.0")
+                    .withNamespace(VIDAL_NAMESPACE)
+                    .build())
+            .addAnyElement(SimpleElement.builder("unitId", "129")
+                .withNamespace(VIDAL_NAMESPACE)
+                .build())
+            .addAnyElement(AnyElement.builder("interval")
+                .withNamespace(VIDAL_NAMESPACE)
+                .addAnyElement(SimpleElement.builder("min", "2")
+                    .withNamespace(VIDAL_NAMESPACE)
+                    .build())
+                .addAnyElement(SimpleElement.builder("max", "6")
+                    .withNamespace(VIDAL_NAMESPACE)
+                    .build())
+                .addAnyElement(SimpleElement.builder("unitId", "41")
+                    .withNamespace(VIDAL_NAMESPACE)
+                    .build())
+                .build())
+            .build();
+
+
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addExtensionElement(
+                StructuredElement.builder("dosages", dosage)
+                    .addChildElement(secondDosage)
+                    .withNamespace(VIDAL_NAMESPACE)
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:dosages xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+                    "        <vidal:dosage>\n" +
+                    "            <vidal:dose>1000</vidal:dose>\n" +
+                    "        </vidal:dosage>\n" +
+                    "        <vidal:dosage>\n" +
+                    "            <vidal:dose>10.0</vidal:dose>\n" +
+                    "            <vidal:unitId>129</vidal:unitId>\n" +
+                    "            <vidal:interval>\n" +
+                    "                <vidal:min>2</vidal:min>\n" +
+                    "                <vidal:max>6</vidal:max>\n" +
+                    "                <vidal:unitId>41</vidal:unitId>\n" +
+                    "            </vidal:interval>\n" +
+                    "        </vidal:dosage>\n" +
+                    "    </vidal:dosages>\n" +
                     "</feed>\n");
         }
     }
