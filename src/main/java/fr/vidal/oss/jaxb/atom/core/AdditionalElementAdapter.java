@@ -31,6 +31,7 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         if (additionalElement instanceof StructuredElement) {
             addChildren(element, (StructuredElement) additionalElement);
         }
+
         return element;
     }
 

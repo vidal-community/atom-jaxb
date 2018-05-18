@@ -3,6 +3,7 @@ package fr.vidal.oss.jaxb.atom.core;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.singleton;
@@ -16,6 +17,7 @@ public class StructuredElement implements AdditionalElement {
 
     private Namespace namespace;
     private String tagName;
+    private String value;
     private Collection<Attribute> attributes;
     private Collection<AdditionalElement> additionalElements;
 
@@ -26,6 +28,7 @@ public class StructuredElement implements AdditionalElement {
     private StructuredElement(Builder builder) {
         this.namespace = builder.namespace;
         this.tagName = builder.tagName;
+        this.value = builder.value;
         this.attributes = builder.attributes;
         this.additionalElements = builder.additionalElements;
     }
@@ -47,7 +50,7 @@ public class StructuredElement implements AdditionalElement {
 
     @Override
     public String value() {
-        return "";
+        return value;
     }
 
     public Collection<AdditionalElement> getAdditionalElements() {
@@ -74,6 +77,7 @@ public class StructuredElement implements AdditionalElement {
 
         private Namespace namespace;
         private String tagName;
+        private String value;
         private Collection<Attribute> attributes;
         private Collection<AdditionalElement> additionalElements;
 
@@ -96,12 +100,17 @@ public class StructuredElement implements AdditionalElement {
             return this;
         }
 
+        public Builder withValue(String value) {
+            this.value = value;
+            return this;
+        }
+
         public Builder addChildElement(AdditionalElement childElement) {
             this.additionalElements.add(childElement);
             return this;
         }
 
-        public Builder addChildElements(Collection<AdditionalElement> childElements) {
+        public Builder addChildElements(List<AdditionalElement> childElements) {
             this.additionalElements.addAll(childElements);
             return this;
         }

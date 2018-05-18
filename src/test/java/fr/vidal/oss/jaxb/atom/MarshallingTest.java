@@ -8,6 +8,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -197,7 +198,7 @@ public class MarshallingTest {
 
 
     @Test
-    public void marshalls_custom_entry_attributes() throws IOException, JAXBException {
+    public void marshals_custom_entry_attributes() throws IOException, JAXBException {
         Feed feed = Feed.builder()
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
@@ -258,7 +259,7 @@ public class MarshallingTest {
     }
 
     @Test
-    public void marshalls_custom_structured_element_with_attribute() throws IOException, JAXBException {
+    public void marshals_structured_extension_element_with_attribute() throws IOException, JAXBException {
         Feed.Builder builder = Feed.builder()
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
@@ -292,7 +293,42 @@ public class MarshallingTest {
     }
 
     @Test
-    public void marshalls_custom_structured_element_with_child() throws IOException, JAXBException {
+    public void marshals_structured_extension_element_with_attribute_followed_by_text() throws IOException, JAXBException {
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addExtensionElement(
+                StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/")
+                        .withPrefix("vidal")
+                        .build())
+                    .build())
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withValue("Text content of the structured element")
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:structured vidal:type=\"PRODUCT,PACK\" xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">Text content of the structured element</vidal:structured>\n" +
+                    "</feed>\n");
+        }
+    }
+
+    @Test
+    public void marshals_structured_extension_element_with_child() throws IOException, JAXBException {
         Feed.Builder builder = Feed.builder()
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
@@ -301,7 +337,8 @@ public class MarshallingTest {
 
             .addExtensionElement(
                 StructuredElement.builder("structured",
-                    SimpleElement.builder("child", "Child content")
+                    AnyElement.builder("child")
+                        .withValue("child element content")
                         .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                         .build())
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
@@ -320,21 +357,61 @@ public class MarshallingTest {
                     "    <id>Heidi</id>\n" +
                     "    <updated>2012-02-16T01:00:00Z</updated>\n" +
                     "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
-                    "            <vidal:child>Child content</vidal:child>\n" +
+                    "            <vidal:child>child element content</vidal:child>\n" +
                     "    </vidal:structured>\n" +
                     "</feed>\n");
         }
     }
 
     @Test
-    public void marshalls_custom_structured_element_with_children() throws IOException, JAXBException {
-        SimpleElement child1 = SimpleElement.builder("child1", "Child content1")
+    public void marshals_structured_extension_element_with_optional_text_and_child() throws IOException, JAXBException {
+        Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addExtensionElement(
+                StructuredElement.builder("structured",
+                    AnyElement.builder("child")
+                        .withValue("child element content")
+                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                        .build())
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withValue("Optional structured element text")
+                    .build()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            marshaller.marshal(builder.build(), writer);
+            assertThat(writer.toString())
+                .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                    "    <title>Search Products - Query :sintrom</title>\n" +
+                    "    <link\n" +
+                    "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
+                    "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
+                    "    <id>Heidi</id>\n" +
+                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">Optional structured element text\n" +
+                    "        <vidal:child>child element content</vidal:child>\n" +
+                    "    </vidal:structured>\n" +
+                    "</feed>\n");
+        }
+    }
+
+    @Test
+    public void marshals_structured_extension_element_with_children() throws IOException, JAXBException {
+        AnyElement child1 = AnyElement.builder("child1")
+            .withValue("Child content1")
             .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
             .build();
-        SimpleElement child2 = SimpleElement.builder("child2", "Child content2")
+        AnyElement child2 = AnyElement.builder("child2")
+            .withValue("Child content2")
             .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
             .build();
-        SimpleElement child3 = SimpleElement.builder("child3", "Child content3")
+        AnyElement child3 = AnyElement.builder("child3")
+            .withValue("Child content3")
             .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
             .build();
 
@@ -348,7 +425,7 @@ public class MarshallingTest {
                 StructuredElement.builder("structured",
                     child1)
                     .addChildElement(child2)
-                    .addChildElement(child3)
+                    .addChildElements(Arrays.<AdditionalElement>asList(child2, child3))
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .build()
             );
@@ -374,31 +451,31 @@ public class MarshallingTest {
     }
 
     @Test
-    public void marshalls_custom_structured_element_with_children_duplicate() throws IOException, JAXBException {
-//        SimpleElement child1 = SimpleElement.builder("child1", "Child content1")
-//            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-//            .build();
-//        SimpleElement child2 = SimpleElement.builder("child2", "Child content2")
-//            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-//            .build();
-//        SimpleElement child3 = SimpleElement.builder("child3", "Child content3")
-//            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-//            .build();
+    public void marshals_structured_extension_element_with_children_duplicate() throws IOException, JAXBException {
+        AnyElement child1 = AnyElement.builder("child1")
+            .withValue("Child content1")
+            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .build();
+        AnyElement child2 = AnyElement.builder("child2")
+            .withValue("Child content2")
+            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .build();
+        AnyElement child3 = AnyElement.builder("child3")
+            .withValue("Child content3")
+            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .build();
 
         Feed.Builder builder = Feed.builder()
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L));
-
-//            .addExtensionElement(
-//                StructuredElement.builder("structured", "Text one")
-//                    .addText("Text two")
-//                    .addText("Text three")
-//                    .addChildElement()
-//                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-//                    .build()
-//            );
+            .withUpdateDate(new Date(1329350400000L))
+            .addExtensionElement(
+                StructuredElement.builder("structured", child1)
+                    .withValue("Text two")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .build()
+            );
 
         try (StringWriter writer = new StringWriter()) {
             marshaller.marshal(builder.build(), writer);
