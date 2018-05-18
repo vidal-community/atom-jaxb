@@ -103,10 +103,11 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
     }
 
     private JAXBElement<String> jaxbElement(AdditionalElement element) {
+        String value = element.value() == null ? "" : element.value();
         return new JAXBElement<>(
             qualifiedName(element),
             String.class,
-            element.value()
+            value
         );
     }
 
