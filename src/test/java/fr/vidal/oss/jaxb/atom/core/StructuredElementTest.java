@@ -17,7 +17,7 @@ public class StructuredElementTest {
         try {
             builder(null, attribute).build();
             fail("Missing tagName");
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
         }
     }
@@ -28,7 +28,7 @@ public class StructuredElementTest {
         try {
             builder("rootElement", attribute).build();
             fail("Missing attribute");
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             assertThat(e.getMessage()).isEqualTo("A structured element should contain at least an attribute.");
         }
     }
@@ -39,7 +39,7 @@ public class StructuredElementTest {
         try {
             builder(null, childElement).build();
             fail("Missing tagName");
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
         }
     }
@@ -50,7 +50,7 @@ public class StructuredElementTest {
         try {
             builder("rootElement", childElement).build();
             fail("Missing child element");
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             assertThat(e.getMessage()).isEqualTo("A structured element should contain at least a child element.");
         }
     }
