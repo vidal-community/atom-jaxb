@@ -140,12 +140,12 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
     }
 
     @Override
-    public QName qualifiedName(ExtensionElement simpleElement) {
-        Namespace namespace = simpleElement.namespace();
+    public QName qualifiedName(ExtensionElement element) {
+        Namespace namespace = element.namespace();
         if (namespace != null) {
-            return new QName(namespace.uri(), simpleElement.tagName(), namespace.prefix());
+            return new QName(namespace.uri(), element.tagName(), namespace.prefix());
         }
-        return new QName(simpleElement.tagName());
+        return new QName(element.tagName());
     }
 
     private static Namespace namespace(Node item) {

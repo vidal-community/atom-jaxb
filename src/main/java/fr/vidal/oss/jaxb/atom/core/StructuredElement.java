@@ -12,7 +12,6 @@ import static java.util.Collections.unmodifiableCollection;
  * Definition of a structured extension element.
  * Refer to the ATOM specification: @link https://tools.ietf.org/html/rfc4287#section-6.4.2
  */
-@XmlType
 public class StructuredElement implements ExtensionElement {
 
     private static final String SHOULD_CONTAIN_ATTRIBUTE_OR_CHILD = "A structured element should contain at least a child element or an attribute.";
