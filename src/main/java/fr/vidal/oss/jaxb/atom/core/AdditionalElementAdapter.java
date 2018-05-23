@@ -6,7 +6,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -14,7 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import static java.lang.String.format;
 
-public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElement> {
+public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElement> implements ElementQNameFactory {
 
     private DocumentBuilder builder;
     private JAXBContext context;
@@ -40,34 +39,19 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
     }
 
     private Element createSimpleElement(SimpleElement additionalElement) throws Exception {
-        ToJAXBElement simple = new ToJAXBElement<String, SimpleElement>() {
-            @Override
-            public JAXBElement<String> convert(SimpleElement element) {
-                return jaxbSimpleElement(element);
-            }
-        };
+        ToJAXBElement simple = new SimpleElementToJAXB(this);
 
         return convertElement(additionalElement, simple);
     }
 
     private Element createStructuredElement(StructuredElement additionalElement) throws Exception {
-        ToJAXBElement structured = new ToJAXBElement<StructuredElement, StructuredElement>() {
-            @Override
-            public JAXBElement<StructuredElement> convert(StructuredElement element) {
-                return jaxbStructuredElement(element);
-            }
-        };
+        ToJAXBElement structured = new StructuredElementToJAXB(this);
 
         return convertElement(additionalElement, structured);
     }
 
     private Element createAnyElement(AnyElement additionalElement) throws Exception {
-        ToJAXBElement any = new ToJAXBElement<AnyElement, AnyElement>() {
-            @Override
-            public JAXBElement<AnyElement> convert(AnyElement element) {
-                return jaxbAnyElement(element);
-            }
-        };
+        ToJAXBElement any = new AnyElementToJAXB(this);
 
         return convertElement(additionalElement, any);
     }
@@ -140,38 +124,6 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         return context;
     }
 
-    private interface ToJAXBElement<T, E extends AdditionalElement> {
-        JAXBElement<T> convert(E element);
-    }
-
-    private JAXBElement<String> jaxbSimpleElement(SimpleElement element) {
-        String value = element.value() == null ? "" : element.value();
-        JAXBElement<String> jaxbElement = new JAXBElement<>(
-            qualifiedName(element),
-            String.class,
-            value
-        );
-        return jaxbElement;
-    }
-
-    private JAXBElement<StructuredElement> jaxbStructuredElement(StructuredElement structuredElement) {
-        JAXBElement<StructuredElement> jaxbElement = new JAXBElement<>(
-            qualifiedName(structuredElement),
-            StructuredElement.class,
-            structuredElement
-        );
-        return jaxbElement;
-    }
-
-    private JAXBElement<AnyElement> jaxbAnyElement(AnyElement anyElement) {
-        JAXBElement<AnyElement> jaxbElement = new JAXBElement<>(
-            qualifiedName(anyElement),
-            AnyElement.class,
-            anyElement
-        );
-        return jaxbElement;
-    }
-
     private void addAttributes(Element element, AdditionalElement additionalElement) {
         for (Attribute attribute : additionalElement.attributes()) {
             addAttribute(element, attribute);
@@ -196,7 +148,8 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         );
     }
 
-    private QName qualifiedName(AdditionalElement simpleElement) {
+    @Override
+    public QName qualifiedName(AdditionalElement simpleElement) {
         Namespace namespace = simpleElement.namespace();
         if (namespace != null) {
             return new QName(namespace.uri(), simpleElement.tagName(), namespace.prefix());
