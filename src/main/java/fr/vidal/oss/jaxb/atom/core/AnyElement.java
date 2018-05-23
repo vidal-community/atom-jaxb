@@ -13,7 +13,6 @@ import static java.util.Collections.unmodifiableCollection;
 public class AnyElement implements ExtensionElement {
     private Namespace namespace;
     private String tagName;
-    private String value;
     private Collection<Attribute> attributes;
     @XmlAnyElement
     private Collection<ExtensionElement> anyElements;
@@ -25,7 +24,6 @@ public class AnyElement implements ExtensionElement {
     private AnyElement(Builder builder) {
         this.namespace = builder.namespace;
         this.tagName = builder.tagName;
-        this.value = builder.value;
         this.attributes = builder.attributes;
         this.anyElements = builder.anyElements;
     }
@@ -38,10 +36,6 @@ public class AnyElement implements ExtensionElement {
         return tagName;
     }
 
-    public String value() {
-        return value;
-    }
-
     public Collection<Attribute> attributes() {
         return unmodifiableCollection(attributes);
     }
@@ -52,7 +46,7 @@ public class AnyElement implements ExtensionElement {
 
     @Override
     public int hashCode() {
-        return Objects.hash(namespace, tagName, value, attributes, anyElements);
+        return Objects.hash(namespace, tagName, attributes, anyElements);
     }
 
     @Override
@@ -62,7 +56,6 @@ public class AnyElement implements ExtensionElement {
         AnyElement that = (AnyElement) o;
         return Objects.equals(namespace, that.namespace) &&
             Objects.equals(tagName, that.tagName) &&
-            Objects.equals(value, that.value) &&
             Objects.equals(attributes, that.attributes) &&
             Objects.equals(anyElements, that.anyElements);
     }
@@ -72,7 +65,6 @@ public class AnyElement implements ExtensionElement {
         return "AnyElement{" +
             "namespace=" + namespace +
             ", tagName='" + tagName + '\'' +
-            ", value='" + value + '\'' +
             ", attributes=" + attributes +
             ", anyElements=" + anyElements +
             '}';
@@ -84,8 +76,7 @@ public class AnyElement implements ExtensionElement {
 
     public static class Builder {
         private Namespace namespace;
-        private String tagName;
-        private String value;
+        private final String tagName;
         private Collection<Attribute> attributes = new LinkedHashSet<>();
         private Collection<ExtensionElement> anyElements = new LinkedHashSet<>();
 
@@ -95,16 +86,6 @@ public class AnyElement implements ExtensionElement {
 
         public Builder withNamespace(Namespace namespace) {
             this.namespace = namespace;
-            return this;
-        }
-
-        public Builder withTagName(String tagName) {
-            this.tagName = tagName;
-            return this;
-        }
-
-        public Builder withValue(String value) {
-            this.value = value;
             return this;
         }
 

@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class StructuredElementTest {
 
+    public static final String SHOULD_CONTAIN_CHILD_OR_ATTRIBUTE = "A structured element should contain at least a child element or an attribute.";
+
     @Test
     public void raise_exception_when_tagName_is_missing() {
         Attribute attribute = null;
@@ -29,7 +31,7 @@ public class StructuredElementTest {
             builder("rootElement", attribute).build();
             fail("Missing attribute");
         } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("A structured element should contain at least an attribute.");
+            assertThat(e.getMessage()).isEqualTo(SHOULD_CONTAIN_CHILD_OR_ATTRIBUTE);
         }
     }
 
@@ -51,7 +53,7 @@ public class StructuredElementTest {
             builder("rootElement", childElement).build();
             fail("Missing child element");
         } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("A structured element should contain at least a child element.");
+            assertThat(e.getMessage()).isEqualTo("A structured element should contain at least a child element or an attribute.");
         }
     }
 

@@ -307,7 +307,7 @@ public class MarshallingTest {
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .build())
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-                    .withValue("Text content of the structured element")
+//                    .withValue("Text content of the structured element")
                     .build()
             );
 
@@ -377,7 +377,7 @@ public class MarshallingTest {
                         .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                         .build())
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-                    .withValue("Optional structured element text")
+//                    .withValue("Optional structured element text")
                     .build()
             );
 
@@ -561,11 +561,6 @@ public class MarshallingTest {
 
             @Override
             public Collection<Attribute> attributes() {
-                return null;
-            }
-
-            @Override
-            public String value() {
                 return null;
             }
 

@@ -11,11 +11,11 @@ class SimpleElementExtensionConverter implements ExtensionElementConverter {
 
     @Override
     public JAXBElement<String> convert(ExtensionElement element) {
-        String value = element.value() == null ? "" : element.value();
+        SimpleElement simpleElement = (SimpleElement) element;
         return new JAXBElement<>(
             elementQNameFactory.qualifiedName(element),
             String.class,
-            value
+            simpleElement.value()
         );
     }
 

@@ -8,6 +8,4 @@ public interface ExtensionElement {
     String tagName();
 
     Collection<Attribute> attributes();
-
-    String value();
 }
