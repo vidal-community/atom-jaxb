@@ -25,57 +25,62 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
             return null;
         }
 
-        Element element;
         if (additionalElement instanceof SimpleElement) {
-            element = createSimpleElement((SimpleElement) additionalElement);
-        }else
+            return createSimpleElement((SimpleElement) additionalElement);
+        }
         if (additionalElement instanceof StructuredElement) {
-            element = createStructuredElement((StructuredElement) additionalElement);
-        } else {
-            element = createAnyElement((AnyElement) additionalElement);
+            return createStructuredElement((StructuredElement) additionalElement);
         }
 
-        return element;
+        if (additionalElement instanceof AnyElement) {
+            return createAnyElement((AnyElement) additionalElement);
+        }
+
+        throw new IllegalArgumentException("Cannot handle Additional element: " + additionalElement);
     }
 
     private Element createSimpleElement(SimpleElement additionalElement) throws Exception {
-        Document document = builder().newDocument();
-        context(additionalElement.getClass())
-            .createMarshaller()
-            .marshal(jaxbSimpleElement(additionalElement), document);
-        Element element = document.getDocumentElement();
+        ToJAXBElement simple = new ToJAXBElement<String, SimpleElement>() {
+            @Override
+            public JAXBElement<String> convert(SimpleElement element) {
+                return jaxbSimpleElement(element);
+            }
+        };
 
-        addAttributes(element, additionalElement);
-
-        return element;
+        return convertElement(additionalElement, simple);
     }
 
     private Element createStructuredElement(StructuredElement additionalElement) throws Exception {
-        Document document = builder().newDocument();
-        context(additionalElement.getClass())
-            .createMarshaller()
-            .marshal(jaxbStructuredElement(additionalElement), document);
-        Element element = document.getDocumentElement();
+        ToJAXBElement structured = new ToJAXBElement<StructuredElement, StructuredElement>() {
+            @Override
+            public JAXBElement<StructuredElement> convert(StructuredElement element) {
+                return jaxbStructuredElement(element);
+            }
+        };
 
-        addAttributes(element, additionalElement);
-
-            addChildren(element, additionalElement);
-
-        return element;
+        return convertElement(additionalElement, structured);
     }
 
     private Element createAnyElement(AnyElement additionalElement) throws Exception {
+        ToJAXBElement any = new ToJAXBElement<AnyElement, AnyElement>() {
+            @Override
+            public JAXBElement<AnyElement> convert(AnyElement element) {
+                return jaxbAnyElement(element);
+            }
+        };
+
+        return convertElement(additionalElement, any);
+    }
+
+    private Element convertElement(AdditionalElement additionalElement, ToJAXBElement converter) throws Exception {
         Document document = builder().newDocument();
+
         context(additionalElement.getClass())
             .createMarshaller()
-            .marshal(jaxbAnyElement(additionalElement), document);
+            .marshal(converter.convert(additionalElement), document);
         Element element = document.getDocumentElement();
 
         addAttributes(element, additionalElement);
-
-    /*    if (additionalElement instanceof StructuredElement) {
-            addChildren(element, (AnyElement) additionalElement);
-        }*/
         return element;
     }
 
@@ -120,18 +125,6 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         return null;
     }
 
-//    private Document createDocument(AdditionalElement additionalElement) throws Exception {
-//        Document document = builder().newDocument();
-//        marshallAsChild(additionalElement, document);
-//        return document;
-//    }
-
-//    private void marshallAsChild(AdditionalElement element, Node parent) throws Exception {
-//        context(element.getClass())
-//            .createMarshaller()
-//            .marshal(jaxbElement(element), parent);
-//    }
-
     private DocumentBuilder builder() throws Exception {
         if (builder == null) {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -147,6 +140,10 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         return context;
     }
 
+    private interface ToJAXBElement<T, E extends AdditionalElement> {
+        JAXBElement<T> convert(E element);
+    }
+
     private JAXBElement<String> jaxbSimpleElement(SimpleElement element) {
         String value = element.value() == null ? "" : element.value();
         JAXBElement<String> jaxbElement = new JAXBElement<>(
@@ -157,22 +154,20 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         return jaxbElement;
     }
 
-    private JAXBElement<StructuredElement> jaxbStructuredElement(StructuredElement element) {
-        String value = element.value() == null ? "" : element.value();
+    private JAXBElement<StructuredElement> jaxbStructuredElement(StructuredElement structuredElement) {
         JAXBElement<StructuredElement> jaxbElement = new JAXBElement<>(
-            qualifiedName(element),
+            qualifiedName(structuredElement),
             StructuredElement.class,
-            element
+            structuredElement
         );
         return jaxbElement;
     }
 
-    private JAXBElement<AnyElement> jaxbAnyElement(AnyElement element) {
-        String value = element.value() == null ? "" : element.value();
+    private JAXBElement<AnyElement> jaxbAnyElement(AnyElement anyElement) {
         JAXBElement<AnyElement> jaxbElement = new JAXBElement<>(
-            qualifiedName(element),
+            qualifiedName(anyElement),
             AnyElement.class,
-            element
+            anyElement
         );
         return jaxbElement;
     }
@@ -183,19 +178,6 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         }
     }
 
-    private void addChildren(Element element, StructuredElement structuredElement) throws Exception {
-//        Element rootElement = document.getDocumentElement();
-        for (AdditionalElement additionalChild : structuredElement.getAdditionalElements()) {
-//            marshallAsChild(additionalChild, element);
-//            AnyElement asAnyElement = (AnyElement) additionalChild;
-//            rootElement.appendChild(createElement(element, asAnyElement));
-        }
-    }
-
-    private Node createElement(Document document, AdditionalElement additionalElement) {
-        Element element = document.createElement(additionalElement.tagName());
-        return element;
-    }
 
     private void addAttribute(Element element, Attribute attribute) {
         Namespace namespace = attribute.getNamespace();

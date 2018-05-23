@@ -6,10 +6,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -17,6 +19,7 @@ import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static fr.vidal.oss.jaxb.atom.core.LinkRel.*;
 import static java.util.TimeZone.getTimeZone;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class MarshallingTest {
 
@@ -521,9 +524,61 @@ public class MarshallingTest {
     }
 
     @Test
-    @Ignore
+    public void should_raise_an_exception_when_marshalling_an_unknown_element() throws IOException, JAXBException {
+        final Feed.Builder builder = Feed.builder()
+            .withId("Heidi")
+            .withTitle("Search Products - Query :sintrom")
+            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
+            .withUpdateDate(new Date(1329350400000L))
+
+            .addExtensionElement(unknownAdditionalElement()
+            );
+
+        try (StringWriter writer = new StringWriter()) {
+            try {
+                marshaller.marshal(builder.build(), writer);
+                fail("Missing attribute");
+            } catch (MarshalException e) {
+                Throwable exception = e.getLinkedException();
+
+                assertThat(exception).hasCauseInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Cannot handle Additional element: " + "An unknown Additional Element");
+            }
+        }
+    }
+
+    private AdditionalElement unknownAdditionalElement() {
+        return new AdditionalElement() {
+            @Override
+            public Namespace namespace() {
+                return null;
+            }
+
+            @Override
+            public String tagName() {
+                return null;
+            }
+
+            @Override
+            public Collection<Attribute> attributes() {
+                return null;
+            }
+
+            @Override
+            public String value() {
+                return null;
+            }
+
+            @Override
+            public String toString() {
+                return "An unknown Additional Element";
+            }
+        };
+    }
+
+    @Test
+    @Ignore("Not implemented (see the structured extension element specification")
     public void marshals_structured_extension_element_with_optional_text_children_and_followed_by_text() throws IOException, JAXBException {
-        //TODO: Needed result (see the structured extension element specification)
         String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
             "    <title>Search Products - Query :sintrom</title>\n" +
