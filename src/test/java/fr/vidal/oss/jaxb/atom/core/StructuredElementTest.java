@@ -35,7 +35,7 @@ public class StructuredElementTest {
 
     @Test
     public void raise_exception_when_tagName_is_missing_element_case() {
-        AdditionalElement childElement = null;
+        ExtensionElement childElement = null;
         try {
             builder(null, childElement).build();
             fail("Missing tagName");
@@ -46,7 +46,7 @@ public class StructuredElementTest {
 
     @Test
     public void raise_exception_when_child_element_is_null() {
-        AdditionalElement childElement = null;
+        ExtensionElement childElement = null;
         try {
             builder("rootElement", childElement).build();
             fail("Missing child element");
@@ -75,10 +75,10 @@ public class StructuredElementTest {
             anAttribute("attr2", "value2"),
             anAttribute("attr3", "value3"));
 
-        assertThat(rootElement.getAdditionalElements()).containsExactly(childElement);
+        assertThat(rootElement.getExtensionElements()).containsExactly(childElement);
     }
 
-    private List<AdditionalElement> childElements(AdditionalElement... childElements) {
+    private List<ExtensionElement> childElements(ExtensionElement... childElements) {
         return asList(childElements);
     }
 

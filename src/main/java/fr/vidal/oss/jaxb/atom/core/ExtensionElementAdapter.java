@@ -10,66 +10,58 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Arrays;
+import java.util.Collection;
 
 import static java.lang.String.format;
 
-public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElement> implements ElementQNameFactory {
+public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElement> implements ElementQNameFactory {
+
+    private static final Class[] ADAPTED_TYPES = {StructuredElement.class, SimpleElement.class, AnyElement.class};
 
     private DocumentBuilder builder;
     private JAXBContext context;
+    private Collection<ExtensionElementConverter> possibleConversions;
 
     @Override
-    public Element marshal(AdditionalElement additionalElement) throws Exception {
-        if (additionalElement == null) {
+    public Element marshal(ExtensionElement extensionElement) throws Exception {
+        if (extensionElement == null) {
             return null;
         }
 
-        if (additionalElement instanceof SimpleElement) {
-            return createSimpleElement((SimpleElement) additionalElement);
-        }
-        if (additionalElement instanceof StructuredElement) {
-            return createStructuredElement((StructuredElement) additionalElement);
-        }
-
-        if (additionalElement instanceof AnyElement) {
-            return createAnyElement((AnyElement) additionalElement);
+        for (ExtensionElementConverter converter : possibleConversions()) {
+            if (converter.canConvert(extensionElement)) {
+                return convertElement(extensionElement, converter);
+            }
         }
 
-        throw new IllegalArgumentException("Cannot handle Additional element: " + additionalElement);
+        throw new IllegalArgumentException("Cannot handle Additional element: " + extensionElement);
     }
 
-    private Element createSimpleElement(SimpleElement additionalElement) throws Exception {
-        ToJAXBElement simple = new SimpleElementToJAXB(this);
-
-        return convertElement(additionalElement, simple);
+    private Collection<ExtensionElementConverter> possibleConversions() {
+        if(possibleConversions == null) {
+            possibleConversions = Arrays.asList(
+                new SimpleElementExtensionConverter(this),
+                new StructuredElementExtensionConverter(this),
+                new AnyElementExtensionConverter(this));
+        }
+        return possibleConversions;
     }
 
-    private Element createStructuredElement(StructuredElement additionalElement) throws Exception {
-        ToJAXBElement structured = new StructuredElementToJAXB(this);
-
-        return convertElement(additionalElement, structured);
-    }
-
-    private Element createAnyElement(AnyElement additionalElement) throws Exception {
-        ToJAXBElement any = new AnyElementToJAXB(this);
-
-        return convertElement(additionalElement, any);
-    }
-
-    private Element convertElement(AdditionalElement additionalElement, ToJAXBElement converter) throws Exception {
+    private Element convertElement(ExtensionElement extensionElement, ExtensionElementConverter converter) throws Exception {
         Document document = builder().newDocument();
 
-        context(additionalElement.getClass())
+        context()
             .createMarshaller()
-            .marshal(converter.convert(additionalElement), document);
+            .marshal(converter.convert(extensionElement), document);
         Element element = document.getDocumentElement();
 
-        addAttributes(element, additionalElement);
+        addAttributes(element, extensionElement);
         return element;
     }
 
     @Override
-    public AdditionalElement unmarshal(Element element) {
+    public ExtensionElement unmarshal(Element element) {
         if (isStructuredElement(element)) {
             return unmarshalStructured(element);
         }
@@ -117,19 +109,18 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
         return builder;
     }
 
-    private JAXBContext context(Class<?> type) throws Exception {
+    private JAXBContext context() throws Exception {
         if (context == null) {
-            context = JAXBContext.newInstance(StructuredElement.class, SimpleElement.class, AnyElement.class);
+            context = JAXBContext.newInstance(ADAPTED_TYPES);
         }
         return context;
     }
 
-    private void addAttributes(Element element, AdditionalElement additionalElement) {
-        for (Attribute attribute : additionalElement.attributes()) {
+    private void addAttributes(Element element, ExtensionElement extensionElement) {
+        for (Attribute attribute : extensionElement.attributes()) {
             addAttribute(element, attribute);
         }
     }
-
 
     private void addAttribute(Element element, Attribute attribute) {
         Namespace namespace = attribute.getNamespace();
@@ -149,7 +140,7 @@ public class AdditionalElementAdapter extends XmlAdapter<Element, AdditionalElem
     }
 
     @Override
-    public QName qualifiedName(AdditionalElement simpleElement) {
+    public QName qualifiedName(ExtensionElement simpleElement) {
         Namespace namespace = simpleElement.namespace();
         if (namespace != null) {
             return new QName(namespace.uri(), simpleElement.tagName(), namespace.prefix());

@@ -10,13 +10,13 @@ import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
 @XmlType
-public class AnyElement implements AdditionalElement {
+public class AnyElement implements ExtensionElement {
     private Namespace namespace;
     private String tagName;
     private String value;
     private Collection<Attribute> attributes;
     @XmlAnyElement
-    private Collection<AdditionalElement> anyElements;
+    private Collection<ExtensionElement> anyElements;
 
     @SuppressWarnings("used by jaxb")
     public AnyElement() {
@@ -46,7 +46,7 @@ public class AnyElement implements AdditionalElement {
         return unmodifiableCollection(attributes);
     }
 
-    public Collection<AdditionalElement> anyElements() {
+    public Collection<ExtensionElement> anyElements() {
         return unmodifiableCollection(anyElements);
     }
 
@@ -87,7 +87,7 @@ public class AnyElement implements AdditionalElement {
         private String tagName;
         private String value;
         private Collection<Attribute> attributes = new LinkedHashSet<>();
-        private Collection<AdditionalElement> anyElements = new LinkedHashSet<>();
+        private Collection<ExtensionElement> anyElements = new LinkedHashSet<>();
 
         public Builder(String tagName) {
             this.tagName = tagName;
@@ -117,7 +117,7 @@ public class AnyElement implements AdditionalElement {
             return this;
         }
 
-        public Builder addAnyElement(AdditionalElement anyElement) {
+        public Builder addAnyElement(ExtensionElement anyElement) {
             this.anyElements.add(anyElement);
             return this;
         }

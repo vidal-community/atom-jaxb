@@ -401,13 +401,13 @@ public class MarshallingTest {
 
     @Test
     public void marshals_structured_extension_element_with_children() throws IOException, JAXBException {
-        AdditionalElement child2 = SimpleElement.builder("child2", "Child content2")
+        ExtensionElement child2 = SimpleElement.builder("child2", "Child content2")
             .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
             .build();
-        AdditionalElement child1 = SimpleElement.builder("child1", "Child content1")
+        ExtensionElement child1 = SimpleElement.builder("child1", "Child content1")
             .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
             .build();
-        AdditionalElement child3 = SimpleElement.builder("child3", "Child content3")
+        ExtensionElement child3 = SimpleElement.builder("child3", "Child content3")
             .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
             .build();
 
@@ -421,7 +421,7 @@ public class MarshallingTest {
                 StructuredElement.builder("structured",
                     child1)
                     .addChildElement(child2)
-                    .addChildElements(Arrays.<AdditionalElement>asList(child2, child3))
+                    .addChildElements(Arrays.asList(child2, child3))
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .build()
             );
@@ -547,8 +547,8 @@ public class MarshallingTest {
         }
     }
 
-    private AdditionalElement unknownAdditionalElement() {
-        return new AdditionalElement() {
+    private ExtensionElement unknownAdditionalElement() {
+        return new ExtensionElement() {
             @Override
             public Namespace namespace() {
                 return null;
@@ -578,7 +578,7 @@ public class MarshallingTest {
 
     @Test
     @Ignore("Not implemented (see the structured extension element specification")
-    public void marshals_structured_extension_element_with_optional_text_children_and_followed_by_text() throws IOException, JAXBException {
+    public void marshals_structured_extension_element_with_optional_text_children_and_followed_by_text() {
         String expectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
             "    <title>Search Products - Query :sintrom</title>\n" +

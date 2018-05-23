@@ -31,7 +31,7 @@ public class Feed {
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlAnyElement
-    private final Collection<AdditionalElement> additionalElements;
+    private final Collection<ExtensionElement> additionalElements;
     @XmlElement(name = "entry")
     private final Collection<Entry> entries;
 
@@ -88,7 +88,7 @@ public class Feed {
         return unmodifiableCollection(entries);
     }
 
-    public Collection<AdditionalElement> getAdditionalElements() {
+    public Collection<ExtensionElement> getAdditionalElements() {
         return unmodifiableCollection(additionalElements);
     }
 
@@ -133,7 +133,7 @@ public class Feed {
         private Author author;
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<AdditionalElement> additionalElements = new LinkedHashSet<>();
+        private Collection<ExtensionElement> additionalElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
 
         private Builder() {
@@ -174,7 +174,7 @@ public class Feed {
             return this;
         }
 
-        public Builder addExtensionElement(AdditionalElement simpleElement) {
+        public Builder addExtensionElement(ExtensionElement simpleElement) {
             this.additionalElements.add(simpleElement);
             return this;
         }

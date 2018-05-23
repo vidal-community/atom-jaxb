@@ -13,17 +13,17 @@ import static java.util.Collections.unmodifiableCollection;
 
 /**
  * Definition of a structured extension element.
- * ADD LINKS TO THE DOC
+ * Refer to the ATOM specification: @link https://tools.ietf.org/html/rfc4287#section-6.4.2
  */
 @XmlType
-public class StructuredElement implements AdditionalElement {
+public class StructuredElement implements ExtensionElement {
 
     private Namespace namespace;
     private String tagName;
     private String value;
     private Collection<Attribute> attributes;
     @XmlAnyElement
-    private Collection<AdditionalElement> additionalElements;
+    private Collection<ExtensionElement> extensionElements;
 
     @SuppressWarnings("unused") //jaxb
     public StructuredElement() {
@@ -34,7 +34,7 @@ public class StructuredElement implements AdditionalElement {
         this.tagName = builder.tagName;
         this.value = builder.value;
         this.attributes = builder.attributes;
-        this.additionalElements = builder.additionalElements;
+        this.extensionElements = builder.extensionElements;
     }
 
     @Override
@@ -57,16 +57,16 @@ public class StructuredElement implements AdditionalElement {
         return value;
     }
 
-    public Collection<AdditionalElement> getAdditionalElements() {
-        return unmodifiableCollection(additionalElements);
+    public Collection<ExtensionElement> getExtensionElements() {
+        return unmodifiableCollection(extensionElements);
     }
 
-    public static Builder builder(String tagName, AdditionalElement additionalElement) {
+    public static Builder builder(String tagName, ExtensionElement extensionElement) {
         checkState(tagName != null, "TagName is mandatory.");
-        checkState(additionalElement != null ,
+        checkState(extensionElement != null ,
             "A structured element should contain at least a child element.");
 
-        return new Builder(tagName, additionalElement);
+        return new Builder(tagName, extensionElement);
     }
 
     public static Builder builder(String tagName, Attribute attribute) {
@@ -83,20 +83,20 @@ public class StructuredElement implements AdditionalElement {
         private String tagName;
         private String value;
         private Collection<Attribute> attributes;
-        private Collection<AdditionalElement> additionalElements;
+        private Collection<ExtensionElement> extensionElements;
 
-        private Builder(String tagName, AdditionalElement additionalElement) {
-            this(tagName, Collections.<Attribute>emptyList(), singleton(additionalElement));
+        private Builder(String tagName, ExtensionElement extensionElement) {
+            this(tagName, Collections.<Attribute>emptyList(), singleton(extensionElement));
         }
 
         private Builder(String tagName, Attribute attribute) {
-            this(tagName, singleton(attribute), Collections.<AdditionalElement>emptyList());
+            this(tagName, singleton(attribute), Collections.<ExtensionElement>emptyList());
         }
 
-        private Builder(String tagName, Collection<Attribute> attributes, Collection<AdditionalElement> additionalElements) {
+        private Builder(String tagName, Collection<Attribute> attributes, Collection<ExtensionElement> extensionElements) {
             this.tagName = tagName;
             this.attributes = new LinkedHashSet<>(attributes);
-            this.additionalElements = new LinkedHashSet<>(additionalElements);
+            this.extensionElements = new LinkedHashSet<>(extensionElements);
         }
 
         public Builder withNamespace(Namespace namespace) {
@@ -109,13 +109,13 @@ public class StructuredElement implements AdditionalElement {
             return this;
         }
 
-        public Builder addChildElement(AdditionalElement childElement) {
-            this.additionalElements.add(childElement);
+        public Builder addChildElement(ExtensionElement childElement) {
+            this.extensionElements.add(childElement);
             return this;
         }
 
-        public Builder addChildElements(List<AdditionalElement> childElements) {
-            this.additionalElements.addAll(childElements);
+        public Builder addChildElements(List<ExtensionElement> childElements) {
+            this.extensionElements.addAll(childElements);
             return this;
         }
 
