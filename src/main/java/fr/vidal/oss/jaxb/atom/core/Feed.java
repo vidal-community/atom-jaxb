@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "extensionElements", "entries"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -31,7 +31,7 @@ public class Feed {
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlAnyElement
-    private final Collection<ExtensionElement> additionalElements;
+    private final Collection<ExtensionElement> extensionElements;
     @XmlElement(name = "entry")
     private final Collection<Entry> entries;
 
@@ -48,7 +48,7 @@ public class Feed {
         updateDate = builder.updateDate;
         author = builder.author;
         contributors = builder.contributors;
-        additionalElements = builder.additionalElements;
+        extensionElements = builder.extensionElements;
         entries = builder.entries;
     }
 
@@ -88,8 +88,8 @@ public class Feed {
         return unmodifiableCollection(entries);
     }
 
-    public Collection<ExtensionElement> getAdditionalElements() {
-        return unmodifiableCollection(additionalElements);
+    public Collection<ExtensionElement> getExtensionElements() {
+        return unmodifiableCollection(extensionElements);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class Feed {
             ", updateDate=" + updateDate +
             ", author=" + author +
             ", contributors=" + contributors +
-            ", additionalElements=" + additionalElements +
+            ", extensionElements=" + extensionElements +
             ", entries=" + entries +
             '}';
     }
@@ -133,7 +133,7 @@ public class Feed {
         private Author author;
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<ExtensionElement> additionalElements = new LinkedHashSet<>();
+        private Collection<ExtensionElement> extensionElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
 
         private Builder() {
@@ -174,8 +174,8 @@ public class Feed {
             return this;
         }
 
-        public Builder addExtensionElement(ExtensionElement simpleElement) {
-            this.additionalElements.add(simpleElement);
+        public Builder addExtensionElement(ExtensionElement extensionElement) {
+            this.extensionElements.add(extensionElement);
             return this;
         }
 

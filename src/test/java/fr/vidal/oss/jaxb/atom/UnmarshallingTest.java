@@ -128,7 +128,7 @@ public class UnmarshallingTest {
                     .withRel(LinkRel.self)
                     .withType("application/atom+xml")
                     .build())
-            .hasAdditionalElements(
+            .hasExtensionElements(
                 SimpleElement.builder("date", DATE_FORMAT.format(new Date(1329350400000L)))
                     .withNamespace(Namespace.builder("http://purl.org/dc/elements/1.1/").withPrefix("dc").build())
                     .addAttribute(Attribute.builder("format", "yyyy-MM-dd'T'HH:mm:ss'Z'").withNamespace(Namespace.builder("http://date-formats.com").withPrefix("df").build()).build())
@@ -171,7 +171,7 @@ public class UnmarshallingTest {
             .hasCategories(Category.builder("PRODUCT").build())
             .hasAuthor(Author.builder("VIDAL").build())
             .hasSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
-            .hasAdditionalElements(
+            .hasExtensionElements(
                 SimpleElement.builder("id", "15070")
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
                     .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())

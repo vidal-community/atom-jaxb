@@ -119,9 +119,9 @@ public class MarshallingTest {
                     .withId("vidal://product/15070")
                     .withUpdateDate(new Date(1329350400000L))
                     .withSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
-                    .addSimpleElement(
+                    .addExtensionElement(
                         SimpleElement.builder("id", String.valueOf(15070))
-                            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                            .withNamespace(VIDAL_NAMESPACE)
                             .build()
                     )
                     .build()
@@ -137,8 +137,16 @@ public class MarshallingTest {
                     .withId("vidal://product/42")
                     .withUpdateDate(new Date(1329350400000L))
                     .withSummary(Summary.builder().withValue("SNAKE OIL 1 mg").withType("text").build())
-                    .addSimpleElement(SimpleElement.builder("id", String.valueOf(42))
-                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .addExtensionElement(SimpleElement.builder("id", String.valueOf(42))
+                        .withNamespace(VIDAL_NAMESPACE)
+                        .build())
+                    .addExtensionElement(StructuredElement.builder("dosages",
+                            StructuredElement.builder("dosage",
+                                SimpleElement.builder("dose", "10.0").withNamespace(VIDAL_NAMESPACE).build())
+                            .addChildElement(SimpleElement.builder("unitId", "129").withNamespace(VIDAL_NAMESPACE).build())
+                            .withNamespace(VIDAL_NAMESPACE)
+                            .build())
+                        .withNamespace(VIDAL_NAMESPACE)
                         .build()
                     ).build()
             );
@@ -163,11 +171,11 @@ public class MarshallingTest {
                     "        <title>SINTROM 4 mg cp quadriséc</title>\n" +
                     "        <link href=\"/rest/api/product/15070\" rel=\"alternate\" type=\"application/atom+xml\"/>\n" +
                     "        <link href=\"/rest/api/product/15070/packages\" rel=\"related\"\n" +
-                    "            title=\"PACKAGES\" type=\"application/atom+xml\"/>\n" +
+                    "              title=\"PACKAGES\" type=\"application/atom+xml\"/>\n" +
                     "        <link href=\"/rest/api/product/15070/documents\" rel=\"related\"\n" +
-                    "            title=\"DOCUMENTS\" type=\"application/atom+xml\"/>\n" +
+                    "              title=\"DOCUMENTS\" type=\"application/atom+xml\"/>\n" +
                     "        <link href=\"/rest/api/product/15070/documents/opt\" rel=\"related\"\n" +
-                    "            title=\"OPT_DOCUMENT\" type=\"application/atom+xml\"/>\n" +
+                    "              title=\"OPT_DOCUMENT\" type=\"application/atom+xml\"/>\n" +
                     "        <category term=\"PRODUCT\"/>\n" +
                     "        <author>\n" +
                     "            <name>VIDAL</name>\n" +
@@ -182,11 +190,11 @@ public class MarshallingTest {
                     "        <title>SNAKE OIL 1 mg</title>\n" +
                     "        <link href=\"/rest/api/product/42\" rel=\"alternate\" type=\"application/atom+xml\"/>\n" +
                     "        <link href=\"/rest/api/product/42/packages\" rel=\"related\"\n" +
-                    "            title=\"PACKAGES\" type=\"application/atom+xml\"/>\n" +
+                    "              title=\"PACKAGES\" type=\"application/atom+xml\"/>\n" +
                     "        <link href=\"/rest/api/product/42/documents\" rel=\"related\"\n" +
-                    "            title=\"DOCUMENTS\" type=\"application/atom+xml\"/>\n" +
+                    "              title=\"DOCUMENTS\" type=\"application/atom+xml\"/>\n" +
                     "        <link href=\"/rest/api/product/42/documents/opt\" rel=\"related\"\n" +
-                    "            title=\"OPT_DOCUMENT\" type=\"application/atom+xml\"/>\n" +
+                    "              title=\"OPT_DOCUMENT\" type=\"application/atom+xml\"/>\n" +
                     "        <category term=\"PRODUCT\"/>\n" +
                     "        <author>\n" +
                     "            <name>VIDAL</name>\n" +
@@ -196,6 +204,12 @@ public class MarshallingTest {
                     "        <summary type=\"text\">SNAKE OIL 1 mg</summary>\n" +
                     "        <content/>\n" +
                     "        <vidal:id xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">42</vidal:id>\n" +
+                    "        <vidal:dosages xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
+                    "            <vidal:dosage>\n" +
+                    "                <vidal:dose>10.0</vidal:dose>\n" +
+                    "                <vidal:unitId>129</vidal:unitId>\n" +
+                    "            </vidal:dosage>\n" +
+                    "        </vidal:dosages>\n" +
                     "    </entry>\n" +
                     "</feed>");
         }
@@ -219,13 +233,13 @@ public class MarshallingTest {
                     .withId("vidal://product/15070")
                     .withUpdateDate(new Date(1329350400000L))
                     .addAttribute(Attribute.builder("type", "PRODUCT,PACK")
-                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                        .withNamespace(VIDAL_NAMESPACE)
                         .build()
                     )
                     .withSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
-                    .addSimpleElement(
+                    .addExtensionElement(
                         SimpleElement.builder("id", String.valueOf(15070))
-                            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                            .withNamespace(VIDAL_NAMESPACE)
                             .build()
                     )
                     .build()
@@ -271,9 +285,9 @@ public class MarshallingTest {
 
             .addExtensionElement(
                 StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
                     .build())
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
                     .build()
             );
 
@@ -304,9 +318,9 @@ public class MarshallingTest {
 
             .addExtensionElement(
                 StructuredElement.builder("structured", Attribute.builder("type", "PRODUCT,PACK")
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
                     .build())
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
 //                    .withValue("Text content of the structured element")
                     .build()
             );
@@ -338,9 +352,9 @@ public class MarshallingTest {
             .addExtensionElement(
                 StructuredElement.builder("structured",
                     SimpleElement.builder("child", "child element content")
-                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                        .withNamespace(VIDAL_NAMESPACE)
                         .build())
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
                     .build()
             );
 
@@ -374,9 +388,9 @@ public class MarshallingTest {
             .addExtensionElement(
                 StructuredElement.builder("structured",
                     SimpleElement.builder("child", "child element content")
-                        .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                        .withNamespace(VIDAL_NAMESPACE)
                         .build())
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
 //                    .withValue("Optional structured element text")
                     .build()
             );
@@ -402,13 +416,13 @@ public class MarshallingTest {
     @Test
     public void marshals_structured_extension_element_with_children() throws IOException, JAXBException {
         ExtensionElement child2 = SimpleElement.builder("child2", "Child content2")
-            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .withNamespace(VIDAL_NAMESPACE)
             .build();
         ExtensionElement child1 = SimpleElement.builder("child1", "Child content1")
-            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .withNamespace(VIDAL_NAMESPACE)
             .build();
         ExtensionElement child3 = SimpleElement.builder("child3", "Child content3")
-            .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+            .withNamespace(VIDAL_NAMESPACE)
             .build();
 
         Feed.Builder builder = Feed.builder()
@@ -422,7 +436,7 @@ public class MarshallingTest {
                     child1)
                     .addChildElement(child2)
                     .addChildElements(Arrays.asList(child2, child3))
-                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .withNamespace(VIDAL_NAMESPACE)
                     .build()
             );
 
