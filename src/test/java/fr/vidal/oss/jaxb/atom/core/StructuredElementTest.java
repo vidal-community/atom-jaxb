@@ -1,13 +1,12 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import org.junit.Test;
-
-import java.util.List;
-
 import static fr.vidal.oss.jaxb.atom.core.StructuredElement.builder;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.List;
+import org.junit.Test;
 
 public class StructuredElementTest {
 
@@ -16,45 +15,33 @@ public class StructuredElementTest {
     @Test
     public void raise_exception_when_tagName_is_missing() {
         Attribute attribute = null;
-        try {
-            builder(null, attribute).build();
-            fail("Missing tagName");
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
-        }
+        assertThatThrownBy(() -> builder(null, attribute).build())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("TagName is mandatory.");
     }
 
     @Test
     public void raise_exception_when_attribute_is_null() {
         Attribute attribute = null;
-        try {
-            builder("rootElement", attribute).build();
-            fail("Missing attribute");
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo(SHOULD_CONTAIN_CHILD_OR_ATTRIBUTE);
-        }
+        assertThatThrownBy(() -> builder("rootElement", attribute).build())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage(SHOULD_CONTAIN_CHILD_OR_ATTRIBUTE);
     }
 
     @Test
     public void raise_exception_when_tagName_is_missing_element_case() {
         ExtensionElement childElement = null;
-        try {
-            builder(null, childElement).build();
-            fail("Missing tagName");
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("TagName is mandatory.");
-        }
+        assertThatThrownBy(() -> builder(null, childElement).build())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("TagName is mandatory.");
     }
 
     @Test
     public void raise_exception_when_child_element_is_null() {
         ExtensionElement childElement = null;
-        try {
-            builder("rootElement", childElement).build();
-            fail("Missing child element");
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("A structured element should contain at least a child element or an attribute.");
-        }
+        assertThatThrownBy(() -> builder("rootElement", childElement).build())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage(SHOULD_CONTAIN_CHILD_OR_ATTRIBUTE);
     }
 
     @Test

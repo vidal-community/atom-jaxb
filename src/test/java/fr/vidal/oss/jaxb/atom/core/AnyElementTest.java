@@ -1,22 +1,19 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import org.junit.Test;
-
 import static fr.vidal.oss.jaxb.atom.core.AnyElement.builder;
 import static fr.vidal.oss.jaxb.atom.core.Attribute.builder;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import org.junit.Test;
 
 public class AnyElementTest {
     @Test
     public void should_raise_exception_when_tagName_is_null() {
-        try {
-            builder(null).build();
-            fail("The tagName is mandatory.");
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("The tagName is mandatory.");
-        }
+        assertThatThrownBy(() -> builder(null).build())
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("The tagName is mandatory.");
     }
 
     @Test
@@ -36,7 +33,7 @@ public class AnyElementTest {
     private AnyElement dosage() {
         return builder("dosage")
             .addAnyElements(
-                asList(builder("dose").build(),builder("interval").build()))
+                asList(builder("dose").build(), builder("interval").build()))
             .build();
     }
 

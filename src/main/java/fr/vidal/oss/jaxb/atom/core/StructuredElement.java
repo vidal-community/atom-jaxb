@@ -1,12 +1,15 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlType;
-import java.util.*;
-
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import javax.xml.bind.annotation.XmlAnyElement;
 
 /**
  * Definition of a structured extension element.
