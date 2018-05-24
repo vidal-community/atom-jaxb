@@ -1,11 +1,14 @@
-package fr.vidal.oss.jaxb.atom.core;
+package fr.vidal.oss.jaxb.atom.extensions;
+
+import fr.vidal.oss.jaxb.atom.core.ElementQNameFactory;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
 
 import javax.xml.bind.JAXBElement;
 
-class StructuredElementExtensionConverter implements ExtensionElementConverter {
+public class StructuredElementExtensionConverter implements ExtensionElementConverter {
     private ElementQNameFactory elementQNameFactory;
 
-    StructuredElementExtensionConverter(ElementQNameFactory elementQNameFactory) {
+    public StructuredElementExtensionConverter(ElementQNameFactory elementQNameFactory) {
         this.elementQNameFactory = elementQNameFactory;
     }
 

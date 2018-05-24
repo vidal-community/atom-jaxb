@@ -1,4 +1,8 @@
-package fr.vidal.oss.jaxb.atom.core;
+package fr.vidal.oss.jaxb.atom.extensions;
+
+import fr.vidal.oss.jaxb.atom.core.Attribute;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
+import fr.vidal.oss.jaxb.atom.core.Namespace;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.singleton;

@@ -1,13 +1,16 @@
-package fr.vidal.oss.jaxb.atom.core;
+package fr.vidal.oss.jaxb.atom.extensions;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlType;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Objects;
+import fr.vidal.oss.jaxb.atom.core.Attribute;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
+import fr.vidal.oss.jaxb.atom.core.Namespace;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import javax.xml.bind.annotation.XmlAnyElement;
 
 public class AnyElement implements ExtensionElement {
     private Namespace namespace;

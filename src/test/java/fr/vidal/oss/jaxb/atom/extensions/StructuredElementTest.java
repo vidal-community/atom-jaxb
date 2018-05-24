@@ -1,6 +1,11 @@
-package fr.vidal.oss.jaxb.atom.core;
+package fr.vidal.oss.jaxb.atom.extensions;
 
-import static fr.vidal.oss.jaxb.atom.core.StructuredElement.builder;
+import fr.vidal.oss.jaxb.atom.core.Attribute;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
+import fr.vidal.oss.jaxb.atom.extensions.AnyElement;
+import fr.vidal.oss.jaxb.atom.extensions.StructuredElement;
+
+import static fr.vidal.oss.jaxb.atom.extensions.StructuredElement.builder;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

@@ -1,4 +1,8 @@
-package fr.vidal.oss.jaxb.atom.core;
+package fr.vidal.oss.jaxb.atom.extensions;
+
+import fr.vidal.oss.jaxb.atom.core.Attribute;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
+import fr.vidal.oss.jaxb.atom.core.Namespace;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;

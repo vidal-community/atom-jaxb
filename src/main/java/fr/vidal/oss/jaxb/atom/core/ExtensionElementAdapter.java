@@ -1,5 +1,13 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import fr.vidal.oss.jaxb.atom.extensions.AnyElement;
+import fr.vidal.oss.jaxb.atom.extensions.AnyElementExtensionConverter;
+import fr.vidal.oss.jaxb.atom.extensions.ExtensionElementConverter;
+import fr.vidal.oss.jaxb.atom.extensions.SimpleElement;
+import fr.vidal.oss.jaxb.atom.extensions.SimpleElementExtensionConverter;
+import fr.vidal.oss.jaxb.atom.extensions.StructuredElement;
+import fr.vidal.oss.jaxb.atom.extensions.StructuredElementExtensionConverter;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;

@@ -1,25 +1,39 @@
 package fr.vidal.oss.jaxb.atom;
 
-import fr.vidal.oss.jaxb.atom.core.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
+import fr.vidal.oss.jaxb.atom.core.Attribute;
+import fr.vidal.oss.jaxb.atom.core.Author;
+import fr.vidal.oss.jaxb.atom.core.Category;
+import fr.vidal.oss.jaxb.atom.core.Entry;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
+import fr.vidal.oss.jaxb.atom.core.Feed;
+import fr.vidal.oss.jaxb.atom.core.Link;
+import fr.vidal.oss.jaxb.atom.core.Namespace;
+import fr.vidal.oss.jaxb.atom.core.Summary;
+import fr.vidal.oss.jaxb.atom.extensions.AnyElement;
+import fr.vidal.oss.jaxb.atom.extensions.SimpleElement;
+import fr.vidal.oss.jaxb.atom.extensions.StructuredElement;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.MarshalException;
-import javax.xml.bind.Marshaller;
+import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.related;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
+import static java.util.TimeZone.getTimeZone;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
-
-import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.*;
-import static java.util.TimeZone.getTimeZone;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.MarshalException;
+import javax.xml.bind.Marshaller;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class MarshallingTest {
 

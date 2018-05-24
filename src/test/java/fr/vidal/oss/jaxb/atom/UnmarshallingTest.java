@@ -10,7 +10,7 @@ import fr.vidal.oss.jaxb.atom.core.Feed;
 import fr.vidal.oss.jaxb.atom.core.Link;
 import fr.vidal.oss.jaxb.atom.core.LinkRel;
 import fr.vidal.oss.jaxb.atom.core.Namespace;
-import fr.vidal.oss.jaxb.atom.core.SimpleElement;
+import fr.vidal.oss.jaxb.atom.extensions.SimpleElement;
 import fr.vidal.oss.jaxb.atom.core.Summary;
 
 import static fr.vidal.oss.jaxb.atom.Assertions.assertThat;
