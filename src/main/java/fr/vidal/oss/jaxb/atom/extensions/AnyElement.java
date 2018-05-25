@@ -20,7 +20,7 @@ public class AnyElement implements ExtensionElement {
     private Collection<ExtensionElement> anyElements;
 
     @SuppressWarnings("used by jaxb")
-    public AnyElement() {
+    private AnyElement() {
     }
 
     private AnyElement(Builder builder) {
@@ -36,6 +36,11 @@ public class AnyElement implements ExtensionElement {
 
     public String tagName() {
         return tagName;
+    }
+
+    @Override
+    public ExtensionElementConverter converter() {
+        return new AnyElementExtensionConverter();
     }
 
     public Collection<Attribute> attributes() {

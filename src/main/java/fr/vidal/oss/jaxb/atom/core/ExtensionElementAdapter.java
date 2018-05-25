@@ -1,35 +1,27 @@
 package fr.vidal.oss.jaxb.atom.core;
 
 import fr.vidal.oss.jaxb.atom.extensions.AnyElement;
-import fr.vidal.oss.jaxb.atom.extensions.AnyElementExtensionConverter;
-import fr.vidal.oss.jaxb.atom.extensions.ExtensionElementConverter;
 import fr.vidal.oss.jaxb.atom.extensions.SimpleElement;
-import fr.vidal.oss.jaxb.atom.extensions.SimpleElementExtensionConverter;
 import fr.vidal.oss.jaxb.atom.extensions.StructuredElement;
-import fr.vidal.oss.jaxb.atom.extensions.StructuredElementExtensionConverter;
 
+import static java.lang.String.format;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.util.Arrays;
-import java.util.Collection;
-
-import static java.lang.String.format;
-
-public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElement> implements ElementQNameFactory {
+public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElement> {
 
     private static final Class[] ADAPTED_TYPES = {StructuredElement.class, SimpleElement.class, AnyElement.class};
 
     private DocumentBuilder builder;
     private JAXBContext context;
-    private Collection<ExtensionElementConverter> possibleConversions;
 
     @Override
     public Element marshal(ExtensionElement extensionElement) throws Exception {
@@ -37,31 +29,10 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
             return null;
         }
 
-        for (ExtensionElementConverter converter : possibleConversions()) {
-            if (converter.canConvert(extensionElement)) {
-                return convertElement(extensionElement, converter);
-            }
-        }
+        JAXBElement jaxbElement = extensionElement.converter().convert(extensionElement);
 
-        throw new IllegalArgumentException("Cannot handle Additional element: " + extensionElement);
-    }
-
-    private Collection<ExtensionElementConverter> possibleConversions() {
-        if(possibleConversions == null) {
-            possibleConversions = Arrays.asList(
-                new SimpleElementExtensionConverter(this),
-                new StructuredElementExtensionConverter(this),
-                new AnyElementExtensionConverter(this));
-        }
-        return possibleConversions;
-    }
-
-    private Element convertElement(ExtensionElement extensionElement, ExtensionElementConverter converter) throws Exception {
         Document document = builder().newDocument();
-
-        context()
-            .createMarshaller()
-            .marshal(converter.convert(extensionElement), document);
+        context().createMarshaller().marshal(jaxbElement, document);
         Element element = document.getDocumentElement();
 
         addAttributes(element, extensionElement);
@@ -86,7 +57,6 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
     private boolean isSimpleElement(Element element) {
         return true;
     }
-
 
     public SimpleElement unmarshalSimple(Element element) {
         if (element == null) {
@@ -145,15 +115,6 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
             format("%s:%s", namespace.prefix(), attributeName),
             attributeValue
         );
-    }
-
-    @Override
-    public QName qualifiedName(ExtensionElement element) {
-        Namespace namespace = element.namespace();
-        if (namespace != null) {
-            return new QName(namespace.uri(), element.tagName(), namespace.prefix());
-        }
-        return new QName(element.tagName());
     }
 
     private static Namespace namespace(Node item) {

@@ -49,6 +49,11 @@ public class SimpleElement implements ExtensionElement {
         return value;
     }
 
+    @Override
+    public ExtensionElementConverter converter() {
+        return new SimpleElementExtensionConverter();
+    }
+
     public Collection<Attribute> attributes() {
         return unmodifiableCollection(attributes);
     }

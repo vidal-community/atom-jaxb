@@ -11,6 +11,7 @@ import fr.vidal.oss.jaxb.atom.core.Link;
 import fr.vidal.oss.jaxb.atom.core.Namespace;
 import fr.vidal.oss.jaxb.atom.core.Summary;
 import fr.vidal.oss.jaxb.atom.extensions.AnyElement;
+import fr.vidal.oss.jaxb.atom.extensions.ExtensionElementConverter;
 import fr.vidal.oss.jaxb.atom.extensions.SimpleElement;
 import fr.vidal.oss.jaxb.atom.extensions.StructuredElement;
 
@@ -549,54 +550,6 @@ public class MarshallingTest {
                     "    </vidal:dosages>\n" +
                     "</feed>\n");
         }
-    }
-
-    @Test
-    public void should_raise_an_exception_when_marshalling_an_unknown_element() throws IOException, JAXBException {
-        final Feed.Builder builder = Feed.builder()
-            .withId("Heidi")
-            .withTitle("Search Products - Query :sintrom")
-            .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
-
-            .addExtensionElement(unknownAdditionalElement()
-            );
-
-        try (StringWriter writer = new StringWriter()) {
-            try {
-                marshaller.marshal(builder.build(), writer);
-                fail("Missing attribute");
-            } catch (MarshalException e) {
-                Throwable exception = e.getLinkedException();
-
-                assertThat(exception).hasCauseInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("Cannot handle Additional element: " + "An unknown Additional Element");
-            }
-        }
-    }
-
-    private ExtensionElement unknownAdditionalElement() {
-        return new ExtensionElement() {
-            @Override
-            public Namespace namespace() {
-                return null;
-            }
-
-            @Override
-            public String tagName() {
-                return null;
-            }
-
-            @Override
-            public Collection<Attribute> attributes() {
-                return null;
-            }
-
-            @Override
-            public String toString() {
-                return "An unknown Additional Element";
-            }
-        };
     }
 
     @Test

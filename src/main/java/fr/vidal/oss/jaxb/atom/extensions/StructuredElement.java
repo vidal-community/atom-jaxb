@@ -30,7 +30,7 @@ public class StructuredElement implements ExtensionElement {
     private Collection<ExtensionElement> extensionElements;
 
     @SuppressWarnings("unused") //jaxb
-    public StructuredElement() {
+    private StructuredElement() {
     }
 
     private StructuredElement(Builder builder) {
@@ -53,6 +53,11 @@ public class StructuredElement implements ExtensionElement {
     @Override
     public Collection<Attribute> attributes() {
         return unmodifiableCollection(attributes);
+    }
+
+    @Override
+    public ExtensionElementConverter converter() {
+        return new StructuredElementExtensionConverter();
     }
 
     public Collection<ExtensionElement> getExtensionElements() {
