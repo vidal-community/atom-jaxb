@@ -10,9 +10,10 @@ import static java.util.Collections.unmodifiableCollection;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAnyElement;
 
-public class AnyElement implements ExtensionElement {
+public class AnyElement extends ExtensionElement {
     private Namespace namespace;
     private String tagName;
     private Collection<Attribute> attributes;
@@ -38,9 +39,14 @@ public class AnyElement implements ExtensionElement {
         return tagName;
     }
 
+
     @Override
-    public ExtensionElementConverter converter() {
-        return new AnyElementExtensionConverter();
+    public JAXBElement<AnyElement> toJAXBElement(ExtensionElement element) {
+        return new JAXBElement<>(
+            qualifiedName(element),
+            AnyElement.class,
+            (AnyElement) element
+        );
     }
 
     public Collection<Attribute> attributes() {

@@ -13,13 +13,14 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAnyElement;
 
 /**
  * Definition of a structured extension element.
  * Refer to the ATOM specification: @link https://tools.ietf.org/html/rfc4287#section-6.4.2
  */
-public class StructuredElement implements ExtensionElement {
+public class StructuredElement extends ExtensionElement {
 
     private static final String SHOULD_CONTAIN_ATTRIBUTE_OR_CHILD = "A structured element should contain at least a child element or an attribute.";
 
@@ -56,8 +57,12 @@ public class StructuredElement implements ExtensionElement {
     }
 
     @Override
-    public ExtensionElementConverter converter() {
-        return new StructuredElementExtensionConverter();
+    public JAXBElement<StructuredElement> toJAXBElement(ExtensionElement element) {
+        return new JAXBElement<>(
+            qualifiedName(element),
+            StructuredElement.class,
+            (StructuredElement) element
+        );
     }
 
     public Collection<ExtensionElement> getExtensionElements() {
@@ -104,6 +109,7 @@ public class StructuredElement implements ExtensionElement {
             '}';
     }
 
+
     public static class Builder {
 
         private Namespace namespace;
@@ -112,7 +118,7 @@ public class StructuredElement implements ExtensionElement {
         private Collection<ExtensionElement> extensionElements;
 
         private Builder(String tagName, ExtensionElement extensionElement) {
-            this(tagName, Collections.<Attribute>emptyList(), singleton(extensionElement));
+            this(tagName, Collections.emptyList(), singleton(extensionElement));
         }
 
         private Builder(String tagName, Attribute attribute) {

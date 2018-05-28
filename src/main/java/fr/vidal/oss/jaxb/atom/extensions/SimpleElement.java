@@ -4,18 +4,19 @@ import fr.vidal.oss.jaxb.atom.core.Attribute;
 import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
 import fr.vidal.oss.jaxb.atom.core.Namespace;
 
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static java.util.Collections.unmodifiableCollection;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
+import javax.xml.bind.JAXBElement;
 
 /**
  * Definition of a non-nested element.
  * This allows only text nodes as values in the marshalled output.
  */
-public class SimpleElement implements ExtensionElement {
+public class SimpleElement extends ExtensionElement {
 
     private Namespace namespace;
     private String tagName;
@@ -49,9 +50,15 @@ public class SimpleElement implements ExtensionElement {
         return value;
     }
 
+
     @Override
-    public ExtensionElementConverter converter() {
-        return new SimpleElementExtensionConverter();
+    public JAXBElement<String> toJAXBElement(ExtensionElement element) {
+        SimpleElement simpleElement = (SimpleElement) element;
+        return new JAXBElement<>(
+            qualifiedName(element),
+            String.class,
+            simpleElement.value()
+        );
     }
 
     public Collection<Attribute> attributes() {

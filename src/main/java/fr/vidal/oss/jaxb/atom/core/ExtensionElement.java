@@ -1,15 +1,23 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import fr.vidal.oss.jaxb.atom.extensions.ExtensionElementConverter;
-
 import java.util.Collection;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 
-public interface ExtensionElement {
-    Namespace namespace();
+public abstract class ExtensionElement {
+    protected abstract Namespace namespace();
 
-    String tagName();
+    public abstract String tagName();
 
-    Collection<Attribute> attributes();
+    public abstract Collection<Attribute> attributes();
 
-    ExtensionElementConverter converter();
+    public abstract <T> JAXBElement<T> toJAXBElement(ExtensionElement element);
+
+    protected QName qualifiedName(ExtensionElement extensionElement) {
+        Namespace namespace = extensionElement.namespace();
+        if (namespace != null) {
+            return new QName(namespace.uri(), extensionElement.tagName(), namespace.prefix());
+        }
+        return new QName(extensionElement.tagName());
+    }
 }
