@@ -7,11 +7,11 @@ import javax.xml.namespace.QName;
 public abstract class ExtensionElement {
     protected abstract Namespace namespace();
 
-    public abstract String tagName();
+    protected abstract String tagName();
 
-    public abstract Collection<Attribute> attributes();
+    protected abstract Collection<Attribute> attributes();
 
-    public abstract <T> JAXBElement<T> toJAXBElement(ExtensionElement element);
+    protected abstract JAXBElement toJAXBElement(ExtensionElement element);
 
     protected QName qualifiedName(ExtensionElement extensionElement) {
         Namespace namespace = extensionElement.namespace();

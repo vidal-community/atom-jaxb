@@ -52,7 +52,7 @@ public class SimpleElement extends ExtensionElement {
 
 
     @Override
-    public JAXBElement<String> toJAXBElement(ExtensionElement element) {
+    public JAXBElement toJAXBElement(ExtensionElement element) {
         SimpleElement simpleElement = (SimpleElement) element;
         return new JAXBElement<>(
             qualifiedName(element),

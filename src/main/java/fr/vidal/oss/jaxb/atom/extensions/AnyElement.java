@@ -41,7 +41,7 @@ public class AnyElement extends ExtensionElement {
 
 
     @Override
-    public JAXBElement<AnyElement> toJAXBElement(ExtensionElement element) {
+    public JAXBElement toJAXBElement(ExtensionElement element) {
         return new JAXBElement<>(
             qualifiedName(element),
             AnyElement.class,

@@ -57,7 +57,7 @@ public class StructuredElement extends ExtensionElement {
     }
 
     @Override
-    public JAXBElement<StructuredElement> toJAXBElement(ExtensionElement element) {
+    public JAXBElement toJAXBElement(ExtensionElement element) {
         return new JAXBElement<>(
             qualifiedName(element),
             StructuredElement.class,

@@ -29,7 +29,6 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
             return null;
         }
 
-//        JAXBElement jaxbElement = extensionElement.converter().convert(extensionElement);
         JAXBElement jaxbElement = extensionElement.toJAXBElement(extensionElement);
 
         Document document = builder().newDocument();
