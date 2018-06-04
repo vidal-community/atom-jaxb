@@ -1,35 +1,27 @@
 package fr.vidal.oss.jaxb.atom;
 
-import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
-import fr.vidal.oss.jaxb.atom.core.Attribute;
-import fr.vidal.oss.jaxb.atom.core.Author;
-import fr.vidal.oss.jaxb.atom.core.Category;
-import fr.vidal.oss.jaxb.atom.core.Contents;
-import fr.vidal.oss.jaxb.atom.core.Entry;
-import fr.vidal.oss.jaxb.atom.core.Feed;
-import fr.vidal.oss.jaxb.atom.core.Link;
-import fr.vidal.oss.jaxb.atom.core.LinkRel;
-import fr.vidal.oss.jaxb.atom.core.Namespace;
-import fr.vidal.oss.jaxb.atom.core.SimpleElement;
-import fr.vidal.oss.jaxb.atom.core.Summary;
+import fr.vidal.oss.jaxb.atom.core.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.InputSource;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static fr.vidal.oss.jaxb.atom.Assertions.assertThat;
 import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static java.util.TimeZone.getTimeZone;
 
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Date;
-import java.util.TimeZone;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.InputSource;
-
 public class UnmarshallingTest {
 
+    private static final Namespace EXTENSION_NAMESPACE = Namespace.builder("http://foo.bar.org/extension/").withPrefix("extension").build();
+    private static final Attribute XMLNS_ATTRIBUTE = Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build();
+    private static final Namespace XMLNS_NAMESPACE = Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build();
     private Unmarshaller unmarshaller;
 
     @Before
@@ -114,6 +106,7 @@ public class UnmarshallingTest {
             "        <id>vidal://product/15070</id>\n" +
             "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
             "        <vidal:id xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">15070</vidal:id>\n" +
+            "        <vidal:galenicForm xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\" vidalId=\"476\">solution injectable</vidal:galenicForm>\n" +
             "    </entry>\n" +
             "    <entry>\n" +
             "        <id>vidal://product/42</id>\n" +
@@ -128,15 +121,15 @@ public class UnmarshallingTest {
                     .withRel(LinkRel.self)
                     .withType("application/atom+xml")
                     .build())
-            .hasAdditionalElements(
-                SimpleElement.builder("date", DATE_FORMAT.format(new Date(1329350400000L)))
+            .hasExtensionElements(
+                ExtensionElements.simpleElement("date", DATE_FORMAT.format(new Date(1329350400000L)))
                     .withNamespace(Namespace.builder("http://purl.org/dc/elements/1.1/").withPrefix("dc").build())
                     .addAttribute(Attribute.builder("format", "yyyy-MM-dd'T'HH:mm:ss'Z'").withNamespace(Namespace.builder("http://date-formats.com").withPrefix("df").build()).build())
                     .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
                     .addAttribute(Attribute.builder("dc", "http://purl.org/dc/elements/1.1/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
                     .addAttribute(Attribute.builder("df", "http://date-formats.com").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
                     .build(),
-                SimpleElement.builder("itemsPerPage", "25")
+                ExtensionElements.simpleElement("itemsPerPage", "25")
                     .withNamespace(Namespace.builder("http://a9.com/-/spec/opensearch/1.1/").withPrefix("opensearch").build())
                     .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
                     .addAttribute(Attribute.builder("opensearch", "http://a9.com/-/spec/opensearch/1.1/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
@@ -171,11 +164,75 @@ public class UnmarshallingTest {
             .hasCategories(Category.builder("PRODUCT").build())
             .hasAuthor(Author.builder("VIDAL").build())
             .hasSummary(Summary.builder().withValue("SINTROM 4 mg cp quadriséc").withType("text").build())
-            .hasAdditionalElements(
-                SimpleElement.builder("id", "15070")
+            .hasExtensionElements(
+                ExtensionElements.simpleElement("id", "15070")
                     .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
-                    .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
-                    .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").withPrefix("xmlns").build()).build())
+                    .addAttribute(XMLNS_ATTRIBUTE)
+                    .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(XMLNS_NAMESPACE).build())
+                    .build(),
+                ExtensionElements.simpleElement("galenicForm", "solution injectable")
+                    .withNamespace(Namespace.builder("http://api.vidal.net/-/spec/vidal-api/1.0/").withPrefix("vidal").build())
+                    .addAttribute(XMLNS_ATTRIBUTE)
+                    .addAttribute(Attribute.builder("vidal", "http://api.vidal.net/-/spec/vidal-api/1.0/").withNamespace(XMLNS_NAMESPACE).build())
+                    .addAttribute(Attribute.builder("vidalId", "476").build())
+                    .build()
+            );
+    }
+
+    @Test
+    public void unmarshall_feed_with_extended_elements() throws Exception {
+
+        //language=XML
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<feed xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+            "    <extension:simple xmlns:extension=\"http://foo.bar.org/extension/\">Text content</extension:simple>\n" +
+            "    <extension:withattribute xmlns:extension=\"http://foo.bar.org/extension/\" customAttribute=\"attribute-value\">Text content</extension:withattribute>\n" +
+            "    <extension:wrapper xmlns:extension=\"http://foo.bar.org/extension/\">\n" +
+            "        <extension:item>\n" +
+            "            <extension:name>Item name</extension:name>\n" +
+            "            <extension:content>Item content</extension:content>\n" +
+            "        </extension:item>\n" +
+            "        <extension:content>Wrapped content</extension:content>\n" +
+            "    </extension:wrapper>\n" +
+            "</feed>";
+
+        Feed result = (Feed) unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
+
+        assertThat(result)
+            .hasExtensionElements(
+                ExtensionElements.simpleElement("simple", "Text content")
+                    .withNamespace(EXTENSION_NAMESPACE)
+                    .addAttribute(XMLNS_ATTRIBUTE)
+                    .addAttribute(Attribute.builder("extension", "http://foo.bar.org/extension/")
+                        .withNamespace(XMLNS_NAMESPACE)
+                        .build())
+                    .build(),
+                ExtensionElements.simpleElement("withattribute", "Text content")
+                    .withNamespace(EXTENSION_NAMESPACE)
+                    .addAttribute(XMLNS_ATTRIBUTE)
+                    .addAttribute(Attribute.builder("extension", "http://foo.bar.org/extension/")
+                        .withNamespace(XMLNS_NAMESPACE)
+                        .build())
+                    .addAttribute(Attribute.builder("customAttribute", "attribute-value")
+                        .build())
+                    .build(),
+                ExtensionElements.structuredElement("wrapper",
+                    ExtensionElements.structuredElement("item", ExtensionElements.simpleElement("name", "Item name")
+                        .withNamespace(EXTENSION_NAMESPACE)
+                        .build())
+                        .addChild(ExtensionElements.simpleElement("content", "Item content")
+                            .withNamespace(EXTENSION_NAMESPACE)
+                            .build())
+                        .withNamespace(EXTENSION_NAMESPACE)
+                        .build())
+                    .addChild(ExtensionElements.simpleElement("content", "Wrapped content")
+                        .withNamespace(EXTENSION_NAMESPACE)
+                        .build())
+                    .withNamespace(EXTENSION_NAMESPACE)
+                    .addAttribute(XMLNS_ATTRIBUTE)
+                    .addAttribute(Attribute.builder("extension", "http://foo.bar.org/extension/")
+                        .withNamespace(XMLNS_NAMESPACE)
+                        .build())
                     .build()
             );
     }

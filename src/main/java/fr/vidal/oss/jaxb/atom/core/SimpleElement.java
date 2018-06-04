@@ -1,5 +1,7 @@
 package fr.vidal.oss.jaxb.atom.core;
 
+import javax.xml.bind.JAXBElement;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -11,7 +13,9 @@ import static java.util.Collections.unmodifiableCollection;
  * Definition of a non-nested element.
  * This allows only text nodes as values in the marshalled output.
  */
-public class SimpleElement {
+public class SimpleElement extends ExtensionElement {
+
+    static final String SHOULD_CONTAIN_VALUE = "A simple element should contain a text value.";
 
     private Namespace namespace;
     private String tagName;
@@ -19,7 +23,8 @@ public class SimpleElement {
     private Collection<Attribute> attributes;
 
     @SuppressWarnings("unused") // jaxb
-    private SimpleElement() {}
+    private SimpleElement() {
+    }
 
     private SimpleElement(Builder builder) {
         this.namespace = builder.namespace;
@@ -28,24 +33,36 @@ public class SimpleElement {
         this.attributes = builder.attributes;
     }
 
-    public static Builder builder(String tagName, String value) {
-        return new Builder(tagName, value);
+    @Override
+    public JAXBElement toJAXBElement() {
+        return new JAXBElement<>(qualifiedName(), String.class, value());
     }
 
+    /**
+     * @deprecated will be removed in next version. Use {@link ExtensionElements#simpleElement(String, String)} instead.
+     */
+    @Deprecated
+    public static Builder builder(String tagName, String value) {
+        return ExtensionElements.simpleElement(tagName, value);
+    }
+
+    @Override
     public Namespace namespace() {
         return namespace;
     }
 
+    @Override
     public String tagName() {
         return tagName;
     }
 
-    public String value() {
-        return value;
-    }
-
+    @Override
     public Collection<Attribute> attributes() {
         return unmodifiableCollection(attributes);
+    }
+
+    public String value() {
+        return value;
     }
 
     @Override
@@ -75,14 +92,14 @@ public class SimpleElement {
             '}';
     }
 
-    public static class Builder {
+    public static class Builder implements ExtensionElement.Builder<SimpleElement, Builder> {
 
         private final String tagName;
         private final String value;
         private Namespace namespace;
         private Collection<Attribute> attributes = new LinkedHashSet<>();
 
-        private Builder(String tagName, String value) {
+        Builder(String tagName, String value) {
             this.tagName = tagName;
             this.value = value;
         }
@@ -97,9 +114,18 @@ public class SimpleElement {
             return this;
         }
 
+        public Builder addAttributes(Attribute... attributes) {
+            return addAttributes(Arrays.asList(attributes));
+        }
+
+        public Builder addAttributes(Iterable<Attribute> attributes) {
+            attributes.forEach(this::addAttribute);
+            return this;
+        }
+
         public SimpleElement build() {
-            checkState(tagName != null, "tagName is mandatory");
-            checkState(value != null, "value is mandatory");
+            checkState(tagName != null, TAG_NAME_IS_MANDATORY);
+            checkState(value != null, SHOULD_CONTAIN_VALUE);
             return new SimpleElement(this);
         }
     }

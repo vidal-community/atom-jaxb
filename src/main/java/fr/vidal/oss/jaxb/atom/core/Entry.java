@@ -1,22 +1,18 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static java.util.Collections.unmodifiableCollection;
 
 @XmlType(propOrder = {
-    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "additionalElements"
+    "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "extensionElements"
 })
 public class Entry {
 
@@ -41,7 +37,7 @@ public class Entry {
     @XmlElement(name = "link", required = true)
     private final Collection<Link> links;
     @XmlAnyElement
-    private final Collection<SimpleElement> additionalElements;
+    private final Collection<ExtensionElement> extensionElements;
     @XmlAnyAttribute
     private final Map<QName, String> additionalAttributes;
 
@@ -51,7 +47,7 @@ public class Entry {
     }
 
     private Entry(Builder builder) {
-        additionalElements = builder.additionalElements;
+        extensionElements = builder.extensionElements;
         author = builder.author;
         contributors = builder.contributors;
         categories = builder.categories;
@@ -109,8 +105,20 @@ public class Entry {
         return unmodifiableCollection(links);
     }
 
+    /**
+     * @deprecated will be removed in next version. Use {@link #getExtensionElements} instead.
+     */
+    @Deprecated
     public Collection<SimpleElement> getAdditionalElements() {
-        return unmodifiableCollection(additionalElements);
+        return getExtensionElements()
+            .stream()
+            .filter(e -> e instanceof SimpleElement)
+            .map(SimpleElement.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    public Collection<ExtensionElement> getExtensionElements() {
+        return unmodifiableCollection(extensionElements);
     }
 
     public Map<QName, String> getAdditionalAttributes() {
@@ -147,11 +155,11 @@ public class Entry {
             ", contributors=" + contributors +
             ", contents=" + contents +
             ", links=" + links +
-            ", additionalElements=" + additionalElements +
+            ", extensionElements=" + extensionElements +
             '}';
     }
 
-    private static final Map<QName, String> index(Collection<Attribute> additionalAttributes) {
+    private static Map<QName, String> index(Collection<Attribute> additionalAttributes) {
         Map<QName, String> attributes = new HashMap<>(additionalAttributes.size());
         for (Attribute attribute : additionalAttributes) {
             Namespace namespace = attribute.getNamespace();
@@ -173,8 +181,8 @@ public class Entry {
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Contents contents = Contents.EMPTY;
         private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
-        public Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
+        private Collection<ExtensionElement> extensionElements = new LinkedHashSet<>();
+        private Collection<Attribute> additionalAttributes = new LinkedHashSet<>();
 
         private Builder() {
         }
@@ -229,8 +237,16 @@ public class Entry {
             return this;
         }
 
+        /**
+         * @deprecated will be removed in next version. Use {@link #addExtensionElement} instead.
+         */
+        @Deprecated
         public Builder addSimpleElement(SimpleElement simpleElement) {
-            this.additionalElements.add(simpleElement);
+            return addExtensionElement(simpleElement);
+        }
+
+        public Builder addExtensionElement(ExtensionElement extensionElement) {
+            this.extensionElements.add(extensionElement);
             return this;
         }
 

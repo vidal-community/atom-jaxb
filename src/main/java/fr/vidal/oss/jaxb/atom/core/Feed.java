@@ -7,13 +7,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement(name = "feed")
-@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "additionalElements", "entries"})
+@XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "extensionElements", "entries"})
 public class Feed {
 
     @XmlElement(name = "link", required = true)
@@ -31,7 +32,7 @@ public class Feed {
     @XmlElement(name = "contributor")
     private final Collection<Contributor> contributors;
     @XmlAnyElement
-    private final Collection<SimpleElement> additionalElements;
+    private final Collection<ExtensionElement> extensionElements;
     @XmlElement(name = "entry")
     private final Collection<Entry> entries;
 
@@ -48,7 +49,7 @@ public class Feed {
         updateDate = builder.updateDate;
         author = builder.author;
         contributors = builder.contributors;
-        additionalElements = builder.additionalElements;
+        extensionElements = builder.extensionElements;
         entries = builder.entries;
     }
 
@@ -88,8 +89,20 @@ public class Feed {
         return unmodifiableCollection(entries);
     }
 
+    /**
+     * @deprecated will be removed in next version. Use {@link #getExtensionElements} instead.
+     */
+    @Deprecated
     public Collection<SimpleElement> getAdditionalElements() {
-        return unmodifiableCollection(additionalElements);
+        return getExtensionElements()
+            .stream()
+            .filter(e -> e instanceof SimpleElement)
+            .map(SimpleElement.class::cast)
+            .collect(Collectors.toList());
+    }
+
+    public Collection<ExtensionElement> getExtensionElements() {
+        return unmodifiableCollection(extensionElements);
     }
 
     @Override
@@ -119,7 +132,7 @@ public class Feed {
             ", updateDate=" + updateDate +
             ", author=" + author +
             ", contributors=" + contributors +
-            ", additionalElements=" + additionalElements +
+            ", extensionElements=" + extensionElements +
             ", entries=" + entries +
             '}';
     }
@@ -133,7 +146,7 @@ public class Feed {
         private Author author;
         private Collection<Contributor> contributors = new LinkedHashSet<>();
         private Collection<Link> links = new LinkedHashSet<>();
-        private Collection<SimpleElement> additionalElements = new LinkedHashSet<>();
+        private Collection<ExtensionElement> extensionElements = new LinkedHashSet<>();
         private Collection<Entry> entries = new LinkedHashSet<>();
 
         private Builder() {
@@ -174,8 +187,16 @@ public class Feed {
             return this;
         }
 
+        /**
+         * @deprecated will be removed in next version. Use {@link #addExtensionElement} instead.
+         */
+        @Deprecated
         public Builder addSimpleElement(SimpleElement simpleElement) {
-            this.additionalElements.add(simpleElement);
+            return addExtensionElement(simpleElement);
+        }
+
+        public Builder addExtensionElement(ExtensionElement extensionElement) {
+            this.extensionElements.add(extensionElement);
             return this;
         }
 
