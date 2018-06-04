@@ -1,8 +1,10 @@
 @XmlSchema(namespace = "http://www.w3.org/2005/Atom", elementFormDefault = QUALIFIED)
 @XmlAccessorType(XmlAccessType.NONE) // explicit FTW ;)
 @XmlJavaTypeAdapters({
-        @XmlJavaTypeAdapter(value = DateAdapter.class, type = Date.class),
-        @XmlJavaTypeAdapter(value = SimpleElementAdapter.class, type = SimpleElement.class)
+    @XmlJavaTypeAdapter(value = DateAdapter.class, type = Date.class),
+    @XmlJavaTypeAdapter(value = ExtensionElementAdapter.class, type = ExtensionElement.class),
+    @XmlJavaTypeAdapter(value = ExtensionElementAdapter.class, type = SimpleElement.class),
+    @XmlJavaTypeAdapter(value = ExtensionElementAdapter.class, type = StructuredElement.class)
 })
 package fr.vidal.oss.jaxb.atom.core;
 
