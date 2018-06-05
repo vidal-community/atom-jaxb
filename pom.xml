@@ -8,6 +8,7 @@
 
     <name>atom-jaxb</name>
     <url>https://github.com/softwarevidal/atom-jaxb</url>
+    <description>Atom JAXB is an opinionated JAXB library, focused on Atom 1.0 feed marshalling/unmarshalling.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
