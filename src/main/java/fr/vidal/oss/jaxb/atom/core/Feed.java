@@ -90,6 +90,8 @@ public class Feed {
     }
 
     /**
+     * @return a filtered {@link Collection} of {@link SimpleElement}
+     *
      * @deprecated will be removed in next version. Use {@link #getExtensionElements} instead.
      */
     @Deprecated
@@ -188,6 +190,9 @@ public class Feed {
         }
 
         /**
+         * @param simpleElement a {@link SimpleElement} to add
+         * @return the current {@link Builder}
+         *
          * @deprecated will be removed in next version. Use {@link #addExtensionElement} instead.
          */
         @Deprecated
