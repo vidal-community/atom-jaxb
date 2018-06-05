@@ -39,6 +39,10 @@ public class SimpleElement extends ExtensionElement {
     }
 
     /**
+     * @param tagName the tag name
+     * @param value the value
+     * @return the current {@link Builder}
+     *
      * @deprecated will be removed in next version. Use {@link ExtensionElements#simpleElement(String, String)} instead.
      */
     @Deprecated
