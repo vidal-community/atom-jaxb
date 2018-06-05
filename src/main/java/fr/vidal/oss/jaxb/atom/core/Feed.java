@@ -1,17 +1,16 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
-import static java.util.Collections.unmodifiableCollection;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+
+import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
+import static java.util.Collections.unmodifiableCollection;
 
 @XmlRootElement(name = "feed")
 @XmlType(propOrder = {"title", "subtitle", "links", "id", "author", "contributors", "updateDate", "extensionElements", "entries"})
@@ -87,20 +86,6 @@ public class Feed {
 
     public Collection<Entry> getEntries() {
         return unmodifiableCollection(entries);
-    }
-
-    /**
-     * @return a filtered {@link Collection} of {@link SimpleElement}
-     *
-     * @deprecated will be removed in next version. Use {@link #getExtensionElements} instead.
-     */
-    @Deprecated
-    public Collection<SimpleElement> getAdditionalElements() {
-        return getExtensionElements()
-            .stream()
-            .filter(e -> e instanceof SimpleElement)
-            .map(SimpleElement.class::cast)
-            .collect(Collectors.toList());
     }
 
     public Collection<ExtensionElement> getExtensionElements() {
@@ -187,17 +172,6 @@ public class Feed {
         public Builder addLink(Link link) {
             this.links.add(link);
             return this;
-        }
-
-        /**
-         * @param simpleElement a {@link SimpleElement} to add
-         * @return the current {@link Builder}
-         *
-         * @deprecated will be removed in next version. Use {@link #addExtensionElement} instead.
-         */
-        @Deprecated
-        public Builder addSimpleElement(SimpleElement simpleElement) {
-            return addExtensionElement(simpleElement);
         }
 
         public Builder addExtensionElement(ExtensionElement extensionElement) {
