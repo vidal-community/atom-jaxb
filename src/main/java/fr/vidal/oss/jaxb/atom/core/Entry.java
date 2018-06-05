@@ -6,7 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
@@ -103,20 +102,6 @@ public class Entry {
 
     public Collection<Link> getLinks() {
         return unmodifiableCollection(links);
-    }
-
-    /**
-     * @return a filtered {@link Collection} of {@link SimpleElement}
-     *
-     * @deprecated will be removed in next version. Use {@link #getExtensionElements} instead.
-     */
-    @Deprecated
-    public Collection<SimpleElement> getAdditionalElements() {
-        return getExtensionElements()
-            .stream()
-            .filter(e -> e instanceof SimpleElement)
-            .map(SimpleElement.class::cast)
-            .collect(Collectors.toList());
     }
 
     public Collection<ExtensionElement> getExtensionElements() {
@@ -237,17 +222,6 @@ public class Entry {
         public Builder addLink(Link link) {
             this.links.add(link);
             return this;
-        }
-
-        /**
-         * @param simpleElement a {@link SimpleElement} to add
-         * @return the current {@link Builder}
-         *
-         * @deprecated will be removed in next version. Use {@link #addExtensionElement} instead.
-         */
-        @Deprecated
-        public Builder addSimpleElement(SimpleElement simpleElement) {
-            return addExtensionElement(simpleElement);
         }
 
         public Builder addExtensionElement(ExtensionElement extensionElement) {

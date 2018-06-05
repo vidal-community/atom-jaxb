@@ -38,18 +38,6 @@ public class SimpleElement extends ExtensionElement {
         return new JAXBElement<>(qualifiedName(), String.class, value());
     }
 
-    /**
-     * @param tagName the tag name
-     * @param value the value
-     * @return the current {@link Builder}
-     *
-     * @deprecated will be removed in next version. Use {@link ExtensionElements#simpleElement(String, String)} instead.
-     */
-    @Deprecated
-    public static Builder builder(String tagName, String value) {
-        return ExtensionElements.simpleElement(tagName, value);
-    }
-
     @Override
     public Namespace namespace() {
         return namespace;
