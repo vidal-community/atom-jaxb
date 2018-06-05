@@ -17,6 +17,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <surefire.version>2.21.0</surefire.version>
+        <minimum-maven-version>3.0.4</minimum-maven-version>
     </properties>
 
     <dependencies>
@@ -68,7 +69,7 @@
                             <version>[${java.version},)</version>
                         </requireJavaVersion>
                         <requireMavenVersion>
-                            <version>[3.0.4,)</version>
+                            <version>[${minimum-maven-version},)</version>
                         </requireMavenVersion>
                     </rules>
                 </configuration>
@@ -193,7 +194,7 @@
     </build>
 
     <prerequisites>
-        <maven>3.0</maven>
+        <maven>${minimum-maven-version}</maven>
     </prerequisites>
 
     <licenses>
