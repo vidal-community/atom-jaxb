@@ -1,11 +1,11 @@
 sudo: false
 language: java
 jdk:
-- oraclejdk8
+  - openjdk8
 branches:
   except:
     - /.*wip.*/i
-script: "mvn -T4 clean package"
+script: "mvn -T4 verify"
 after_success:
-- mvn clean test jacoco:report coveralls:report
+- mvn test jacoco:report coveralls:report
 - "[ ${TRAVIS_PULL_REQUEST} = 'false' ] && [ ${TRAVIS_BRANCH} = 'master' ] && mvn clean deploy -DskipTests --settings ./deploy-settings.xml"
