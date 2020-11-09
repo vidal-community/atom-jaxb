@@ -1,7 +1,6 @@
 # Atom JAXB
 
-Atom JAXB is an opinionated JAXB library, focused on Atom 1.0
-feed marshalling/unmarshalling.
+Atom JAXB is Java library focused on Atom 1.0 feed marshalling/unmarshalling.
 
 ## Build status
 
