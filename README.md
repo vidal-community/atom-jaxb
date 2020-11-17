@@ -2,10 +2,9 @@
 
 Atom JAXB is Java library focused on Atom 1.0 feed marshalling/unmarshalling.
 
-## Build status
-
 [![Build Status](https://travis-ci.org/vidal-community/atom-jaxb.png)](https://travis-ci.org/vidal-community/atom-jaxb)
 [![Coverage Status](https://coveralls.io/repos/vidal-community/atom-jaxb/badge.svg?branch=master)](https://coveralls.io/r/vidal-community/atom-jaxb?branch=master)
+[![Maven Central](https://img.shields.io/maven-central/v/fr.vidal.oss/atom-jaxb.svg)](https://search.maven.org/artifact/fr.vidal.oss/atom-jaxb/)
 
 ## What it does
 
