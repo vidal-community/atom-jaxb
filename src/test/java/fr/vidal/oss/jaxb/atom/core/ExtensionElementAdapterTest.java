@@ -88,6 +88,24 @@ public class ExtensionElementAdapterTest {
     }
 
     @Test
+    public void unmarshal_single_simple_void_element() throws Exception {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+              "<root xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+              "    <any:element xmlns:any=\"http://foo.bar.net/-/any/\"/>\n" +
+              "</root>";
+
+        ExtensionElement result = unmarshalElement(xml);
+
+        assertThat(result).isEqualTo(ExtensionElements.simpleElement("element", "")
+              .withNamespace(ANY_NAMESPACE)
+              .addAttribute(XMLNS_ATTRIBUTE)
+              .addAttribute(Attribute.builder("any", "http://foo.bar.net/-/any/")
+                    .withNamespace(XMLNS_NAMESPACE)
+                    .build())
+              .build());
+    }
+
+    @Test
     public void unmarshal_structured_element_with_single_child() throws Exception {
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<root xmlns=\"http://www.w3.org/2005/Atom\">\n" +
