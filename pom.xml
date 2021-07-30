@@ -79,7 +79,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
+                <version>3.0.0</version>
                 <configuration>
                     <rules>
                         <requireJavaVersion>
