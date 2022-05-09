@@ -1,21 +1,33 @@
 package fr.vidal.oss.jaxb.atom;
 
-import fr.vidal.oss.jaxb.atom.core.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.InputSource;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Date;
-import java.util.TimeZone;
+import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
+import fr.vidal.oss.jaxb.atom.core.Attribute;
+import fr.vidal.oss.jaxb.atom.core.Author;
+import fr.vidal.oss.jaxb.atom.core.Category;
+import fr.vidal.oss.jaxb.atom.core.Contents;
+import fr.vidal.oss.jaxb.atom.core.Entry;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElements;
+import fr.vidal.oss.jaxb.atom.core.Feed;
+import fr.vidal.oss.jaxb.atom.core.Link;
+import fr.vidal.oss.jaxb.atom.core.LinkRel;
+import fr.vidal.oss.jaxb.atom.core.Namespace;
+import fr.vidal.oss.jaxb.atom.core.Summary;
 
 import static fr.vidal.oss.jaxb.atom.Assertions.assertThat;
 import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
 import static java.util.TimeZone.getTimeZone;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Date;
+import java.util.TimeZone;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.InputSource;
 
 public class UnmarshallingTest {
 
@@ -274,6 +286,29 @@ public class UnmarshallingTest {
                 new QName("http://api.vidal.net/-/spec/vidal-api/1.0/", "type", "vidal"),
                 "PRODUCT,PACK"
             );
+    }
+
+    @Test
+    public void can_unmarshall_an_entry() throws IOException, JAXBException {
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entry xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                     "        <title>Atom is not what you think</title>\n" +
+                     "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
+                     "        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>\n" +
+                     "        <published>1977-02-05T01:00:00Z</published>\n" +
+                     "        <updated>1986-04-01T02:00:00Z</updated>\n" +
+                     "        <summary>April's fool!</summary>\n" +
+                     "        <content/>\n" +
+                     "    </entry>";
+
+        Entry result = (Entry) unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
+
+        assertThat(result)
+              .hasTitle("Atom is not what you think")
+              .hasLinks(Link.builder("http://example.org/2003/12/13/atom03").build())
+              .hasId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
+              .hasPublishedDate(new Date(223948800000L))
+              .hasUpdateDate(new Date(512697600000L))
+              .hasSummary(Summary.builder().withValue("April's fool!").build());
     }
 
     private static Entry first(Collection<Entry> entries) {
