@@ -21,7 +21,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         env:
           COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-        run: ./mvnw test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN --no-transfer-progress
+          CI_NAME: github
+        run: ./mvnw test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN -DpullRequest=${{ github.event.number }} --no-transfer-progress
       - name: Publish
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         run: ./mvnw clean deploy -DskipTests --settings ./deploy-settings.xml --no-transfer-progress
