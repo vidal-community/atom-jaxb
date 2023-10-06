@@ -14,15 +14,15 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Prepare
-        run: ./mvnw --version
+        run: ./mvnw --version --no-transfer-progress
       - name: Build and test
-        run: ./mvnw --threads 1C verify
+        run: ./mvnw --threads 1C verify --no-transfer-progress
       - name: Report code coverage
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         env:
           COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-        run: ./mvnw test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN
+        run: ./mvnw test jacoco:report coveralls:report -DrepoToken=$COVERALLS_TOKEN --no-transfer-progress
       - name: Publish
         if: ${{ github.ref == 'refs/heads/master' && success() }}
-        run: ./mvnw clean deploy -DskipTests --settings ./deploy-settings.xml
+        run: ./mvnw clean deploy -DskipTests --settings ./deploy-settings.xml --no-transfer-progress
 
