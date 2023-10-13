@@ -3,6 +3,7 @@ package fr.vidal.oss.jaxb.atom.core;
 import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -10,6 +11,7 @@ import java.util.*;
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
 import static java.util.Collections.unmodifiableCollection;
 
+@XmlRootElement(name = "entry")
 @XmlType(propOrder = {
     "title", "links", "categories", "author", "contributors", "id", "publishedDate", "updateDate", "summary", "contents", "extensionElements"
 })
