@@ -109,8 +109,9 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
     }
 
     private boolean isSimpleElementNode(Node node) {
-        return node.getChildNodes().getLength() == 1
-            && isTextualNode(node.getFirstChild());
+        return (node.getChildNodes().getLength() == 1
+            && isTextualNode(node.getFirstChild()))
+              || node.getChildNodes().getLength() == 0;
     }
 
     private boolean isTextualNode(Node node) {
