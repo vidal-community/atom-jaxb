@@ -1,6 +1,6 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -1,6 +1,6 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;

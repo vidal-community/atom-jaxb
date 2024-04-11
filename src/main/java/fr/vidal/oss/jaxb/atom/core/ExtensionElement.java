@@ -1,7 +1,7 @@
 package fr.vidal.oss.jaxb.atom.core;
 
 import java.util.Collection;
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 public abstract class ExtensionElement {
