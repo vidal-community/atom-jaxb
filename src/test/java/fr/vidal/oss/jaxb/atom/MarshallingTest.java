@@ -24,8 +24,8 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import org.junit.Before;
 import org.junit.Test;
 

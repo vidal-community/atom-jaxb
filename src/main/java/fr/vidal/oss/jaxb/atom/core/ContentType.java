@@ -1,6 +1,6 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.XmlValue;
 import java.util.Objects;
 
 import static fr.vidal.oss.jaxb.atom.core.Preconditions.checkState;
