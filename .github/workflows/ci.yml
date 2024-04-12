@@ -24,6 +24,9 @@ jobs:
           CI_NAME: github
         run: ./mvnw test jacoco:report coveralls:report -DrepoToken=${{ secrets.COVERALLS_TOKEN }} -DpullRequest=${{ github.event.number }} --no-transfer-progress
       - name: Publish
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         run: ./mvnw clean deploy -DskipTests --settings ./deploy-settings.xml --no-transfer-progress
 
