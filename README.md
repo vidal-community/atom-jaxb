@@ -50,4 +50,7 @@ Instead, it emphasizes:
    - flat structures (favour links between entries over nested entry elements)
    - simple textual `<content>` (plain text or HTML)
 
+## Benchmark
 
+    $> mvn package -f benchmark/aggregator-pom.xml
+    $> java -jar benchmark/target/benchmarks.jar Marshaller
