@@ -52,5 +52,5 @@ Instead, it emphasizes:
 
 ## Benchmark
 
-    $> mvn package -f benchmark/aggregator-pom.xml
+    $> mvn package
     $> java -jar benchmark/target/benchmarks.jar Marshaller
