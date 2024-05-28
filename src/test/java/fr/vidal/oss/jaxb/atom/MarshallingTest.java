@@ -466,4 +466,29 @@ public class MarshallingTest {
                     "</feed>\n");
         }
     }
+
+    @Test
+    public void can_marshall_an_entry() throws IOException, JAXBException {
+        Entry.Builder entry = Entry.builder()
+              .addLink(Link.builder("http://example.org/2003/12/13/atom03").build())
+              .withTitle("Atom is not what you think")
+              .withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
+              .withPublishedDate(new Date(223948800000L))
+              .withUpdateDate(new Date(512697600000L))
+              .withSummary(Summary.builder().withValue("April's fool!").build());
+
+       try (StringWriter writer = new StringWriter()) {
+           marshaller.marshal(entry.build(), writer);
+           assertThat(writer.toString())
+                 .isXmlEqualTo("<?xml version=\"1.0\" encoding=\"UTF-8\"?><entry xmlns=\"http://www.w3.org/2005/Atom\">\n" +
+                      "        <title>Atom is not what you think</title>\n" +
+                      "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
+                      "        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>\n" +
+                      "        <published>1977-02-05T01:00:00Z</published>\n" +
+                      "        <updated>1986-04-01T02:00:00Z</updated>\n" +
+                      "        <summary>April's fool!</summary>\n" +
+                      "        <content/>\n" +
+                      "    </entry>");
+       }
+    }
 }

@@ -1,7 +1,11 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import org.w3c.dom.*;
+import static java.lang.String.format;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -9,19 +13,32 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.lang.String.format;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElement> {
 
     private static final Class[] ADAPTED_TYPES = {StructuredElement.class, SimpleElement.class};
+    private static final JAXBContext context;
 
-    private DocumentBuilder builder;
-    private JAXBContext context;
+    private final DocumentBuilderFactory dbf;
+
+    static {
+       try {
+          context = JAXBContext.newInstance(ADAPTED_TYPES);
+       } catch (JAXBException e) {
+           throw new AtomExtensionException("Cannot instantiate JAXBContext for classes : " + Arrays.toString(ADAPTED_TYPES), e);
+       }
+    }
+
+    public ExtensionElementAdapter() {
+        this.dbf = DocumentBuilderFactory.newInstance();
+    }
 
     @Override
     public Element marshal(ExtensionElement extensionElement) throws Exception {
@@ -32,7 +49,7 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
         JAXBElement jaxbElement = extensionElement.toJAXBElement();
 
         Document document = builder().newDocument();
-        context().createMarshaller().marshal(jaxbElement, document);
+        context.createMarshaller().marshal(jaxbElement, document);
         Element element = document.getDocumentElement();
 
         addAttributes(element, extensionElement);
@@ -41,24 +58,9 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
 
     private DocumentBuilder builder() throws AtomExtensionException {
         try {
-            if (builder == null) {
-                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                builder = dbf.newDocumentBuilder();
-            }
-            return builder;
+            return dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             throw new AtomExtensionException("Cannot instantiate DocumentBuilder.", e);
-        }
-    }
-
-    private JAXBContext context() throws AtomExtensionException {
-        try {
-            if (context == null) {
-                context = JAXBContext.newInstance(ADAPTED_TYPES);
-            }
-            return context;
-        } catch (JAXBException e) {
-            throw new AtomExtensionException("Cannot instantiate JAXBContext for classes : " + Arrays.toString(ADAPTED_TYPES), e);
         }
     }
 
