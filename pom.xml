@@ -16,7 +16,7 @@
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <surefire.version>3.5.0</surefire.version>
+        <surefire.version>3.5.2</surefire.version>
         <minimum-maven-version>3.0.4</minimum-maven-version>
     </properties>
 
