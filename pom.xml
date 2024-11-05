@@ -3,14 +3,14 @@
 
     <groupId>fr.vidal.oss</groupId>
     <artifactId>atom-jaxb-parent</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>atom-jaxb-parent</name>
     <url>https://github.com/softwarevidal/atom-jaxb</url>
 
     <properties>
-        <project.build.outputTimestamp>2024-11-05T09:57:10Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-11-05T09:57:22Z</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -186,7 +186,7 @@
         <url>https://github.com/softwarevidal/atom-jaxb</url>
         <connection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</connection>
         <developerConnection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</developerConnection>
-        <tag>v2.0.0</tag>
+        <tag>v1.0.1</tag>
     </scm>
 
     <distributionManagement>
