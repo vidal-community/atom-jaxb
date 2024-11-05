@@ -8,6 +8,7 @@
 
     <name>atom-jaxb-parent</name>
     <url>https://github.com/softwarevidal/atom-jaxb</url>
+    <description>Atom JAXB is Java library focused on Atom 1.0 feed marshalling/unmarshalling.</description>
 
     <properties>
         <project.build.outputTimestamp>2024-11-05T09:57:22Z</project.build.outputTimestamp>
@@ -240,6 +241,12 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>

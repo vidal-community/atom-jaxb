@@ -123,14 +123,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <configuration>
-                    <!-- because we don't want to deploy that module -->
-                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
-                </configuration>
-            </plugin>
+
         </plugins>
     </build>
 
