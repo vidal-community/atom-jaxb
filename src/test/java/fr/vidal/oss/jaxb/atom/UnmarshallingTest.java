@@ -14,11 +14,12 @@ import fr.vidal.oss.jaxb.atom.core.Namespace;
 import fr.vidal.oss.jaxb.atom.core.Summary;
 
 import static fr.vidal.oss.jaxb.atom.Assertions.assertThat;
-import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
+import static fr.vidal.oss.jaxb.atom.DateBuilder.dateFormat;
 import static java.util.TimeZone.getTimeZone;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.TimeZone;
@@ -77,7 +78,7 @@ public class UnmarshallingTest {
                     .build())
             .hasId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
             .hasAuthor(Author.builder("VIDAL").build())
-            .hasUpdateDate(new Date(510278400000L))
+            .hasUpdateDate(Date.from(Instant.parse("1986-03-04T01:00:00Z")))
             .hasEntries(entry("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a"));
 
         assertThat(first(result.getEntries()))
@@ -85,8 +86,8 @@ public class UnmarshallingTest {
             .hasLinks(
                 Link.builder("http://example.org/2003/12/13/atom03")
                     .build())
-            .hasPublishedDate(DateBuilder.isoDate("1977-02-05T01:00:00"))
-            .hasUpdateDate(new Date(512697600000L))
+            .hasPublishedDate(Date.from(Instant.parse("1977-02-05T01:00:00Z")))
+            .hasUpdateDate(Date.from(Instant.parse("1986-04-01T02:00:00Z")))
             .hasSummary(Summary.builder().withValue("April's fool!").withType(null).build())
             .hasContents(Contents.builder().withContents("Entry content").build());
     }
@@ -134,7 +135,7 @@ public class UnmarshallingTest {
                     .withType("application/atom+xml")
                     .build())
             .hasExtensionElements(
-                ExtensionElements.simpleElement("date", DATE_FORMAT.format(new Date(1329350400000L)))
+                ExtensionElements.simpleElement("date", dateFormat().format(new Date(1329350400000L)))
                     .withNamespace(Namespace.builder("http://purl.org/dc/elements/1.1/").withPrefix("dc").build())
                     .addAttribute(Attribute.builder("format", "yyyy-MM-dd'T'HH:mm:ss'Z'").withNamespace(Namespace.builder("http://date-formats.com").withPrefix("df").build()).build())
                     .addAttribute(Attribute.builder("xmlns", "http://www.w3.org/2005/Atom").withNamespace(Namespace.builder("http://www.w3.org/2000/xmlns/").build()).build())
@@ -306,8 +307,8 @@ public class UnmarshallingTest {
               .hasTitle("Atom is not what you think")
               .hasLinks(Link.builder("http://example.org/2003/12/13/atom03").build())
               .hasId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
-              .hasPublishedDate(new Date(223948800000L))
-              .hasUpdateDate(new Date(512697600000L))
+              .hasPublishedDate(Date.from(Instant.parse("1977-02-05T01:00:00Z")))
+              .hasUpdateDate(Date.from(Instant.parse("1986-04-01T02:00:00Z")))
               .hasSummary(Summary.builder().withValue("April's fool!").build());
     }
 
