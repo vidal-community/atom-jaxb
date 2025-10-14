@@ -1,0 +1,32 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: 'maven'
+      - name: Prepare
+        run: ./mvnw --version --no-transfer-progress
+      - name: Build and test
+        run: ./mvnw --threads 1C verify --no-transfer-progress
+      - name: Report code coverage
+        if: ${{ github.ref == 'refs/heads/master' && success() }}
+        env:
+          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+          CI_NAME: github
+        run: ./mvnw test jacoco:report coveralls:report -DrepoToken=${{ secrets.COVERALLS_TOKEN }} -DpullRequest=${{ github.event.number }} --no-transfer-progress
+      - name: Publish
+        env:
+          OSSRH_USER: ${{ secrets.OSSRH_USER }}
+          OSSRH_PASS: ${{ secrets.OSSRH_PASS }}
+        if: ${{ github.ref == 'refs/heads/master' && success() }}
+        run: ./mvnw clean deploy -DskipTests --settings ./deploy-settings.xml --no-transfer-progress
+
