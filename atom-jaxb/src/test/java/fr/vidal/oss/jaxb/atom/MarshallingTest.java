@@ -6,13 +6,13 @@ import fr.vidal.oss.jaxb.atom.core.Author;
 import fr.vidal.oss.jaxb.atom.core.Category;
 import fr.vidal.oss.jaxb.atom.core.Entry;
 import fr.vidal.oss.jaxb.atom.core.ExtensionElement;
+import fr.vidal.oss.jaxb.atom.core.ExtensionElements;
 import fr.vidal.oss.jaxb.atom.core.Feed;
 import fr.vidal.oss.jaxb.atom.core.Link;
 import fr.vidal.oss.jaxb.atom.core.Namespace;
 import fr.vidal.oss.jaxb.atom.core.Summary;
-import fr.vidal.oss.jaxb.atom.core.ExtensionElements;
 
-import static fr.vidal.oss.jaxb.atom.core.DateAdapter.DATE_FORMAT;
+import static fr.vidal.oss.jaxb.atom.DateBuilder.dateFormat;
 import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
 import static fr.vidal.oss.jaxb.atom.core.LinkRel.related;
 import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
@@ -48,7 +48,7 @@ public class MarshallingTest {
             .withId("urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6")
             .withTitle("My standard Atom 1.0 feed")
             .withSubtitle("Or is it?")
-            .withUpdateDate(new Date(510278400000L))
+            .withUpdateDate(new Date(510278400000L)) // Tuesday 4 March 1986 00:00:00
             .withAuthor(Author.builder("VIDAL").build())
             .addLink(Link.builder("http://example.org/").withRel(self).build());
 
@@ -56,8 +56,8 @@ public class MarshallingTest {
             .addLink(Link.builder("http://example.org/2003/12/13/atom03").build())
             .withTitle("Atom is not what you think")
             .withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
-            .withPublishedDate(new Date(223948800000L))
-            .withUpdateDate(new Date(512697600000L))
+            .withPublishedDate(new Date(223948800000L)) // Saturday 5 February 1977 00:00:00
+            .withUpdateDate(new Date(512697600000L)) // Tuesday 1 April 1986 00:00:00
             .withSummary(Summary.builder().withValue("April's fool!").build());
 
         feedBuilder.addEntry(builder.build());
@@ -75,13 +75,13 @@ public class MarshallingTest {
                         "    <author>\n" +
                         "        <name>VIDAL</name>\n" +
                         "    </author>\n" +
-                        "    <updated>1986-03-04T01:00:00Z</updated>\n" +
+                        "    <updated>1986-03-04T00:00:00Z</updated>\n" +
                         "    <entry>\n" +
                         "        <title>Atom is not what you think</title>\n" +
                         "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
                         "        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>\n" +
-                        "        <published>1977-02-05T01:00:00Z</published>\n" +
-                        "        <updated>1986-04-01T02:00:00Z</updated>\n" +
+                        "        <published>1977-02-05T00:00:00Z</published>\n" +
+                        "        <updated>1986-04-01T00:00:00Z</updated>\n" +
                         "        <summary>April's fool!</summary>\n" +
                         "        <content/>\n" +
                         "    </entry>\n" +
@@ -97,7 +97,7 @@ public class MarshallingTest {
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
             .withUpdateDate(new Date(1329350400000L))
             .addExtensionElement(
-                ExtensionElements.simpleElement("date", DATE_FORMAT.format(new Date(1329350400000L)))
+                ExtensionElements.simpleElement("date", dateFormat().format(new Date(1329350400000L)))
                     .withNamespace(Namespace.builder("http://purl.org/dc/elements/1.1/").withPrefix("dc").build())
                     .addAttribute(Attribute.builder("format", "yyyy-MM-dd'T'HH:mm:ss'Z'")
                         .withNamespace(Namespace.builder("http://date-formats.com").withPrefix("df").build()).build())
@@ -143,7 +143,7 @@ public class MarshallingTest {
                     .addCategory(Category.builder("PRODUCT").build())
                     .withAuthor(Author.builder("VIDAL").build())
                     .withId("vidal://product/42")
-                    .withUpdateDate(new Date(1329350400000L))
+                    .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
                     .withSummary(Summary.builder().withValue("SNAKE OIL 1 mg").withType("text").build())
                     .addExtensionElement(ExtensionElements.simpleElement("id", String.valueOf(42))
                         .withNamespace(VIDAL_NAMESPACE)
@@ -167,7 +167,7 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "    <dc:date df:format=\"yyyy-MM-dd'T'HH:mm:ss'Z'\"\n" +
                     "             xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:df=\"http://date-formats.com\">2012-02-16T01:00:00Z</dc:date>\n" +
                     "    <opensearch:itemsPerPage xmlns:opensearch=\"http://a9.com/-/spec/opensearch/1.1/\">25</opensearch:itemsPerPage>\n" +
@@ -187,7 +187,7 @@ public class MarshallingTest {
                     "            <name>VIDAL</name>\n" +
                     "        </author>\n" +
                     "        <id>vidal://product/15070</id>\n" +
-                    "        <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "        <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
                     "        <content/>\n" +
                     "        <vidal:id xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">15070</vidal:id>\n" +
@@ -206,7 +206,7 @@ public class MarshallingTest {
                     "            <name>VIDAL</name>\n" +
                     "        </author>\n" +
                     "        <id>vidal://product/42</id>\n" +
-                    "        <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "        <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "        <summary type=\"text\">SNAKE OIL 1 mg</summary>\n" +
                     "        <content/>\n" +
                     "        <vidal:id xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">42</vidal:id>\n" +
@@ -228,7 +228,7 @@ public class MarshallingTest {
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
+            .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
             .addEntry(
                 Entry.builder()
                     .withTitle("SINTROM 4 mg cp quadriséc")
@@ -237,7 +237,7 @@ public class MarshallingTest {
                     .addCategory(Category.builder("PACK").build())
                     .withAuthor(Author.builder("VIDAL").build())
                     .withId("vidal://product/15070")
-                    .withUpdateDate(new Date(1329350400000L))
+                    .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
                     .addAttribute(Attribute.builder("type", "PRODUCT,PACK")
                         .withNamespace(VIDAL_NAMESPACE)
                         .build()
@@ -262,7 +262,7 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "    <entry vidal:type=\"PRODUCT,PACK\" xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
                     "        <title>SINTROM 4 mg cp quadriséc</title>\n" +
                     "        <link href=\"/rest/api/product/15070\" rel=\"alternate\" type=\"application/atom+xml\"/>\n" +
@@ -272,7 +272,7 @@ public class MarshallingTest {
                     "            <name>VIDAL</name>\n" +
                     "        </author>\n" +
                     "        <id>vidal://product/15070</id>\n" +
-                    "        <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "        <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "        <summary type=\"text\">SINTROM 4 mg cp quadriséc</summary>\n" +
                     "        <content/>\n" +
                     "        <vidal:id>15070</vidal:id>\n" +
@@ -287,7 +287,7 @@ public class MarshallingTest {
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
+            .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
 
             .addExtensionElement(
                 ExtensionElements.structuredElement("structured",
@@ -308,7 +308,7 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "    <vidal:structured vidal:type=\"PRODUCT,PACK\" xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\"/>\n" +
                     "</feed>\n");
         }
@@ -320,7 +320,7 @@ public class MarshallingTest {
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
+            .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
 
             .addExtensionElement(
                 ExtensionElements.structuredElement("structured", ExtensionElements.simpleElement("child", "child element content")
@@ -340,7 +340,7 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
                     "            <vidal:child>child element content</vidal:child>\n" +
                     "    </vidal:structured>\n" +
@@ -364,7 +364,7 @@ public class MarshallingTest {
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
+            .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
 
             .addExtensionElement(
                 ExtensionElements.structuredElement("structured", child1)
@@ -384,7 +384,7 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "    <vidal:structured xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
                     "        <vidal:child1>Child content1</vidal:child1>\n" +
                     "        <vidal:child2>Child content2</vidal:child2>\n" +
@@ -429,7 +429,7 @@ public class MarshallingTest {
             .withId("Heidi")
             .withTitle("Search Products - Query :sintrom")
             .addLink(Link.builder("/rest/api/products?q=sintrom&amp;start-page=1&amp;page-size=25").withRel(self).withType("application/atom+xml").build())
-            .withUpdateDate(new Date(1329350400000L))
+            .withUpdateDate(new Date(1329350400000L)) // Thursday 16 February 2012 00:00:00
 
             .addExtensionElement(
                 ExtensionElements.structuredElement("dosages", dosage)
@@ -448,7 +448,7 @@ public class MarshallingTest {
                     "        href=\"/rest/api/products?q=sintrom&amp;amp;start-page=1&amp;amp;page-size=25\"\n" +
                     "        rel=\"self\" type=\"application/atom+xml\"/>\n" +
                     "    <id>Heidi</id>\n" +
-                    "    <updated>2012-02-16T01:00:00Z</updated>\n" +
+                    "    <updated>2012-02-16T00:00:00Z</updated>\n" +
                     "    <vidal:dosages xmlns:vidal=\"http://api.vidal.net/-/spec/vidal-api/1.0/\">\n" +
                     "        <vidal:dosage>\n" +
                     "            <vidal:dose>1000</vidal:dose>\n" +
@@ -473,8 +473,8 @@ public class MarshallingTest {
               .addLink(Link.builder("http://example.org/2003/12/13/atom03").build())
               .withTitle("Atom is not what you think")
               .withId("urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a")
-              .withPublishedDate(new Date(223948800000L))
-              .withUpdateDate(new Date(512697600000L))
+              .withPublishedDate(new Date(223948800000L)) // Saturday 5 February 1977 00:00:00
+              .withUpdateDate(new Date(512697600000L)) // Tuesday 1 April 1986 00:00:00
               .withSummary(Summary.builder().withValue("April's fool!").build());
 
        try (StringWriter writer = new StringWriter()) {
@@ -484,8 +484,8 @@ public class MarshallingTest {
                       "        <title>Atom is not what you think</title>\n" +
                       "        <link href=\"http://example.org/2003/12/13/atom03\"/>\n" +
                       "        <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>\n" +
-                      "        <published>1977-02-05T01:00:00Z</published>\n" +
-                      "        <updated>1986-04-01T02:00:00Z</updated>\n" +
+                      "        <published>1977-02-05T00:00:00Z</published>\n" +
+                      "        <updated>1986-04-01T00:00:00Z</updated>\n" +
                       "        <summary>April's fool!</summary>\n" +
                       "        <content/>\n" +
                       "    </entry>");
