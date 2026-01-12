@@ -31,6 +31,10 @@
 
 package fr.vidal.oss;
 
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.related;
+import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
+
 import fr.vidal.oss.jaxb.atom.core.AtomJaxb;
 import fr.vidal.oss.jaxb.atom.core.Attribute;
 import fr.vidal.oss.jaxb.atom.core.Author;
@@ -42,12 +46,9 @@ import fr.vidal.oss.jaxb.atom.core.Feed;
 import fr.vidal.oss.jaxb.atom.core.Link;
 import fr.vidal.oss.jaxb.atom.core.Namespace;
 import fr.vidal.oss.jaxb.atom.core.Summary;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.alternate;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.related;
-import static fr.vidal.oss.jaxb.atom.core.LinkRel.self;
 
 import java.io.StringWriter;
 import java.util.Date;

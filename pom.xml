@@ -11,7 +11,7 @@
     <description>Atom JAXB is Java library focused on Atom 1.0 feed marshalling/unmarshalling.</description>
 
     <properties>
-        <project.build.outputTimestamp>2024-11-05T09:57:22Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-01-12T20:20:02Z</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
