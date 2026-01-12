@@ -92,6 +92,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
                         </goals>
                         <configuration>
                             <finalName>${uberjar.name}</finalName>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.openjdk.jmh.Main</mainClass>
