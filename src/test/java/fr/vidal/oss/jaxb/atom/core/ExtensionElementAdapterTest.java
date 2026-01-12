@@ -1,19 +1,22 @@
 package fr.vidal.oss.jaxb.atom.core;
 
-import org.junit.Test;
-import org.xml.sax.InputSource;
+import static java.util.TimeZone.getTimeZone;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.TimeZone;
-
-import static java.util.TimeZone.getTimeZone;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import org.junit.Test;
+import org.xml.sax.InputSource;
 
 public class ExtensionElementAdapterTest {
 
@@ -129,6 +132,67 @@ public class ExtensionElementAdapterTest {
                 .build())
             .addChild(element("sub-wrapper", element("second-level-child", "value")))
             .build());
+    }
+
+    @Test
+    public void reuses_document_builder_in_same_thread() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            ExtensionElement element = element("element" + i, "value " + i);
+            String xml = marshalElement(element);
+
+            assertThat(xml).contains("element" + i, "value " + i);
+        }
+    }
+
+    @Test
+    public void concurrent_marshal_and_unmarshal_from_multiple_threads() throws Exception {
+       // This test verifies thread-safety of the ThreadLocal DocumentBuilder
+       // by running marshal/unmarshal operations from 100 concurrent threads
+       int numThreads = 100;
+       int operationsPerThread = 5;
+       ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+       try {
+          CountDownLatch startLatch = new CountDownLatch(1);
+          CountDownLatch endLatch = new CountDownLatch(numThreads);
+          AtomicReference<Exception> exceptionHolder = new AtomicReference<>();
+
+          for (int threadId = 0; threadId < numThreads; threadId++) {
+             final int tid = threadId;
+             executor.submit(() -> {
+                try {
+                   // Wait for all threads to be ready before starting
+                   startLatch.await();
+
+                   // Each thread performs multiple marshal/unmarshal operations
+                   for (int op = 0; op < operationsPerThread; op++) {
+                      String elementName = String.format("elem-t%d-op%d", tid, op);
+                      String elementValue = String.format("value-thread-%d-op-%d", tid, op);
+
+                      ExtensionElement element = element(elementName, elementValue);
+                      String xml = marshalElement(element);
+
+                      assertThat(xml).contains(elementName, elementValue);
+                   }
+                } catch (Exception e) {
+                   exceptionHolder.compareAndSet(null, e);
+                } finally {
+                   endLatch.countDown();
+                }
+             });
+          }
+
+          // Start all threads simultaneously
+          startLatch.countDown();
+
+          // Wait for all threads to complete
+          endLatch.await();
+
+          if (exceptionHolder.get() != null) {
+             throw exceptionHolder.get();
+          }
+       } finally {
+          executor.shutdownNow();
+       }
     }
 
     private String marshalElement(ExtensionElement element) throws IOException, JAXBException {

@@ -25,8 +25,13 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
 
     private static final Class[] ADAPTED_TYPES = {StructuredElement.class, SimpleElement.class};
     private static final JAXBContext context;
-
-    private final DocumentBuilderFactory dbf;
+    private static final ThreadLocal<DocumentBuilder> getDocumentBuilder = ThreadLocal.withInitial(() -> {
+        try {
+           return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new AtomExtensionException("Cannot instantiate DocumentBuilder.", e);
+        }
+    });
 
     static {
        try {
@@ -34,10 +39,6 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
        } catch (JAXBException e) {
            throw new AtomExtensionException("Cannot instantiate JAXBContext for classes : " + Arrays.toString(ADAPTED_TYPES), e);
        }
-    }
-
-    public ExtensionElementAdapter() {
-        this.dbf = DocumentBuilderFactory.newInstance();
     }
 
     @Override
@@ -48,20 +49,14 @@ public class ExtensionElementAdapter extends XmlAdapter<Element, ExtensionElemen
 
         JAXBElement jaxbElement = extensionElement.toJAXBElement();
 
-        Document document = builder().newDocument();
+        DocumentBuilder documentBuilder = getDocumentBuilder.get();
+        documentBuilder.reset();
+        Document document = documentBuilder.newDocument();
         context.createMarshaller().marshal(jaxbElement, document);
         Element element = document.getDocumentElement();
 
         addAttributes(element, extensionElement);
         return element;
-    }
-
-    private DocumentBuilder builder() throws AtomExtensionException {
-        try {
-            return dbf.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AtomExtensionException("Cannot instantiate DocumentBuilder.", e);
-        }
     }
 
     private void addAttributes(Element element, ExtensionElement extensionElement) {
