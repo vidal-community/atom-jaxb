@@ -3,7 +3,7 @@
 
     <groupId>fr.vidal.oss</groupId>
     <artifactId>atom-jaxb-parent</artifactId>
-    <version>2.1.0</version>
+    <version>2.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>atom-jaxb-parent</name>
@@ -11,7 +11,7 @@
     <description>Atom JAXB is Java library focused on Atom 1.0 feed marshalling/unmarshalling.</description>
 
     <properties>
-        <project.build.outputTimestamp>2026-05-26T08:22:49Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-05-26T08:23:01Z</project.build.outputTimestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -186,7 +186,7 @@
         <url>https://github.com/softwarevidal/atom-jaxb</url>
         <connection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</connection>
         <developerConnection>scm:git:git@github.com:softwarevidal/atom-jaxb.git</developerConnection>
-        <tag>v2.1.0</tag>
+        <tag>v1.0.1</tag>
     </scm>
 
     <developers>
